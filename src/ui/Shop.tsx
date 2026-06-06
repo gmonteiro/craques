@@ -58,7 +58,7 @@ export function Shop({
   // === PACK OPENING OVERLAY ===
   if (packState === 'opening' || packState === 'open') {
     return (
-      <div className="p-4 bg-black/40 min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <div className="p-4 bg-black/40 h-screen flex flex-col items-center justify-center overflow-hidden">
         {packState === 'opening' ? (
           // Opening animation
           <div className="animate-bounce">

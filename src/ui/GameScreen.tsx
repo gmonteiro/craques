@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { RunState } from '../engine/types'
 import { infoPartida } from '../engine/run'
-import { getAttributeLabel } from '../engine/attributes'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { Hand } from './Hand'
 import { PlayArea } from './PlayArea'
@@ -9,6 +8,7 @@ import { BoostBar } from './BoostBar'
 import { ScoreDisplay } from './ScoreDisplay'
 import { Shop } from './Shop'
 import { ComboGuide } from './ComboGuide'
+import { MatchInfo } from './MatchInfo'
 import { getComboProgress } from '../engine/combos'
 import config from '../../data/config.json'
 
@@ -88,48 +88,85 @@ export function GameScreen({
   // === RESULTADO ===
   if (run.status === 'resultado') {
     return (
-      <div className="p-2 md:p-4 text-center space-y-4 md:space-y-6 bg-black/40 min-h-screen">
-        <Header info={info} run={run} />
-        <ScoreDisplay
-          result={run.ultimaPontuacao}
-          meta={run.meta}
-          tentativas={run.tentativasRestantes}
-          trocas={run.trocasRestantes}
-        />
-        <button
-          onClick={onAvancar}
-          className="px-8 py-3 min-h-[44px] bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg"
-        >
-          Avancar →
-        </button>
+      <div className="h-screen bg-black/40 flex">
+        {/* Left panel */}
+        <div className="hidden md:block p-3">
+          <MatchInfo run={run} />
+        </div>
+        {/* Center */}
+        <div className="flex-1 flex flex-col items-center justify-center p-4 space-y-4">
+          <ScoreDisplay
+            result={run.ultimaPontuacao}
+            meta={run.meta}
+            tentativas={run.tentativasRestantes}
+            trocas={run.trocasRestantes}
+          />
+          <button
+            onClick={onAvancar}
+            className="px-8 py-3 min-h-[44px] bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg"
+          >
+            Avancar →
+          </button>
+        </div>
       </div>
     )
   }
 
-  // === ESCALANDO ===
+  // === ESCALANDO — Layout estilo Balatro ===
   return (
-    <div className="flex flex-col h-screen bg-black/40">
-      <Header info={info} run={run} />
+    <div className="h-screen bg-black/40 flex flex-col md:flex-row overflow-hidden">
 
-      {/* Twist warning */}
-      {run.twist && (
-        <div className="mx-2 md:mx-4 mb-1 md:mb-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 text-center">
-          <span className="text-xs text-orange-400 font-bold">CLASSICO: </span>
-          <span className="text-xs text-orange-300">{run.twist.descricao}</span>
+      {/* === LEFT PANEL (Balatro-style stacked info) === */}
+      <div className="hidden md:flex flex-col gap-2 p-3 w-52 flex-shrink-0 overflow-y-auto">
+        <MatchInfo run={run} />
+        {run.boosts.length > 0 && <BoostBar boosts={run.boosts} />}
+        <ComboGuide combos={comboProgress} />
+      </div>
+
+      {/* === CENTER (main game area) === */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+        {/* Mobile: compact top bar */}
+        <div className="md:hidden flex items-center justify-between bg-gray-900/80 px-3 py-2 border-b border-gray-700 gap-2">
+          <div className="text-[11px]">
+            <span className="text-white font-bold">{info.fase}</span>
+            <span className="text-gray-500 ml-1">{info.partida}/{info.totalPartidas}</span>
+            {info.isClassico && <span className="text-orange-400 ml-1">CL</span>}
+          </div>
+          <div className="text-[11px]">
+            vs <span className="text-white font-bold">{info.adversario}</span>
+          </div>
+          <div className="text-[11px] flex gap-2">
+            <span className="text-yellow-400 font-bold">{run.meta}</span>
+            <span className="text-green-400 font-bold">${run.orcamento}</span>
+          </div>
         </div>
-      )}
 
-      {/* Score Display */}
-      <ScoreDisplay
-        result={run.ultimaPontuacao}
-        meta={run.meta}
-        tentativas={run.tentativasRestantes}
-        trocas={run.trocasRestantes}
-      />
+        {/* Twist warning */}
+        {run.twist && (
+          <div className="mx-2 my-1 bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 text-center">
+            <span className="text-xs text-orange-400 font-bold">CLÁSSICO: </span>
+            <span className="text-xs text-orange-300">{run.twist.descricao}</span>
+          </div>
+        )}
 
-      {/* Área de escalação + Sidebar (boosts + combos) */}
-      <div className="flex-1 overflow-auto p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4">
-        <div className="flex-1">
+        {/* Boosts row on top (like Balatro jokers) */}
+        <div className="md:hidden px-2 py-1">
+          {run.boosts.length > 0 && <BoostBar boosts={run.boosts} />}
+        </div>
+
+        {/* Score (só mostra se já tentou) */}
+        {run.ultimaPontuacao && (
+          <ScoreDisplay
+            result={run.ultimaPontuacao}
+            meta={run.meta}
+            tentativas={run.tentativasRestantes}
+            trocas={run.trocasRestantes}
+          />
+        )}
+
+        {/* Escalação (centro) */}
+        <div className="flex-1 overflow-auto px-2 py-1 md:px-4 md:py-2">
           <PlayArea
             escalacao={run.escalacao}
             activeAttributes={run.era}
@@ -139,101 +176,72 @@ export function GameScreen({
           />
         </div>
 
-        {/* Sidebar: boosts + combos */}
-        <div className="md:w-64 md:flex-shrink-0 space-y-2">
-          {/* Boosts ativos */}
-          {run.boosts.length > 0 && (
-            <BoostBar boosts={run.boosts} />
+        {/* Ações */}
+        <div className="flex justify-center gap-2 md:gap-3 py-2">
+          <button
+            onClick={onJogar}
+            disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
+            className="px-5 md:px-6 py-2 min-h-[44px] bg-green-600 hover:bg-green-500 disabled:opacity-30 rounded-lg font-bold transition"
+          >
+            Jogar!
+          </button>
+          {modoTroca ? (
+            <>
+              <button
+                onClick={handleTrocar}
+                disabled={trocaSelecionados.size === 0}
+                className="px-3 md:px-4 py-2 min-h-[44px] bg-orange-600 hover:bg-orange-500 disabled:opacity-30 rounded-lg font-bold text-sm transition"
+              >
+                Trocar ({trocaSelecionados.size})
+              </button>
+              <button
+                onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
+                className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition"
+              >
+                Cancelar
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setModoTroca(true)}
+              disabled={run.trocasRestantes <= 0}
+              className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg text-sm transition"
+            >
+              Trocar ({run.trocasRestantes})
+            </button>
           )}
+        </div>
+
+        {/* Mobile: combos toggle */}
+        <div className="md:hidden px-2 pb-1">
           <button
             onClick={() => setShowCombos(!showCombos)}
-            className="md:hidden w-full py-2 bg-gray-800/80 rounded-lg text-sm text-gray-300 flex items-center justify-center gap-2 min-h-[44px]"
+            className="w-full py-1.5 bg-gray-800/80 rounded-lg text-xs text-gray-300 flex items-center justify-center gap-1 min-h-[36px]"
           >
             <span>Combos ({combosAtivos}/{comboProgress.length})</span>
             <span className={`transition-transform ${showCombos ? 'rotate-180' : ''}`}>▼</span>
           </button>
-          <div className={`${showCombos ? '' : 'hidden'} md:block mt-1 md:mt-0`}>
-            <ComboGuide combos={comboProgress} />
-          </div>
+          {showCombos && (
+            <div className="mt-1">
+              <ComboGuide combos={comboProgress} />
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Ações */}
-      <div className="flex justify-center gap-2 md:gap-3 py-2 md:py-3">
-        <button
-          onClick={onJogar}
-          disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
-          className="px-4 md:px-6 py-2 min-h-[44px] bg-green-600 hover:bg-green-500 disabled:opacity-30 rounded-lg font-bold transition"
-        >
-          Jogar!
-        </button>
-        {modoTroca ? (
-          <>
-            <button
-              onClick={handleTrocar}
-              disabled={trocaSelecionados.size === 0}
-              className="px-3 md:px-4 py-2 min-h-[44px] bg-orange-600 hover:bg-orange-500 disabled:opacity-30 rounded-lg font-bold text-sm transition"
-            >
-              Trocar ({trocaSelecionados.size})
-            </button>
-            <button
-              onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
-              className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition"
-            >
-              Cancelar
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => setModoTroca(true)}
-            disabled={run.trocasRestantes <= 0}
-            className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg text-sm transition"
-          >
-            Trocar ({run.trocasRestantes})
-          </button>
-        )}
-      </div>
-
-      {/* Mão */}
-      <div className="border-t border-gray-800 bg-gray-900/50 p-2 md:p-3">
-        <span className="text-xs text-gray-500 mb-1 block">
-          Mao ({run.mao.length} cartas)
-          {modoTroca && <span className="text-orange-400 ml-2">Selecione para trocar</span>}
-        </span>
-        <Hand
-          cards={run.mao}
-          activeAttributes={run.era}
-          onSelect={handleCardClick}
-          selectedIds={modoTroca ? trocaSelecionados : undefined}
-          mobile={mobile}
-        />
-      </div>
-    </div>
-  )
-}
-
-function Header({ info, run }: { info: ReturnType<typeof infoPartida>; run: RunState }) {
-  return (
-    <div className="flex flex-wrap items-center justify-between px-2 md:px-4 py-2 md:py-3 border-b border-gray-800 bg-gray-900/80 gap-1">
-      <div>
-        <span className="text-xs md:text-sm font-bold text-white">{info.fase}</span>
-        <span className="text-[10px] md:text-xs text-gray-500 ml-1 md:ml-2">
-          {info.partida}/{info.totalPartidas}
-          {info.isClassico && <span className="text-orange-400 ml-1">CLASSICO</span>}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 md:gap-3">
-        <span className="text-[10px] md:text-xs text-gray-400">
-          vs <span className="text-white font-bold">{info.adversario}</span>
-        </span>
-        <span className="text-[10px] md:text-xs text-yellow-400 font-bold">${run.orcamento}</span>
-      </div>
-      <div className="flex gap-1 w-full md:w-auto justify-center md:justify-end mt-1 md:mt-0">
-        {run.era.map(attr => (
-          <span key={attr} className="text-[10px] bg-white/5 px-2 py-0.5 rounded-full text-gray-400">
-            {getAttributeLabel(attr)}
+        {/* Mão (embaixo, como no Balatro) */}
+        <div className="border-t border-gray-800 bg-gray-900/50 p-2 md:p-3">
+          <span className="text-[10px] md:text-xs text-gray-500 mb-1 block">
+            Mao ({run.mao.length})
+            {modoTroca && <span className="text-orange-400 ml-2">Selecione para trocar</span>}
           </span>
-        ))}
+          <Hand
+            cards={run.mao}
+            activeAttributes={run.era}
+            onSelect={handleCardClick}
+            selectedIds={modoTroca ? trocaSelecionados : undefined}
+            mobile={mobile}
+          />
+        </div>
       </div>
     </div>
   )
