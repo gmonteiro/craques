@@ -60,7 +60,7 @@ export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoI
                 activeAttributes={activeAttributes}
                 onClick={() => !isEscalado && onSelect(card.id)}
                 selected={isSelected}
-                scale={mobile ? 0.35 : 0.45}
+                scale={mobile ? 0.55 : 1}
               />
             </div>
           )

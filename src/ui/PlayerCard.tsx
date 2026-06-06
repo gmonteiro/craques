@@ -49,7 +49,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
     }
   }
 
-  const scale = scaleProp ?? 0.45
+  const scale = scaleProp ?? 1
   const baseW = 176
   const w = baseW * scale
 
