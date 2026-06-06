@@ -2,25 +2,28 @@ import type { RunState } from '../engine/types'
 import { infoPartida } from '../engine/run'
 import { getAttributeLabel } from '../engine/attributes'
 
-// Bandeiras como 3 faixas (h=horizontal, v=vertical)
-interface FlagDef { c1: string; c2: string; c3: string; dir: 'h' | 'v' }
+// Emoji flags (render natively on mobile) + SVG fallback for Windows
+interface FlagDef { emoji: string; c1: string; c2: string; c3: string; dir: 'h' | 'v' }
 const FLAGS: Record<string, FlagDef> = {
-  'MÉXICO':        { c1: '#006341', c2: '#FFFFFF', c3: '#CE1126', dir: 'v' },
-  'CANADÁ':        { c1: '#FF0000', c2: '#FFFFFF', c3: '#FF0000', dir: 'v' },
-  'AUSTRÁLIA':     { c1: '#002868', c2: '#002868', c3: '#002868', dir: 'h' }, // azul sólido
-  'JAPÃO':         { c1: '#FFFFFF', c2: '#BC002D', c3: '#FFFFFF', dir: 'h' }, // branco/vermelho/branco
-  'COREIA DO SUL': { c1: '#FFFFFF', c2: '#CD2E3A', c3: '#003478', dir: 'h' },
-  'EUA':           { c1: '#002868', c2: '#FFFFFF', c3: '#BF0A30', dir: 'h' },
-  'ALEMANHA':      { c1: '#000000', c2: '#DD0000', c3: '#FFCC00', dir: 'h' },
-  'ESPANHA':       { c1: '#AA151B', c2: '#F1BF00', c3: '#AA151B', dir: 'h' },
-  'HOLANDA':       { c1: '#AE1C28', c2: '#FFFFFF', c3: '#21468B', dir: 'h' },
-  'INGLATERRA':    { c1: '#FFFFFF', c2: '#CE1124', c3: '#FFFFFF', dir: 'h' }, // cruz em fundo branco
-  'FRANÇA':        { c1: '#002395', c2: '#FFFFFF', c3: '#ED2939', dir: 'v' },
-  'ITÁLIA':        { c1: '#008C45', c2: '#FFFFFF', c3: '#CD212A', dir: 'v' },
-  'ARGENTINA':     { c1: '#75AADB', c2: '#FFFFFF', c3: '#75AADB', dir: 'h' },
-  'BRASIL':        { c1: '#009739', c2: '#FFDF00', c3: '#009739', dir: 'h' },
-  'PORTUGAL':      { c1: '#006600', c2: '#006600', c3: '#FF0000', dir: 'v' }, // 1/3 verde, 2/3 vermelho
+  'MÉXICO':        { emoji: '🇲🇽', c1: '#006341', c2: '#FFFFFF', c3: '#CE1126', dir: 'v' },
+  'CANADÁ':        { emoji: '🇨🇦', c1: '#FF0000', c2: '#FFFFFF', c3: '#FF0000', dir: 'v' },
+  'AUSTRÁLIA':     { emoji: '🇦🇺', c1: '#002868', c2: '#002868', c3: '#FFFFFF', dir: 'h' },
+  'JAPÃO':         { emoji: '🇯🇵', c1: '#FFFFFF', c2: '#BC002D', c3: '#FFFFFF', dir: 'h' },
+  'COREIA DO SUL': { emoji: '🇰🇷', c1: '#FFFFFF', c2: '#CD2E3A', c3: '#003478', dir: 'h' },
+  'EUA':           { emoji: '🇺🇸', c1: '#002868', c2: '#FFFFFF', c3: '#BF0A30', dir: 'h' },
+  'ALEMANHA':      { emoji: '🇩🇪', c1: '#000000', c2: '#DD0000', c3: '#FFCC00', dir: 'h' },
+  'ESPANHA':       { emoji: '🇪🇸', c1: '#AA151B', c2: '#F1BF00', c3: '#AA151B', dir: 'h' },
+  'HOLANDA':       { emoji: '🇳🇱', c1: '#AE1C28', c2: '#FFFFFF', c3: '#21468B', dir: 'h' },
+  'INGLATERRA':    { emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', c1: '#FFFFFF', c2: '#CE1124', c3: '#FFFFFF', dir: 'h' },
+  'FRANÇA':        { emoji: '🇫🇷', c1: '#002395', c2: '#FFFFFF', c3: '#ED2939', dir: 'v' },
+  'ITÁLIA':        { emoji: '🇮🇹', c1: '#008C45', c2: '#FFFFFF', c3: '#CD212A', dir: 'v' },
+  'ARGENTINA':     { emoji: '🇦🇷', c1: '#75AADB', c2: '#FFFFFF', c3: '#75AADB', dir: 'h' },
+  'BRASIL':        { emoji: '🇧🇷', c1: '#009739', c2: '#FFDF00', c3: '#009739', dir: 'h' },
+  'PORTUGAL':      { emoji: '🇵🇹', c1: '#006600', c2: '#006600', c3: '#FF0000', dir: 'v' },
 }
+
+// Detect Windows (flag emojis render as 2-letter text)
+const isWindows = typeof navigator !== 'undefined' && /Win/.test(navigator.platform)
 
 function Flag({ country }: { country: string }) {
   const f = FLAGS[country.toUpperCase()]
@@ -31,6 +34,13 @@ function Flag({ country }: { country: string }) {
       </div>
     )
   }
+
+  // Mobile/Mac: use emoji
+  if (!isWindows) {
+    return <span className="text-xl leading-none">{f.emoji}</span>
+  }
+
+  // Windows: SVG fallback
   return (
     <div className={`w-8 h-6 rounded overflow-hidden border border-white/20 flex-shrink-0 flex ${f.dir === 'v' ? 'flex-row' : 'flex-col'}`}>
       <div className="flex-1" style={{ backgroundColor: f.c1 }} />
