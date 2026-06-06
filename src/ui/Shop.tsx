@@ -101,9 +101,9 @@ export function Shop({
             <div className="text-center">
               <button
                 onClick={fecharPack}
-                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition"
+                className="btn-arcade btn-cancel"
               >
-                Pular (nenhuma)
+                Pular
               </button>
             </div>
           </div>
@@ -129,17 +129,16 @@ export function Shop({
           <button
             onClick={onReroll}
             disabled={orcamento < custoReroll}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg transition"
-            style={{ fontFamily: "'VT323',monospace", fontSize: 18 }}
+            className="btn-arcade btn-swap"
+            style={{ fontSize: 9 }}
           >
-            Reroll (${custoReroll})
+            Reroll ${custoReroll}
           </button>
           <button
             onClick={onSair}
-            className="px-6 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-bold transition"
-            style={{ fontFamily: "'VT323',monospace", fontSize: 20 }}
+            className="btn-arcade btn-next"
           >
-            Próxima Fase →
+            Proxima Fase
           </button>
         </div>
       </div>

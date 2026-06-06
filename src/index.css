@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
 
 :root {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'VT323', monospace;
   color-scheme: dark;
 }
 
@@ -71,6 +71,67 @@ html, body { overscroll-behavior: none; }
 @media (max-width: 768px) {
   .overflow-x-auto::-webkit-scrollbar { display: none; }
   .overflow-x-auto { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* === ARCADE BUTTON STYLES === */
+.btn-arcade {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  padding: 12px 20px;
+  min-height: 44px;
+  border: 3px solid;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+}
+.btn-arcade:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+}
+.btn-arcade:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-arcade:hover:not(:disabled) {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 rgba(0,0,0,0.4);
+}
+
+.btn-play {
+  background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+  border-color: #15803d;
+  color: #052e16;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+}
+.btn-swap {
+  background: linear-gradient(180deg, #fb923c 0%, #ea580c 100%);
+  border-color: #c2410c;
+  color: #431407;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+}
+.btn-cancel {
+  background: linear-gradient(180deg, #6b7280 0%, #374151 100%);
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+.btn-advance {
+  background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+  border-color: #b45309;
+  color: #451a03;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+  font-size: 14px;
+}
+.btn-next {
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+  border-color: #047857;
+  color: #022c22;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
 }
 
 /* Pack opening animation */

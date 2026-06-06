@@ -136,18 +136,16 @@ export function Tutorial({ onComplete }: Props) {
             {isLast ? (
               <button
                 onClick={onComplete}
-                className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg"
-                style={{ fontFamily: "'VT323',monospace", fontSize: 22 }}
+                className="btn-arcade btn-play"
               >
-                COMEÇAR! →
+                Comecar!
               </button>
             ) : (
               <button
                 onClick={() => setStep(s => s + 1)}
-                className="px-6 py-2 bg-[#ffd84d] text-[#0d0b1f] rounded-lg font-bold transition-all hover:scale-105"
-                style={{ fontFamily: "'VT323',monospace", fontSize: 20 }}
+                className="btn-arcade btn-advance"
               >
-                Próximo →
+                Proximo
               </button>
             )}
           </div>

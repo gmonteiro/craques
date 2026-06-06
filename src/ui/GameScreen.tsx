@@ -101,10 +101,7 @@ export function GameScreen({
             tentativas={run.tentativasRestantes}
             trocas={run.trocasRestantes}
           />
-          <button
-            onClick={onAvancar}
-            className="px-8 py-3 min-h-[44px] bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg"
-          >
+          <button onClick={onAvancar} className="btn-arcade btn-advance">
             Avancar →
           </button>
         </div>
@@ -176,12 +173,12 @@ export function GameScreen({
           />
         </div>
 
-        {/* Ações */}
-        <div className="flex justify-center gap-2 md:gap-3 py-2">
+        {/* Ações — arcade buttons */}
+        <div className="flex justify-center gap-3 md:gap-4 py-2 md:py-3">
           <button
             onClick={onJogar}
             disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
-            className="px-5 md:px-6 py-2 min-h-[44px] bg-green-600 hover:bg-green-500 disabled:opacity-30 rounded-lg font-bold transition"
+            className="btn-arcade btn-play"
           >
             Jogar!
           </button>
@@ -190,13 +187,13 @@ export function GameScreen({
               <button
                 onClick={handleTrocar}
                 disabled={trocaSelecionados.size === 0}
-                className="px-3 md:px-4 py-2 min-h-[44px] bg-orange-600 hover:bg-orange-500 disabled:opacity-30 rounded-lg font-bold text-sm transition"
+                className="btn-arcade btn-swap"
               >
                 Trocar ({trocaSelecionados.size})
               </button>
               <button
                 onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
-                className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition"
+                className="btn-arcade btn-cancel"
               >
                 Cancelar
               </button>
@@ -205,7 +202,7 @@ export function GameScreen({
             <button
               onClick={() => setModoTroca(true)}
               disabled={run.trocasRestantes <= 0}
-              className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg text-sm transition"
+              className="btn-arcade btn-swap"
             >
               Trocar ({run.trocasRestantes})
             </button>

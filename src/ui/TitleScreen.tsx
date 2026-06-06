@@ -33,18 +33,12 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
       </div>
 
       {/* Botões */}
-      <div className="space-y-3 w-64">
-        <button
-          onClick={() => onNovaRun()}
-          className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-green-500/20"
-        >
+      <div className="space-y-4 w-72">
+        <button onClick={() => onNovaRun()} className="btn-arcade btn-play w-full text-sm">
           Nova Run
         </button>
 
-        <button
-          onClick={onDailyRun}
-          className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg font-bold transition-all hover:scale-105 shadow-lg shadow-blue-500/20"
-        >
+        <button onClick={onDailyRun} className="btn-arcade btn-advance w-full text-sm">
           Desafio Diario
         </button>
 
@@ -54,7 +48,8 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
             value={seedInput}
             onChange={e => setSeedInput(e.target.value)}
             placeholder="Colar seed..."
-            className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-gray-500"
+            className="flex-1 px-3 py-2 bg-gray-800 border-2 border-gray-600 rounded text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500"
+            style={{ fontFamily: "'VT323', monospace", fontSize: 18 }}
           />
           <button
             onClick={() => {
@@ -62,7 +57,8 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
               if (!isNaN(n)) onNovaRun(n)
             }}
             disabled={!seedInput}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg text-sm transition"
+            className="btn-arcade btn-next"
+            style={{ fontSize: 9, padding: '8px 16px' }}
           >
             Ir
           </button>

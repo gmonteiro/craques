@@ -64,17 +64,11 @@ export function RunEndScreen({ run, onVoltarTitulo }: Props) {
       </div>
 
       {/* Ações */}
-      <div className="space-y-3 w-64">
-        <button
-          onClick={handleShareSeed}
-          className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg font-bold transition-all hover:scale-105"
-        >
-          Compartilhar Seed
+      <div className="space-y-4 w-72">
+        <button onClick={handleShareSeed} className="btn-arcade btn-advance w-full">
+          Compartilhar
         </button>
-        <button
-          onClick={onVoltarTitulo}
-          className="w-full py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-bold transition-all"
-        >
+        <button onClick={onVoltarTitulo} className="btn-arcade btn-play w-full">
           Nova Run
         </button>
       </div>
