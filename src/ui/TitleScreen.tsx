@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { getAttributeLabel } from '../engine/attributes'
+import { Tutorial } from './Tutorial'
 
 interface Props {
   onNovaRun: (seed?: number) => void
@@ -8,10 +9,14 @@ interface Props {
 
 export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
   const [seedInput, setSeedInput] = useState('')
+  const [showTutorial, setShowTutorial] = useState(false)
   const eraExemplo = ['gols', 'drible', 'seguidores']
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-black/50">
+      {/* Tutorial modal */}
+      {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
+
       {/* Logo */}
       <div className="mb-8 text-center">
         <h1 className="text-6xl font-black bg-gradient-to-r from-yellow-400 via-red-500 to-purple-500 bg-clip-text text-transparent mb-2">
@@ -34,11 +39,19 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
 
       {/* Botões */}
       <div className="space-y-4 w-72">
+        <button
+          onClick={() => setShowTutorial(true)}
+          className="btn-arcade btn-advance w-full"
+          style={{ fontSize: 10 }}
+        >
+          Como Jogar
+        </button>
+
         <button onClick={() => onNovaRun()} className="btn-arcade btn-play w-full text-sm">
           Nova Run
         </button>
 
-        <button onClick={onDailyRun} className="btn-arcade btn-advance w-full text-sm">
+        <button onClick={onDailyRun} className="btn-arcade btn-next w-full" style={{ fontSize: 11 }}>
           Desafio Diario
         </button>
 
@@ -57,7 +70,7 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
               if (!isNaN(n)) onNovaRun(n)
             }}
             disabled={!seedInput}
-            className="btn-arcade btn-next"
+            className="btn-arcade btn-swap"
             style={{ fontSize: 9, padding: '8px 16px' }}
           >
             Ir
