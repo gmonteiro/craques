@@ -129,10 +129,18 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
   const portrait = portraitPaths(hair, skin, jersey, sleeve, collar)
   const shirtNumberPath = pixelNumberPath(numeroCamisa, 340, 286, 9)
 
+  // Golden glow for legendary/elite cards
+  const isSpecial = player.raridade === 'lendario' || player.raridade === 'elite'
+  const glowClass = player.raridade === 'lendario'
+    ? 'drop-shadow-[0_0_8px_rgba(255,216,77,0.6)]'
+    : player.raridade === 'elite'
+    ? 'drop-shadow-[0_0_6px_rgba(192,132,252,0.5)]'
+    : ''
+
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer transition-all duration-200 inline-block ${
+      className={`cursor-pointer transition-all duration-200 inline-block ${glowClass} ${
         selected ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-105' : 'hover:scale-105'
       }`}
       style={{ width: w, height: h }}
@@ -143,8 +151,9 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         height={h}
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Frame */}
-        <rect x={156} y={26} width={368} height={cardHeight - 26} fill="#ffd84d" />
+        {/* Frame — golden for legends, purple for elite, silver for others */}
+        <rect x={156} y={26} width={368} height={cardHeight - 26}
+          fill={player.raridade === 'lendario' ? '#ffd84d' : player.raridade === 'elite' ? '#c084fc' : '#9ca3af'} />
         <path d={`M156,26h10v10h-10zM514,26h10v10h-10zM156,${cardHeight - 10}h10v10h-10zM514,${cardHeight - 10}h10v10h-10z`} fill="#0d0b1f" />
         <rect x={164} y={34} width={352} height={cardHeight - 42} fill="#211d3d" />
 
