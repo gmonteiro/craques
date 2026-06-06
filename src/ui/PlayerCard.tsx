@@ -54,28 +54,11 @@ const TIER_COLORS: Record<TierName, string> = {
 }
 
 const POSICAO_COLORS: Record<string, string> = {
-  GOL: '#d97706',
-  ZAG: '#2563eb',
-  LAT: '#0891b2',
-  MEI: '#16a34a',
-  ATA: '#dc2626',
-}
-
-interface PlayerVisual {
-  numeroCarta?: number
-  numeroCamisa?: number
-  headerBar?: string
-  jersey?: string
-  sleeve?: string
-  collar?: string
-  numberColor?: string
-  hair?: string
-  skin?: string
-  badgeText?: string
+  GOL: '#d97706', ZAG: '#2563eb', LAT: '#0891b2', MEI: '#16a34a', ATA: '#dc2626',
 }
 
 interface Props {
-  player: PlayerCardType & { visual?: PlayerVisual }
+  player: PlayerCardType & { visual?: Record<string, unknown> }
   activeAttributes?: string[]
   onClick?: () => void
   selected?: boolean
@@ -84,17 +67,16 @@ interface Props {
 }
 
 export const PlayerCardComponent = memo(function PlayerCardComponent({ player, activeAttributes, onClick, selected, scale: scaleProp }: Props) {
-  const v = player.visual ?? {}
-  const headerBar = v.headerBar ?? '#3a3460'
-  const jersey = v.jersey ?? '#3a3460'
-  const sleeve = v.sleeve ?? '#211d3d'
-  const collar = v.collar ?? '#FFFFFF'
-  const numberColor = v.numberColor ?? '#FFFFFF'
-  const hair = v.hair ?? '#241a12'
-  const skin = v.skin ?? '#d39a6a'
-  const badgeText = v.badgeText ?? '#0d0b1f'
-  const numeroCarta = v.numeroCarta ?? 0
-  const numeroCamisa = v.numeroCamisa ?? 0
+  const v = (player.visual ?? {}) as Record<string, string | number>
+  const headerBar = (v.headerBar as string) ?? '#3a3460'
+  const jersey = (v.jersey as string) ?? '#3a3460'
+  const sleeve = (v.sleeve as string) ?? '#211d3d'
+  const collar = (v.collar as string) ?? '#FFFFFF'
+  const numberColor = (v.numberColor as string) ?? '#FFFFFF'
+  const hair = (v.hair as string) ?? '#241a12'
+  const skin = (v.skin as string) ?? '#d39a6a'
+  const numeroCamisa = (v.numeroCamisa as number) ?? 0
+  const posColor = POSICAO_COLORS[player.posicao] ?? '#6b7280'
 
   const stats: { label: string; value: string; tier: TierName }[] = []
   if (activeAttributes && player.pontosNormalizados) {
@@ -108,19 +90,13 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
   }
 
   const displayName = player.apelido || player.nome
-  const clubLines = packClubLines(player.clubesCarreira)
-  const posColor = POSICAO_COLORS[player.posicao] ?? '#6b7280'
+  const frameFill = player.raridade === 'lendario' ? '#ffd84d' : player.raridade === 'elite' ? '#c084fc' : '#6b7280'
 
-  // Total score
-  const totalScore = player.pontosNormalizados
-    ? Object.values(player.pontosNormalizados).reduce((s, v2) => s + v2, 0)
-    : 0
-
-  // Dynamic height: stats start at 350, each stat is 37px, then footer
-  const statsHeight = stats.length * 37
-  const footerY = 350 + statsHeight + 8
-  const cardHeight = footerY + 80 + 12 // footer height + bottom padding
-  const viewH = cardHeight - 18 // viewBox starts at y=18
+  // Compact layout: header(34) + name(30) + portrait(176) + stats + padding
+  const statsY = 326
+  const statsHeight = stats.length * 34
+  const cardHeight = statsY + statsHeight + 16
+  const viewH = cardHeight - 18
 
   const scale = scaleProp ?? 0.42
   const w = 388 * scale
@@ -129,8 +105,6 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
   const portrait = portraitPaths(hair, skin, jersey, sleeve, collar)
   const shirtNumberPath = pixelNumberPath(numeroCamisa, 340, 286, 9)
 
-  // Golden glow for legendary/elite cards
-  const isSpecial = player.raridade === 'lendario' || player.raridade === 'elite'
   const glowClass = player.raridade === 'lendario'
     ? 'drop-shadow-[0_0_8px_rgba(255,216,77,0.6)]'
     : player.raridade === 'elite'
@@ -141,120 +115,68 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
     <div
       onClick={onClick}
       className={`cursor-pointer transition-all duration-200 inline-block ${glowClass} ${
-        selected ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900 scale-105' : 'hover:scale-105'
+        selected ? 'ring-2 ring-white ring-offset-1 ring-offset-gray-900 scale-105' : 'hover:scale-105'
       }`}
       style={{ width: w, height: h }}
     >
-      <svg
-        viewBox={`148 18 388 ${viewH}`}
-        width={w}
-        height={h}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Frame — golden for legends, purple for elite, silver for others */}
-        <rect x={156} y={26} width={368} height={cardHeight - 26}
-          fill={player.raridade === 'lendario' ? '#ffd84d' : player.raridade === 'elite' ? '#c084fc' : '#9ca3af'} />
+      <svg viewBox={`148 18 388 ${viewH}`} width={w} height={h} xmlns="http://www.w3.org/2000/svg">
+        {/* Frame */}
+        <rect x={156} y={26} width={368} height={cardHeight - 26} fill={frameFill} />
         <path d={`M156,26h10v10h-10zM514,26h10v10h-10zM156,${cardHeight - 10}h10v10h-10zM514,${cardHeight - 10}h10v10h-10z`} fill="#0d0b1f" />
         <rect x={164} y={34} width={352} height={cardHeight - 42} fill="#211d3d" />
 
-        {/* Header bar */}
-        <rect x={176} y={46} width={328} height={44} fill={headerBar} />
-        {/* Card number badge */}
-        <rect x={184} y={52} width={32} height={32} fill="#ffd84d" rx={2} />
-        <text x={200} y={74} textAnchor="middle" fill={badgeText}
-          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 13 }}>
-          {numeroCarta}
-        </text>
-        {/* CRAQUES DA COPA '26 */}
-        <text x={228} y={76} fill="#fff4d6"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 19, letterSpacing: 2 }}>
-          CRAQUES DA COPA '26
-        </text>
-        {/* Position - BIG on header bar */}
-        <rect x={430} y={49} width={72} height={38} rx={4} fill={posColor} />
-        <text x={466} y={76} textAnchor="middle" fill="#FFFFFF"
-          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 18 }}>
+        {/* Header: position badge + name */}
+        <rect x={176} y={42} width={328} height={34} fill={headerBar} />
+        <rect x={180} y={45} width={52} height={28} rx={3} fill={posColor} />
+        <text x={206} y={66} textAnchor="middle" fill="#FFF"
+          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
           {player.posicao}
         </text>
-
-        {/* Name */}
-        <text x={180} y={118} fill="#ffd84d"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 34, letterSpacing: 1 }}>
-          {displayName.length > 16 ? displayName.slice(0, 14) + '…' : displayName}
+        <text x={240} y={67} fill="#fff"
+          style={{ fontFamily: "'VT323',monospace", fontSize: 24, fontWeight: 'bold' }}>
+          {displayName.length > 14 ? displayName.slice(0, 12) + '..' : displayName}
         </text>
-        {/* Subtitle: nationality · club */}
-        <text x={181} y={140} fill="#b9b2e0"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 18, letterSpacing: 1 }}>
+
+        {/* Subtitle */}
+        <text x={180} y={90} fill="#b9b2e0"
+          style={{ fontFamily: "'VT323',monospace", fontSize: 16 }}>
           {player.nacionalidade} · {player.clube}
         </text>
 
-        {/* Portrait */}
-        <rect x={176} y={156} width={328} height={120} fill="#8fd3f4" />
-        <rect x={176} y={276} width={328} height={56} fill="#3fa95b" />
-        <rect x={176} y={276} width={328} height={6} fill="#2f8a48" />
-        {portrait.map((p, i) => <path key={i} d={p.d} fill={p.fill} />)}
-        <path d={shirtNumberPath} fill={numberColor} />
-        <path d="M176,164h328v2h-328zM176,188h328v2h-328zM176,212h328v2h-328zM176,236h328v2h-328zM176,260h328v2h-328zM176,300h328v2h-328z" fill="#000" opacity={0.07} />
+        {/* Portrait (starts at y=100, smaller) */}
+        <rect x={176} y={100} width={328} height={100} fill="#8fd3f4" />
+        <rect x={176} y={200} width={328} height={56} fill="#3fa95b" />
+        <rect x={176} y={200} width={328} height={5} fill="#2f8a48" />
+        {/* Shift portrait up by adjusting transform */}
+        <g transform="translate(0,-56)">
+          {portrait.map((p, i) => <path key={i} d={p.d} fill={p.fill} />)}
+          <path d={shirtNumberPath} fill={numberColor} />
+        </g>
+        {/* Scanlines */}
+        <path d="M176,108h328v2h-328zM176,128h328v2h-328zM176,148h328v2h-328zM176,168h328v2h-328zM176,188h328v2h-328zM176,220h328v2h-328z" fill="#000" opacity={0.06} />
 
-        {/* Total score badge */}
-        {totalScore > 0 && (
-          <>
-            <rect x={176} y={336} width={328} height={2} fill="#3a3460" />
-            <text x={340} y={350} textAnchor="middle" fill="#ffd84d"
-              style={{ fontFamily: "'VT323',monospace", fontSize: 14, letterSpacing: 2 }}>
-              TOTAL
-            </text>
-            <text x={340} y={350} textAnchor="middle" fill="#ffd84d"
-              style={{ fontFamily: "'VT323',monospace", fontSize: 14, letterSpacing: 2 }}>
-              TOTAL
-            </text>
-          </>
-        )}
-
-        {/* Stats */}
+        {/* Stats — compact rows */}
         {stats.map((stat, i) => {
-          const dy = 350 + i * 37
+          const dy = statsY + i * 34
           return (
             <g key={i}>
-              <rect x={176} y={dy} width={328} height={2} fill="#3a3460" />
-              <rect x={182} y={dy + 12} width={10} height={10} fill="#ffd84d" />
-              <text x={202} y={dy + 23} fill="#e8e4f5"
-                style={{ fontFamily: "'VT323',monospace", fontSize: 20, letterSpacing: 1 }}>
+              <rect x={176} y={dy} width={328} height={1} fill="#3a3460" />
+              <rect x={182} y={dy + 10} width={8} height={8} fill="#ffd84d" />
+              <text x={196} y={dy + 20} fill="#e8e4f5"
+                style={{ fontFamily: "'VT323',monospace", fontSize: 18 }}>
                 {stat.label}
               </text>
-              <text x={498} y={dy + 24} textAnchor="end" fill={TIER_COLORS[stat.tier]}
-                style={{ fontFamily: "'VT323',monospace", fontSize: 25, fontWeight: 'bold' }}>
+              <text x={498} y={dy + 21} textAnchor="end" fill={TIER_COLORS[stat.tier]}
+                style={{ fontFamily: "'VT323',monospace", fontSize: 24, fontWeight: 'bold' }}>
                 {stat.value}
               </text>
             </g>
           )
         })}
 
-        {/* Clubs footer */}
-        <rect x={176} y={footerY} width={328} height={2} fill="#3a3460" />
-        <rect x={176} y={footerY + 8} width={328} height={72} fill="#1a1733" />
-        <text x={340} y={footerY + 28} textAnchor="middle" fill="#fff4d6"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 16, letterSpacing: 2 }}>
-          CLUBES
-        </text>
-        {clubLines.map((line, i) => (
-          <text key={i} x={340} y={footerY + (clubLines.length === 1 ? 52 : 48 + i * 20)} textAnchor="middle" fill="#b9b2e0"
-            style={{ fontFamily: "'VT323',monospace", fontSize: 16, letterSpacing: 1 }}>
-            {line}
-          </text>
-        ))}
-
         {/* Selected glow */}
-        {selected && <rect x={156} y={26} width={368} height={cardHeight - 26} fill="white" opacity={0.08} />}
+        {selected && <rect x={156} y={26} width={368} height={cardHeight - 26} fill="white" opacity={0.06} />}
       </svg>
     </div>
   )
 })
-
-function packClubLines(clubs: string[]): string[] {
-  if (!clubs || clubs.length === 0) return ['']
-  const joined = clubs.join(' · ')
-  if (joined.length <= 30) return [joined]
-  const mid = Math.ceil(clubs.length / 2)
-  return [clubs.slice(0, mid).join(' · '), clubs.slice(mid).join(' · ')]
-}
