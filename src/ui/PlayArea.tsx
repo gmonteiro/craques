@@ -6,41 +6,52 @@ interface Props {
   activeAttributes: string[]
   maxSlots: number
   onRemove: (id: string) => void
+  mobile?: boolean
 }
 
-export function PlayArea({ escalacao, activeAttributes, maxSlots, onRemove }: Props) {
+export function PlayArea({ escalacao, activeAttributes, maxSlots, onRemove, mobile }: Props) {
   const emptySlots = maxSlots - escalacao.length
+  const scale = mobile ? 0.38 : 0.50
+  const emptyW = 388 * scale
+  const emptyH = 500 * scale
 
   return (
     <div>
-      {/* Label */}
       <div className="mb-2 px-2">
-        <span className="text-sm font-bold text-gray-300">
+        <span className="text-xs md:text-sm font-bold text-gray-300">
           Escalacao ({escalacao.length}/{maxSlots})
         </span>
       </div>
 
-      {/* Slots */}
-      <div className="flex gap-2 justify-center flex-wrap">
+      <div className="flex gap-1 md:gap-2 overflow-x-auto snap-x md:flex-wrap md:justify-center md:overflow-visible pb-2">
         {escalacao.map(card => (
-          <PlayerCardComponent
-            key={card.id}
-            player={card}
-            activeAttributes={activeAttributes}
-            onClick={() => onRemove(card.id)}
-            selected
-            scale={0.50}
-          />
+          <div key={card.id} className="snap-start flex-shrink-0 md:flex-shrink">
+            <PlayerCardComponent
+              player={card}
+              activeAttributes={activeAttributes}
+              onClick={() => onRemove(card.id)}
+              selected
+              scale={scale}
+            />
+          </div>
         ))}
-        {Array.from({ length: emptySlots }).map((_, i) => (
+        {!mobile && Array.from({ length: emptySlots }).map((_, i) => (
           <div
             key={`empty-${i}`}
-            style={{ width: 388 * 0.50, height: 500 * 0.50 }}
-            className="rounded border-2 border-dashed border-gray-700 flex items-center justify-center"
+            style={{ width: emptyW, height: emptyH }}
+            className="rounded border-2 border-dashed border-gray-700 flex items-center justify-center flex-shrink-0"
           >
             <span className="text-gray-600 text-xs">Vazio</span>
           </div>
         ))}
+        {mobile && emptySlots > 0 && (
+          <div
+            style={{ width: emptyW * 0.5, height: emptyH }}
+            className="rounded border-2 border-dashed border-gray-700 flex items-center justify-center flex-shrink-0"
+          >
+            <span className="text-gray-600 text-[10px]">+{emptySlots}</span>
+          </div>
+        )}
       </div>
     </div>
   )

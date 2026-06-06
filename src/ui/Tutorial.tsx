@@ -87,12 +87,12 @@ export function Tutorial({ onComplete }: Props) {
         </div>
 
         {/* Content */}
-        <div className="p-8 text-center">
+        <div className="p-4 md:p-8 text-center">
           {/* Icon */}
-          <div className="text-6xl mb-4">{current.icone}</div>
+          <div className="text-4xl md:text-6xl mb-3 md:mb-4">{current.icone}</div>
 
           {/* Title */}
-          <h2 className="text-2xl font-black text-[#ffd84d] mb-4"
+          <h2 className="text-xl md:text-2xl font-black text-[#ffd84d] mb-3 md:mb-4"
             style={{ fontFamily: "'VT323',monospace", letterSpacing: 3 }}>
             {current.titulo}
           </h2>

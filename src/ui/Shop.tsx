@@ -56,7 +56,7 @@ export function Shop({
   // === PACK OPENING OVERLAY ===
   if (packState === 'opening' || packState === 'open') {
     return (
-      <div className="p-4 bg-black/40 min-h-screen flex flex-col items-center justify-center">
+      <div className="p-4 bg-black/40 min-h-screen flex flex-col items-center justify-center overflow-hidden">
         {packState === 'opening' ? (
           // Opening animation
           <div className="animate-bounce">
@@ -73,7 +73,7 @@ export function Shop({
               style={{ fontFamily: "'VT323',monospace", letterSpacing: 2 }}>
               ESCOLHA UMA CARTA!
             </h2>
-            <div className="flex gap-6 justify-center mb-6">
+            <div className="flex gap-3 md:gap-6 justify-center mb-6 overflow-x-auto snap-x pb-2">
               {packType === 'jogador' ? (
                 jogadores.map(p => (
                   <div key={p.id} className="animate-[fadeInUp_0.5s_ease-out] hover:scale-110 transition-transform">
@@ -114,7 +114,7 @@ export function Shop({
   return (
     <div className="p-6 bg-black/40 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 md:mb-8">
         <h2 className="text-3xl font-black text-white"
           style={{ fontFamily: "'VT323',monospace", letterSpacing: 2 }}>
           JANELA DE TRANSFERÊNCIAS
@@ -143,7 +143,7 @@ export function Shop({
       </div>
 
       {/* Packs */}
-      <div className="flex gap-8 justify-center mb-10">
+      <div className="flex flex-col gap-4 items-center md:flex-row md:gap-8 md:justify-center mb-6 md:mb-10">
         {/* Player pack */}
         <div
           onClick={() => abrirPack('jogador')}

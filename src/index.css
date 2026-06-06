@@ -61,6 +61,18 @@ body {
   z-index: 1;
 }
 
+/* Prevent iOS bounce scroll */
+html, body { overscroll-behavior: none; }
+
+/* Smooth momentum scroll on touch */
+.overflow-x-auto { -webkit-overflow-scrolling: touch; }
+
+/* Hide scrollbar on mobile */
+@media (max-width: 768px) {
+  .overflow-x-auto::-webkit-scrollbar { display: none; }
+  .overflow-x-auto { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
 /* Pack opening animation */
 @keyframes fadeInUp {
   from {

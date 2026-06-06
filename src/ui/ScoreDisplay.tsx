@@ -44,17 +44,17 @@ export function ScoreDisplay({ result, meta, tentativas, trocas }: Props) {
   const passou = result ? result.total >= meta : false
 
   return (
-    <div className="text-center py-4">
+    <div className="text-center py-2 md:py-4">
       {/* Meta */}
-      <div className="mb-3">
-        <span className="text-xs text-gray-500">META: </span>
-        <span className="text-lg font-black text-gray-300">{meta.toLocaleString()}</span>
+      <div className="mb-2 md:mb-3">
+        <span className="text-[10px] md:text-xs text-gray-500">META: </span>
+        <span className="text-base md:text-lg font-black text-gray-300">{meta.toLocaleString()}</span>
       </div>
 
       {/* Score animado */}
       {result && (
         <div className={`transition-all duration-300 ${passou ? 'text-green-400' : 'text-red-400'}`}>
-          <div className="text-5xl font-black tabular-nums">
+          <div className="text-3xl md:text-5xl font-black tabular-nums">
             {animatedTotal.toLocaleString()}
           </div>
 

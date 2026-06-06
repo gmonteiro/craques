@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import type { RunState } from '../engine/types'
-import { nomeFase, infoPartida } from '../engine/run'
+import { infoPartida } from '../engine/run'
 import { getAttributeLabel } from '../engine/attributes'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { Hand } from './Hand'
 import { PlayArea } from './PlayArea'
 import { BoostBar } from './BoostBar'
@@ -32,9 +33,10 @@ export function GameScreen({
 }: Props) {
   const [trocaSelecionados, setTrocaSelecionados] = useState<Set<string>>(new Set())
   const [modoTroca, setModoTroca] = useState(false)
+  const [showCombos, setShowCombos] = useState(false)
+  const mobile = useIsMobile()
   const info = infoPartida(run)
 
-  // Reset troca mode when not escalando
   useEffect(() => {
     if (modoTroca && run.status !== 'escalando') {
       setModoTroca(false)
@@ -61,6 +63,9 @@ export function GameScreen({
     }
   }
 
+  const comboProgress = getComboProgress(run.escalacao, run.mao)
+  const combosAtivos = comboProgress.filter(c => c.ativo).length
+
   // === LOJA ===
   if (run.status === 'loja') {
     return (
@@ -80,10 +85,10 @@ export function GameScreen({
     )
   }
 
-  // === RESULTADO (bateu meta) ===
+  // === RESULTADO ===
   if (run.status === 'resultado') {
     return (
-      <div className="p-4 text-center space-y-6 bg-black/40 min-h-screen">
+      <div className="p-2 md:p-4 text-center space-y-4 md:space-y-6 bg-black/40 min-h-screen">
         <Header info={info} run={run} />
         <ScoreDisplay
           result={run.ultimaPontuacao}
@@ -93,7 +98,7 @@ export function GameScreen({
         />
         <button
           onClick={onAvancar}
-          className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg"
+          className="px-8 py-3 min-h-[44px] bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-lg"
         >
           Avancar →
         </button>
@@ -104,18 +109,17 @@ export function GameScreen({
   // === ESCALANDO ===
   return (
     <div className="flex flex-col h-screen bg-black/40">
-      {/* Header */}
       <Header info={info} run={run} />
 
       {/* Twist warning */}
       {run.twist && (
-        <div className="mx-4 mb-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 text-center">
+        <div className="mx-2 md:mx-4 mb-1 md:mb-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 text-center">
           <span className="text-xs text-orange-400 font-bold">CLASSICO: </span>
           <span className="text-xs text-orange-300">{run.twist.descricao}</span>
         </div>
       )}
 
-      {/* Score Display (mostra última tentativa se houver) */}
+      {/* Score Display */}
       <ScoreDisplay
         result={run.ultimaPontuacao}
         meta={run.meta}
@@ -126,27 +130,39 @@ export function GameScreen({
       {/* Boosts */}
       <BoostBar boosts={run.boosts} />
 
-      {/* Área de escalação + Painel de combos */}
-      <div className="flex-1 overflow-auto p-4 flex gap-4">
+      {/* Área de escalação + Combos */}
+      <div className="flex-1 overflow-auto p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4">
         <div className="flex-1">
           <PlayArea
             escalacao={run.escalacao}
             activeAttributes={run.era}
             maxSlots={config.partida.maxEscalacao}
             onRemove={onDesescalar}
+            mobile={mobile}
           />
         </div>
-        <div className="w-64 flex-shrink-0">
-          <ComboGuide combos={getComboProgress(run.escalacao, run.mao)} />
+
+        {/* Combos: toggle no mobile, sempre visível no desktop */}
+        <div className="md:w-64 md:flex-shrink-0">
+          <button
+            onClick={() => setShowCombos(!showCombos)}
+            className="md:hidden w-full py-2 bg-gray-800/80 rounded-lg text-sm text-gray-300 flex items-center justify-center gap-2 min-h-[44px]"
+          >
+            <span>Combos ({combosAtivos}/{comboProgress.length})</span>
+            <span className={`transition-transform ${showCombos ? 'rotate-180' : ''}`}>▼</span>
+          </button>
+          <div className={`${showCombos ? '' : 'hidden'} md:block mt-1 md:mt-0`}>
+            <ComboGuide combos={comboProgress} />
+          </div>
         </div>
       </div>
 
       {/* Ações */}
-      <div className="flex justify-center gap-3 py-3">
+      <div className="flex justify-center gap-2 md:gap-3 py-2 md:py-3">
         <button
           onClick={onJogar}
           disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
-          className="px-6 py-2 bg-green-600 hover:bg-green-500 disabled:opacity-30 rounded-lg font-bold transition"
+          className="px-4 md:px-6 py-2 min-h-[44px] bg-green-600 hover:bg-green-500 disabled:opacity-30 rounded-lg font-bold transition"
         >
           Jogar!
         </button>
@@ -155,13 +171,13 @@ export function GameScreen({
             <button
               onClick={handleTrocar}
               disabled={trocaSelecionados.size === 0}
-              className="px-4 py-2 bg-orange-600 hover:bg-orange-500 disabled:opacity-30 rounded-lg font-bold text-sm transition"
+              className="px-3 md:px-4 py-2 min-h-[44px] bg-orange-600 hover:bg-orange-500 disabled:opacity-30 rounded-lg font-bold text-sm transition"
             >
               Trocar ({trocaSelecionados.size})
             </button>
             <button
               onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition"
+              className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition"
             >
               Cancelar
             </button>
@@ -170,7 +186,7 @@ export function GameScreen({
           <button
             onClick={() => setModoTroca(true)}
             disabled={run.trocasRestantes <= 0}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg text-sm transition"
+            className="px-3 md:px-4 py-2 min-h-[44px] bg-gray-700 hover:bg-gray-600 disabled:opacity-30 rounded-lg text-sm transition"
           >
             Trocar ({run.trocasRestantes})
           </button>
@@ -178,43 +194,40 @@ export function GameScreen({
       </div>
 
       {/* Mão */}
-      <div className="border-t border-gray-800 bg-gray-900/50 p-3">
+      <div className="border-t border-gray-800 bg-gray-900/50 p-2 md:p-3">
         <span className="text-xs text-gray-500 mb-1 block">
           Mao ({run.mao.length} cartas)
-          {modoTroca && <span className="text-orange-400 ml-2">Selecione cartas para trocar</span>}
+          {modoTroca && <span className="text-orange-400 ml-2">Selecione para trocar</span>}
         </span>
         <Hand
           cards={run.mao}
           activeAttributes={run.era}
           onSelect={handleCardClick}
           selectedIds={modoTroca ? trocaSelecionados : undefined}
+          mobile={mobile}
         />
       </div>
     </div>
   )
 }
 
-// Header component
 function Header({ info, run }: { info: ReturnType<typeof infoPartida>; run: RunState }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/80">
+    <div className="flex flex-wrap items-center justify-between px-2 md:px-4 py-2 md:py-3 border-b border-gray-800 bg-gray-900/80 gap-1">
       <div>
-        <span className="text-sm font-bold text-white">{info.fase}</span>
-        <span className="text-xs text-gray-500 ml-2">
-          Partida {info.partida}/{info.totalPartidas}
+        <span className="text-xs md:text-sm font-bold text-white">{info.fase}</span>
+        <span className="text-[10px] md:text-xs text-gray-500 ml-1 md:ml-2">
+          {info.partida}/{info.totalPartidas}
           {info.isClassico && <span className="text-orange-400 ml-1">CLASSICO</span>}
         </span>
       </div>
-      <div className="flex items-center gap-3">
-        <div className="text-xs text-gray-400">
+      <div className="flex items-center gap-2 md:gap-3">
+        <span className="text-[10px] md:text-xs text-gray-400">
           vs <span className="text-white font-bold">{info.adversario}</span>
-        </div>
-        <div className="text-xs">
-          <span className="text-gray-500">$</span>
-          <span className="text-yellow-400 font-bold">{run.orcamento}</span>
-        </div>
+        </span>
+        <span className="text-[10px] md:text-xs text-yellow-400 font-bold">${run.orcamento}</span>
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-1 w-full md:w-auto justify-center md:justify-end mt-1 md:mt-0">
         {run.era.map(attr => (
           <span key={attr} className="text-[10px] bg-white/5 px-2 py-0.5 rounded-full text-gray-400">
             {getAttributeLabel(attr)}
