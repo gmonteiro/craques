@@ -100,6 +100,8 @@ export function GameScreen({
             meta={run.meta}
             tentativas={run.tentativasRestantes}
             trocas={run.trocasRestantes}
+            escalacao={run.escalacao}
+            adversario={info.adversario}
           />
           <button onClick={onAvancar} className="btn-arcade btn-advance">
             Avancar →
@@ -159,6 +161,8 @@ export function GameScreen({
             meta={run.meta}
             tentativas={run.tentativasRestantes}
             trocas={run.trocasRestantes}
+            escalacao={run.escalacao}
+            adversario={info.adversario}
           />
         )}
 
