@@ -52,7 +52,7 @@ export function iniciarRun(seed?: number): RunState {
     trocasRestantes: partidaCfg.trocas,
     status: 'escalando',
     meta: metaInfo.valor,
-    twist: metaInfo.isClassico ? sortearTwist(createRng(s + 2)) : null,
+    twist: metaInfo.isClassico ? sortearTwist(createRng(s + 2), era) : null,
     ultimaPontuacao: null,
     lojaJogadores: [],
     lojaBoosts: [],
@@ -253,7 +253,7 @@ export function avancar(state: RunState): RunState {
       orcamento: novoOrcamento,
       partidaAtual: proximaPartida,
       meta: metaInfo.valor,
-      twist: metaInfo.isClassico ? sortearTwist(createRng(state.seed + (state.fase + 1) * 200 + proximaPartida)) : null,
+      twist: metaInfo.isClassico ? sortearTwist(createRng(state.seed + (state.fase + 1) * 200 + proximaPartida), state.era) : null,
     })
   }
 
@@ -281,7 +281,14 @@ function resetarPartida(state: RunState): RunState {
   const rng = createRng(state.seed + state.fase * 1000 + state.partidaAtual)
   shuffle(rng, todosJogadores)
 
-  const mao = todosJogadores.splice(0, Math.min(partidaCfg.tamanhoMao, todosJogadores.length))
+  // Mão curta: 5 cartas em vez de 8
+  const tamanhoMao = state.twist?.id === 'mao_curta' ? 5 : partidaCfg.tamanhoMao
+  const mao = todosJogadores.splice(0, Math.min(tamanhoMao, todosJogadores.length))
+
+  // Meta blindada: +50%
+  const meta = state.twist?.id === 'meta_blindada'
+    ? Math.round(state.meta * 1.5)
+    : state.meta
 
   return {
     ...state,
@@ -294,6 +301,7 @@ function resetarPartida(state: RunState): RunState {
     status: 'escalando',
     ultimaPontuacao: null,
     pontuacoesPartida: [],
+    meta,
   }
 }
 

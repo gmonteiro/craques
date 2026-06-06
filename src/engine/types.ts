@@ -79,6 +79,7 @@ export interface Twist {
   id: string
   nome: string
   descricao: string
+  dados?: Record<string, string> // dados dinâmicos (ex: atributo zerado)
 }
 
 export type RunStatus = 'escalando' | 'resultado' | 'loja' | 'vitoria' | 'derrota'
