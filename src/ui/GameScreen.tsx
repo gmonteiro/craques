@@ -11,6 +11,7 @@ import { ComboGuide } from './ComboGuide'
 import { MatchInfo } from './MatchInfo'
 import { DeckViewer } from './DeckViewer'
 import { getComboProgress } from '../engine/combos'
+import { calcularPontuacao } from '../engine/scoring'
 import config from '../../data/config.json'
 
 interface Props {
@@ -26,16 +27,23 @@ interface Props {
   onReroll: () => void
   onRefresh: () => void
   onSairLoja: () => void
+  onDesistir: () => void
 }
 
 export function GameScreen({
   run, onEscalar, onDesescalar, onJogar, onTrocar,
   onAvancar, onComprarJogador, onComprarBoost, onVenderJogador,
-  onReroll, onRefresh, onSairLoja,
+  onReroll, onRefresh, onSairLoja, onDesistir,
 }: Props) {
   const [trocaSelecionados, setTrocaSelecionados] = useState<Set<string>>(new Set())
   const [modoTroca, setModoTroca] = useState(false)
-  const [showCombos, setShowCombos] = useState(false)
+  const [showCombos, setShowCombos] = useState(false) // colapsado por padrão
+  const [showDesistir, setShowDesistir] = useState(false)
+
+  // Preview score em tempo real (como Balatro)
+  const previewScore = run.escalacao.length > 0
+    ? calcularPontuacao(run.escalacao, run.boosts, run.era, run.meta, run.mao.length)
+    : null
   const mobile = useIsMobile()
   const info = infoPartida(run)
 
@@ -121,8 +129,43 @@ export function GameScreen({
       {/* === LEFT PANEL (Balatro-style stacked info) === */}
       <div className="hidden md:flex flex-col gap-2 p-3 w-52 flex-shrink-0 overflow-y-auto">
         <MatchInfo run={run} />
+
+        {/* Live score preview */}
+        {previewScore && (
+          <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-3 text-center">
+            <div className="text-[10px] text-gray-500 uppercase tracking-wider">Preview</div>
+            <div className="flex items-center justify-center gap-1 mt-1">
+              <span className="text-blue-400 font-bold text-lg" style={{ fontFamily: "'VT323',monospace" }}>
+                {previewScore.base}
+              </span>
+              <span className="text-gray-500 text-xs">×</span>
+              <span className="text-red-400 font-bold text-lg" style={{ fontFamily: "'VT323',monospace" }}>
+                {previewScore.mult.toFixed(1)}
+              </span>
+            </div>
+            <div className={`text-xl font-black ${previewScore.total >= run.meta ? 'text-green-400' : 'text-yellow-400'}`}
+              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
+              {previewScore.total.toLocaleString()}
+            </div>
+            <div className="text-[10px] text-gray-500 mt-1">
+              Meta: {run.meta.toLocaleString()}
+            </div>
+          </div>
+        )}
+
         {run.boosts.length > 0 && <BoostBar boosts={run.boosts} />}
-        <ComboGuide combos={comboProgress} />
+
+        {/* Combos — colapsável */}
+        <div className="bg-gray-900/60 border border-gray-800 rounded-lg overflow-hidden">
+          <button onClick={() => setShowCombos(!showCombos)}
+            className="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-white/5 transition">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              Combos ({combosAtivos}/{comboProgress.length})
+            </span>
+            <span className={`text-gray-500 text-xs transition-transform ${showCombos ? 'rotate-180' : ''}`}>▼</span>
+          </button>
+          {showCombos && <div className="px-2 pb-2"><ComboGuide combos={comboProgress} /></div>}
+        </div>
         <DeckViewer
           mao={run.mao}
           baralho={run.baralho}
@@ -130,7 +173,38 @@ export function GameScreen({
           descarte={run.descarte}
           activeAttributes={run.era}
         />
+        {/* Desistir */}
+        <button
+          onClick={() => setShowDesistir(true)}
+          className="text-[10px] text-gray-600 hover:text-red-400 transition mt-1 text-center"
+          style={{ fontFamily: "'VT323',monospace" }}
+        >
+          Encerrar Run
+        </button>
       </div>
+
+      {/* Confirm desistir modal */}
+      {showDesistir && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+          <div className="bg-gray-900 border-2 border-red-500/50 rounded-lg p-6 text-center max-w-sm">
+            <div className="text-red-400 font-black mb-3"
+              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
+              ENCERRAR RUN?
+            </div>
+            <p className="text-gray-400 text-sm mb-4" style={{ fontFamily: "'VT323',monospace", fontSize: 18 }}>
+              Voce vai perder todo o progresso desta run.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button onClick={onDesistir} className="btn-arcade btn-cancel" style={{ fontSize: 10 }}>
+                Sim, encerrar
+              </button>
+              <button onClick={() => setShowDesistir(false)} className="btn-arcade btn-play" style={{ fontSize: 10 }}>
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* === CENTER (main game area) === */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

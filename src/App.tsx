@@ -85,6 +85,7 @@ function App() {
       onReroll={reroll}
       onRefresh={refresh}
       onSairLoja={sairLoja}
+      onDesistir={handleVoltarTitulo}
     />
   )
 }
