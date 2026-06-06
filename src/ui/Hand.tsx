@@ -26,7 +26,7 @@ export function Hand({ cards, activeAttributes, onSelect, selectedIds }: Props) 
             activeAttributes={activeAttributes}
             onClick={() => onSelect(card.id)}
             selected={selectedIds?.has(card.id)}
-            scale={0.38}
+            scale={0.45}
           />
         </div>
       ))}

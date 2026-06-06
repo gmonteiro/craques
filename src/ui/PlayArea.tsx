@@ -29,13 +29,13 @@ export function PlayArea({ escalacao, activeAttributes, maxSlots, onRemove }: Pr
             activeAttributes={activeAttributes}
             onClick={() => onRemove(card.id)}
             selected
-            scale={0.42}
+            scale={0.50}
           />
         ))}
         {Array.from({ length: emptySlots }).map((_, i) => (
           <div
             key={`empty-${i}`}
-            style={{ width: 388 * 0.42, height: 686 * 0.42 }}
+            style={{ width: 388 * 0.50, height: 500 * 0.50 }}
             className="rounded border-2 border-dashed border-gray-700 flex items-center justify-center"
           >
             <span className="text-gray-600 text-xs">Vazio</span>
