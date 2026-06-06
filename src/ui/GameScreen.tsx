@@ -393,20 +393,21 @@ export function GameScreen({
         />
       </div>
 
-      {/* Action bar — fixed height like handoff */}
+      {/* Action bar */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: mobile ? 10 : 18,
-        height: mobile ? 56 : 76,
+        gap: mobile ? 8 : 14,
+        height: mobile ? 48 : 56,
         flexShrink: 0,
+        padding: '0 12px',
       }}>
         <button
           onClick={onJogar}
           disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
           className="btn-arcade btn-play"
-          style={{ fontSize: mobile ? 24 : 38, padding: mobile ? '10px 24px 14px' : '16px 34px 20px' }}
+          style={{ fontSize: mobile ? 18 : 24, padding: mobile ? '8px 20px 10px' : '10px 28px 13px' }}
         >
           JOGAR!
         </button>
@@ -416,14 +417,14 @@ export function GameScreen({
               onClick={handleTrocar}
               disabled={trocaSelecionados.size === 0}
               className="btn-arcade btn-swap"
-              style={{ fontSize: mobile ? 20 : 30, padding: mobile ? '8px 18px 12px' : '11px 22px 14px' }}
+              style={{ fontSize: mobile ? 16 : 22, padding: mobile ? '7px 16px 9px' : '9px 22px 12px' }}
             >
               Trocar ({trocaSelecionados.size})
             </button>
             <button
               onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
               className="btn-arcade btn-cancel"
-              style={{ fontSize: mobile ? 20 : 30, padding: mobile ? '8px 18px 12px' : '11px 22px 14px' }}
+              style={{ fontSize: mobile ? 16 : 22, padding: mobile ? '7px 16px 9px' : '9px 22px 12px' }}
             >
               Cancelar
             </button>
@@ -433,7 +434,7 @@ export function GameScreen({
             onClick={() => setModoTroca(true)}
             disabled={run.trocasRestantes <= 0}
             className="btn-arcade btn-swap"
-            style={{ fontSize: mobile ? 28 : 38 }}
+            style={{ fontSize: mobile ? 16 : 22, padding: mobile ? '7px 16px 9px' : '9px 22px 12px' }}
           >
             TROCAR ({run.trocasRestantes})
           </button>
