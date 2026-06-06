@@ -9,6 +9,7 @@ import { ScoreDisplay } from './ScoreDisplay'
 import { Shop } from './Shop'
 import { ComboGuide } from './ComboGuide'
 import { MatchInfo } from './MatchInfo'
+import { DeckViewer } from './DeckViewer'
 import { getComboProgress } from '../engine/combos'
 import config from '../../data/config.json'
 
@@ -120,6 +121,13 @@ export function GameScreen({
         <MatchInfo run={run} />
         {run.boosts.length > 0 && <BoostBar boosts={run.boosts} />}
         <ComboGuide combos={comboProgress} />
+        <DeckViewer
+          mao={run.mao}
+          baralho={run.baralho}
+          escalacao={run.escalacao}
+          descarte={run.descarte}
+          activeAttributes={run.era}
+        />
       </div>
 
       {/* === CENTER (main game area) === */}
@@ -213,21 +221,28 @@ export function GameScreen({
           )}
         </div>
 
-        {/* Mobile: combos toggle */}
-        <div className="md:hidden px-2 pb-1">
+        {/* Mobile: combos + deck toggle */}
+        <div className="md:hidden px-2 pb-1 flex gap-2">
           <button
             onClick={() => setShowCombos(!showCombos)}
-            className="w-full py-1.5 bg-gray-800/80 rounded-lg text-xs text-gray-300 flex items-center justify-center gap-1 min-h-[36px]"
+            className="flex-1 py-1.5 bg-gray-800/80 rounded-lg text-xs text-gray-300 flex items-center justify-center gap-1 min-h-[36px]"
           >
-            <span>Combos ({combosAtivos}/{comboProgress.length})</span>
+            <span>Combos ({combosAtivos})</span>
             <span className={`transition-transform ${showCombos ? 'rotate-180' : ''}`}>▼</span>
           </button>
-          {showCombos && (
-            <div className="mt-1">
-              <ComboGuide combos={comboProgress} />
-            </div>
-          )}
         </div>
+        {showCombos && (
+          <div className="md:hidden px-2 pb-1 space-y-1">
+            <ComboGuide combos={comboProgress} />
+            <DeckViewer
+              mao={run.mao}
+              baralho={run.baralho}
+              escalacao={run.escalacao}
+              descarte={run.descarte}
+              activeAttributes={run.era}
+            />
+          </div>
+        )}
 
         {/* Mão (embaixo, como no Balatro) */}
         <div className="border-t border-gray-800 bg-gray-900/50 p-2 md:p-3">
