@@ -20,7 +20,7 @@ interface Props {
   onTrocar: (ids: string[]) => void
   onAvancar: () => void
   onComprarJogador: (id: string) => void
-  onComprarBoost: (id: string) => void
+  onComprarBoost: (id: string, targetPlayerId?: string) => void
   onVenderJogador: (id: string) => void
   onReroll: () => void
   onSairLoja: () => void

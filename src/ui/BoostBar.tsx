@@ -6,6 +6,7 @@ const TIPO_COLOR: Record<string, string> = {
   multiplicativo: '#dc2626',
   condicional: '#3b82f6',
   evento: '#ffd84d',
+  targeted: '#e879f9',
 }
 
 const TIPO_BG: Record<string, string> = {
@@ -13,6 +14,7 @@ const TIPO_BG: Record<string, string> = {
   multiplicativo: 'bg-red-900/50 border-red-700/50',
   condicional: 'bg-blue-900/50 border-blue-700/50',
   evento: 'bg-yellow-900/50 border-yellow-700/50',
+  targeted: 'bg-fuchsia-900/50 border-fuchsia-700/50',
 }
 
 const TIPO_LABEL: Record<string, string> = {
@@ -20,6 +22,7 @@ const TIPO_LABEL: Record<string, string> = {
   multiplicativo: '×M',
   condicional: '?',
   evento: '!',
+  targeted: '⊕',
 }
 
 interface Props {

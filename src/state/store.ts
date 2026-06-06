@@ -28,7 +28,7 @@ interface GameStore {
   trocarJogadores: (ids: string[]) => void
   avancarPartida: () => void
   comprarJogadorLoja: (id: string) => void
-  comprarBoostLoja: (id: string) => void
+  comprarBoostLoja: (id: string, targetPlayerId?: string) => void
   venderJogadorBaralho: (id: string) => void
   reroll: () => void
   sairLoja: () => void
@@ -93,9 +93,19 @@ export const useGameStore = create<GameStore>()(
         return { run: comprarJogador(s.run, id) }
       }),
 
-      comprarBoostLoja: (id) => set((s) => {
+      comprarBoostLoja: (id, targetPlayerId) => set((s) => {
         if (!s.run) return s
-        return { run: comprarBoost(s.run, id) }
+        const novoRun = comprarBoost(s.run, id)
+        // Se boost targeted, setar o targetPlayerId
+        if (targetPlayerId && novoRun !== s.run) {
+          const boostIdx = novoRun.boosts.findIndex(b => b.id === id && !b.targetPlayerId)
+          if (boostIdx !== -1) {
+            const novosBoosts = [...novoRun.boosts]
+            novosBoosts[boostIdx] = { ...novosBoosts[boostIdx], targetPlayerId }
+            return { run: { ...novoRun, boosts: novosBoosts } }
+          }
+        }
+        return { run: novoRun }
       }),
 
       venderJogadorBaralho: (id) => set((s) => {

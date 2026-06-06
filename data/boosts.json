@@ -56,7 +56,7 @@
   {
     "id": "geracao_ouro",
     "nome": "Geração de Ouro",
-    "descricao": "+1 MULT por jogador da mesma década de nascimento",
+    "descricao": "+1 MULT por jogador da mesma década",
     "tipo": "condicional",
     "raridade": "incomum",
     "preco": 5,
@@ -137,7 +137,7 @@
   {
     "id": "elite_squad",
     "nome": "Elite Squad",
-    "descricao": "+0.5 MULT por jogador com todos os atributos ativos em Elite ou acima",
+    "descricao": "+0.5 MULT por jogador com todos atributos em Elite+",
     "tipo": "condicional",
     "raridade": "raro",
     "preco": 6,
@@ -151,5 +151,95 @@
     "raridade": "comum",
     "preco": 3,
     "efeito": { "tipo": "base_per_unique_position", "valor": 25 }
+  },
+  {
+    "id": "la_furia",
+    "nome": "La Furia",
+    "descricao": "+20 BASE por espanhol escalado",
+    "tipo": "condicional",
+    "raridade": "comum",
+    "preco": 3,
+    "efeito": { "tipo": "base_per_nacionalidade", "nacionalidade": "ESPANHA", "valor": 20 }
+  },
+  {
+    "id": "les_bleus",
+    "nome": "Les Bleus",
+    "descricao": "+20 BASE por francês escalado",
+    "tipo": "condicional",
+    "raridade": "comum",
+    "preco": 3,
+    "efeito": { "tipo": "base_per_nacionalidade", "nacionalidade": "FRANCA", "valor": 20 }
+  },
+  {
+    "id": "die_mannschaft",
+    "nome": "Die Mannschaft",
+    "descricao": "+20 BASE por alemão escalado",
+    "tipo": "condicional",
+    "raridade": "comum",
+    "preco": 3,
+    "efeito": { "tipo": "base_per_nacionalidade", "nacionalidade": "ALEMANHA", "valor": 20 }
+  },
+  {
+    "id": "pressing",
+    "nome": "Pressing",
+    "descricao": "×1.5 MULT se 2+ meias na escalação",
+    "tipo": "multiplicativo",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "mult_multiply", "valor": 1.5, "condicao": "mesmaPosicao", "posicao": "MEI", "min": 2 }
+  },
+  {
+    "id": "catimba",
+    "nome": "Catimba",
+    "descricao": "+1 troca extra por partida",
+    "tipo": "evento",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "extra_trocas", "valor": 1 }
+  },
+  {
+    "id": "olheiro",
+    "nome": "Olheiro",
+    "descricao": "+50 BASE por jogador com valor de mercado acima de 100M",
+    "tipo": "aditivo",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "base_per_high_market", "valor": 50, "threshold": 100000000 }
+  },
+  {
+    "id": "treino_especial",
+    "nome": "Treino Especial",
+    "descricao": "Sobe TODOS os atributos de 1 jogador em 1 tier",
+    "tipo": "targeted",
+    "raridade": "raro",
+    "preco": 7,
+    "efeito": { "tipo": "tier_up_all", "valor": 1 }
+  },
+  {
+    "id": "concentracao",
+    "nome": "Concentração",
+    "descricao": "Dobra os pontos de 1 jogador escolhido",
+    "tipo": "targeted",
+    "raridade": "lendario",
+    "preco": 10,
+    "efeito": { "tipo": "double_player", "valor": 2 }
+  },
+  {
+    "id": "braco_de_ferro",
+    "nome": "Braço de Ferro",
+    "descricao": "+75 BASE fixo em 1 jogador escolhido",
+    "tipo": "targeted",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "flat_bonus_player", "valor": 75 }
+  },
+  {
+    "id": "inspiracao",
+    "nome": "Inspiração",
+    "descricao": "1 jogador escolhido vira ×2 MULT sozinho",
+    "tipo": "targeted",
+    "raridade": "lendario",
+    "preco": 10,
+    "efeito": { "tipo": "player_mult", "valor": 2 }
   }
 ]

@@ -47,7 +47,8 @@ export interface BoostCard {
   id: string
   nome: string
   descricao: string
-  tipo: 'aditivo' | 'multiplicativo' | 'condicional' | 'evento'
+  tipo: 'aditivo' | 'multiplicativo' | 'condicional' | 'evento' | 'targeted'
+  targetPlayerId?: string // ID do jogador alvo (para boosts targeted)
   raridade: string
   preco: number
   efeito: Record<string, unknown>

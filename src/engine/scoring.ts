@@ -59,9 +59,42 @@ function aplicarBoostsBase(boosts: BoostCard[], escalacao: PlayerCard[], atribut
         break
       }
       case 'base_per_unique_position': {
-        // +valor por posição diferente na escalação
         const posicoes = new Set(escalacao.map(p => p.posicao))
         extra += posicoes.size * (ef.valor as number)
+        break
+      }
+      case 'base_per_high_market': {
+        const threshold = ef.threshold as number
+        for (const p of escalacao) {
+          if ((p.atributos.valorMercado ?? 0) >= threshold) {
+            extra += ef.valor as number
+          }
+        }
+        break
+      }
+      // === TARGETED boosts ===
+      case 'flat_bonus_player': {
+        // +valor fixo ao jogador alvo
+        if (boost.targetPlayerId && escalacao.some(p => p.id === boost.targetPlayerId)) {
+          extra += ef.valor as number
+        }
+        break
+      }
+      case 'tier_up_all': {
+        // Sobe tiers do jogador alvo (simulado como +25 por atributo)
+        if (boost.targetPlayerId && escalacao.some(p => p.id === boost.targetPlayerId)) {
+          extra += atributosAtivos.length * 25
+        }
+        break
+      }
+      case 'double_player': {
+        // Dobra pontos do jogador alvo
+        if (boost.targetPlayerId) {
+          const target = escalacao.find(p => p.id === boost.targetPlayerId)
+          if (target) {
+            extra += playerScore(target) // adiciona o score dele de novo = dobra
+          }
+        }
         break
       }
     }
@@ -128,13 +161,19 @@ function aplicarBoostsMult(boosts: BoostCard[], escalacao: PlayerCard[], atribut
         break
       }
       case 'mult_per_all_elite': {
-        // +valor por jogador com TODOS os atributos ativos em Elite ou acima
         for (const p of escalacao) {
           const allElite = atributosAtivos.every(attr => {
             const tier = p.tiersPorAtributo?.[attr]
             return tier === 'lendario' || tier === 'elite'
           })
           if (allElite) mult += ef.valor as number
+        }
+        break
+      }
+      case 'player_mult': {
+        // Jogador alvo vira multiplicador
+        if (boost.targetPlayerId && escalacao.some(p => p.id === boost.targetPlayerId)) {
+          mult *= ef.valor as number
         }
         break
       }

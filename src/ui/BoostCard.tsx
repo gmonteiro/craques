@@ -37,6 +37,26 @@ const BOOST_ICONS: Record<string, { path: string; color: string }> = {
   elite_squad:    { path: 'M7,2h2v1h-2zM6,3h1v1h-1zM9,3h1v1h-1zM5,4h1v1h-1zM10,4h1v1h-1zM4,5h1v1h-1zM11,5h1v1h-1zM5,6h1v1h-1zM10,6h1v1h-1zM6,7h1v1h-1zM9,7h1v1h-1zM7,8h2v1h-2z', color: '#C084FC' },
   // Arrows (versatility)
   versatilidade:  { path: 'M7,2h2v2h-2zM5,4h6v1h-6zM7,5h2v2h-2zM3,7h2v1h-2zM11,7h2v1h-2zM7,7h2v2h-2zM5,9h6v1h-6zM7,10h2v1h-2z', color: '#34D399' },
+  // Spanish flag
+  la_furia:       { path: 'M3,3h10v2h-10zM3,5h10v3h-10zM3,8h10v2h-10z', color: '#AA151B' },
+  // French flag
+  les_bleus:      { path: 'M3,3h3v7h-3zM7,3h3v7h-3zM11,3h3v7h-3z', color: '#002395' },
+  // German flag
+  die_mannschaft: { path: 'M3,3h10v2h-10zM3,5h10v2h-10zM3,7h10v2h-10z', color: '#FFCC00' },
+  // Midfield press
+  pressing:       { path: 'M4,4h2v2h-2zM10,4h2v2h-2zM7,6h2v2h-2zM4,8h2v2h-2zM10,8h2v2h-2z', color: '#16A34A' },
+  // Swap card
+  catimba:        { path: 'M4,3h3v1h-3zM4,4h1v3h-1zM7,6h2v1h-2zM9,4h1v3h-1zM9,3h3v1h-3zM7,8h2v1h-2zM4,9h8v1h-8z', color: '#F97316' },
+  // Magnifying glass
+  olheiro:        { path: 'M6,2h4v1h-4zM5,3h1v1h-1zM10,3h1v1h-1zM4,4h1v3h-1zM11,4h1v3h-1zM5,7h1v1h-1zM10,7h1v1h-1zM6,8h4v1h-4zM10,8h1v1h-1zM11,9h1v1h-1zM12,10h1v1h-1z', color: '#60A5FA' },
+  // Arrow up (tier up)
+  treino_especial:{ path: 'M7,2h2v1h-2zM6,3h4v1h-4zM5,4h6v1h-6zM7,5h2v6h-2zM5,11h6v1h-6z', color: '#4ADE80' },
+  // Double arrow
+  concentracao:   { path: 'M7,2h2v1h-2zM6,3h4v1h-4zM5,4h6v1h-6zM7,5h2v2h-2zM6,7h4v1h-4zM5,8h6v1h-6zM7,9h2v2h-2z', color: '#FFD700' },
+  // Fist
+  braco_de_ferro: { path: 'M5,3h6v1h-6zM4,4h1v4h-1zM11,4h1v4h-1zM5,8h6v1h-6zM6,5h4v2h-4z', color: '#F97316' },
+  // Lightning bolt
+  inspiracao:     { path: 'M8,1h3v1h-3zM7,2h2v2h-2zM5,4h4v1h-4zM6,5h2v2h-2zM4,7h4v1h-4zM5,8h2v2h-2zM3,10h3v1h-3z', color: '#FBBF24' },
 }
 
 const TIPO_BG: Record<string, string> = {
@@ -44,6 +64,7 @@ const TIPO_BG: Record<string, string> = {
   multiplicativo: '#3a1a1a',
   condicional: '#1a1a3a',
   evento: '#3a3a1a',
+  targeted: '#3a1a2a',
 }
 
 const TIPO_BORDER: Record<string, string> = {
@@ -51,6 +72,7 @@ const TIPO_BORDER: Record<string, string> = {
   multiplicativo: '#dc2626',
   condicional: '#3b82f6',
   evento: '#ffd84d',
+  targeted: '#e879f9',
 }
 
 const TIPO_LABEL: Record<string, string> = {
@@ -58,6 +80,7 @@ const TIPO_LABEL: Record<string, string> = {
   multiplicativo: 'MULT',
   condicional: 'COND',
   evento: 'EVENTO',
+  targeted: 'ALVO',
 }
 
 interface Props {
