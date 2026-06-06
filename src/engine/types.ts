@@ -10,6 +10,18 @@ export interface PlayerCard {
   raridade: string
   atributos: Record<string, number>
   clubesCarreira: string[]
+  visual?: {
+    numeroCarta?: number
+    numeroCamisa?: number
+    headerBar?: string
+    jersey?: string
+    sleeve?: string
+    collar?: string
+    numberColor?: string
+    hair?: string
+    skin?: string
+    badgeText?: string
+  }
   // Preenchido na normalização
   pontosNormalizados?: Record<string, number>
   tiersPorAtributo?: Record<string, TierName>

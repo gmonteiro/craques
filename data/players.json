@@ -13,7 +13,19 @@
       "velocidade": 81, "finalizacao": 90, "drible": 94, "passe": 91, "fisico": 65,
       "titulos": 45, "assistencias": 380, "altura": 170, "idade": 38
     },
-    "clubesCarreira": ["BARCELONA", "PSG", "INTER MIAMI"]
+    "clubesCarreira": ["BARCELONA", "PSG", "INTER MIAMI"],
+    "visual": {
+      "numeroCarta": 1,
+      "numeroCamisa": 10,
+      "headerBar": "#75AADB",
+      "jersey": "#75AADB",
+      "sleeve": "#FFFFFF",
+      "collar": "#FFFFFF",
+      "numberColor": "#0d0b1f",
+      "hair": "#5b3f24",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "cr7",
@@ -29,7 +41,19 @@
       "velocidade": 84, "finalizacao": 92, "drible": 85, "passe": 80, "fisico": 88,
       "titulos": 35, "assistencias": 290, "altura": 187, "idade": 41
     },
-    "clubesCarreira": ["SPORTING", "MAN UTD", "REAL MADRID", "JUVENTUS", "AL-NASSR"]
+    "clubesCarreira": ["SPORTING", "MAN UTD", "REAL MADRID", "JUVENTUS", "AL-NASSR"],
+    "visual": {
+      "numeroCarta": 2,
+      "numeroCamisa": 7,
+      "headerBar": "#E42518",
+      "jersey": "#E42518",
+      "sleeve": "#006600",
+      "collar": "#006600",
+      "numberColor": "#FFD700",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "mbappe",
@@ -45,7 +69,19 @@
       "velocidade": 97, "finalizacao": 93, "drible": 92, "passe": 80, "fisico": 78,
       "titulos": 18, "assistencias": 120, "altura": 178, "idade": 27
     },
-    "clubesCarreira": ["MONACO", "PSG", "REAL MADRID"]
+    "clubesCarreira": ["MONACO", "PSG", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 3,
+      "numeroCamisa": 10,
+      "headerBar": "#002395",
+      "jersey": "#002395",
+      "sleeve": "#002395",
+      "collar": "#FFFFFF",
+      "numberColor": "#FFFFFF",
+      "hair": "#241a12",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "haaland",
@@ -61,7 +97,19 @@
       "velocidade": 89, "finalizacao": 95, "drible": 80, "passe": 65, "fisico": 91,
       "titulos": 12, "assistencias": 55, "altura": 194, "idade": 25
     },
-    "clubesCarreira": ["MOLDE", "RB SALZBURG", "BORUSSIA DORTMUND", "MAN CITY"]
+    "clubesCarreira": ["MOLDE", "RB SALZBURG", "BORUSSIA DORTMUND", "MAN CITY"],
+    "visual": {
+      "numeroCarta": 4,
+      "numeroCamisa": 9,
+      "headerBar": "#BA0C2F",
+      "jersey": "#BA0C2F",
+      "sleeve": "#FFFFFF",
+      "collar": "#002868",
+      "numberColor": "#FFFFFF",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "vinicius",
@@ -77,7 +125,19 @@
       "velocidade": 95, "finalizacao": 86, "drible": 95, "passe": 78, "fisico": 68,
       "titulos": 14, "assistencias": 85, "altura": 176, "idade": 25
     },
-    "clubesCarreira": ["FLAMENGO", "REAL MADRID"]
+    "clubesCarreira": ["FLAMENGO", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 5,
+      "numeroCamisa": 7,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#241a12",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "bellingham",
@@ -93,7 +153,19 @@
       "velocidade": 82, "finalizacao": 82, "drible": 86, "passe": 85, "fisico": 84,
       "titulos": 8, "assistencias": 55, "altura": 186, "idade": 22
     },
-    "clubesCarreira": ["BIRMINGHAM", "BORUSSIA DORTMUND", "REAL MADRID"]
+    "clubesCarreira": ["BIRMINGHAM", "BORUSSIA DORTMUND", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 6,
+      "numeroCamisa": 10,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#002395",
+      "numberColor": "#002395",
+      "hair": "#5b3f24",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "neymar",
@@ -109,7 +181,19 @@
       "velocidade": 82, "finalizacao": 85, "drible": 94, "passe": 88, "fisico": 58,
       "titulos": 27, "assistencias": 310, "altura": 175, "idade": 34
     },
-    "clubesCarreira": ["SANTOS", "BARCELONA", "PSG", "AL-HILAL", "SANTOS"]
+    "clubesCarreira": ["SANTOS", "BARCELONA", "PSG", "AL-HILAL", "SANTOS"],
+    "visual": {
+      "numeroCarta": 7,
+      "numeroCamisa": 10,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "debruyne",
@@ -125,7 +209,19 @@
       "velocidade": 76, "finalizacao": 82, "drible": 84, "passe": 94, "fisico": 78,
       "titulos": 20, "assistencias": 230, "altura": 181, "idade": 34
     },
-    "clubesCarreira": ["GENK", "CHELSEA", "WOLFSBURG", "MAN CITY"]
+    "clubesCarreira": ["GENK", "CHELSEA", "WOLFSBURG", "MAN CITY"],
+    "visual": {
+      "numeroCarta": 8,
+      "numeroCamisa": 7,
+      "headerBar": "#E42518",
+      "jersey": "#E42518",
+      "sleeve": "#E42518",
+      "collar": "#000000",
+      "numberColor": "#FFD700",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "salah",
@@ -141,7 +237,19 @@
       "velocidade": 90, "finalizacao": 90, "drible": 88, "passe": 81, "fisico": 75,
       "titulos": 14, "assistencias": 170, "altura": 175, "idade": 33
     },
-    "clubesCarreira": ["BASEL", "CHELSEA", "FIORENTINA", "ROMA", "LIVERPOOL"]
+    "clubesCarreira": ["BASEL", "CHELSEA", "FIORENTINA", "ROMA", "LIVERPOOL"],
+    "visual": {
+      "numeroCarta": 9,
+      "numeroCamisa": 10,
+      "headerBar": "#E42518",
+      "jersey": "#E42518",
+      "sleeve": "#FFFFFF",
+      "collar": "#FFFFFF",
+      "numberColor": "#FFFFFF",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "modric",
@@ -157,7 +265,19 @@
       "velocidade": 74, "finalizacao": 72, "drible": 88, "passe": 92, "fisico": 66,
       "titulos": 28, "assistencias": 180, "altura": 172, "idade": 40
     },
-    "clubesCarreira": ["DINAMO ZAGREB", "TOTTENHAM", "REAL MADRID"]
+    "clubesCarreira": ["DINAMO ZAGREB", "TOTTENHAM", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 10,
+      "numeroCamisa": 10,
+      "headerBar": "#FF0000",
+      "jersey": "#FF0000",
+      "sleeve": "#FFFFFF",
+      "collar": "#FFFFFF",
+      "numberColor": "#FFFFFF",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "rodri",
@@ -173,7 +293,19 @@
       "velocidade": 68, "finalizacao": 72, "drible": 80, "passe": 88, "fisico": 86,
       "titulos": 16, "assistencias": 55, "altura": 191, "idade": 29
     },
-    "clubesCarreira": ["VILLARREAL", "ATLETICO MADRID", "MAN CITY"]
+    "clubesCarreira": ["VILLARREAL", "ATLETICO MADRID", "MAN CITY"],
+    "visual": {
+      "numeroCarta": 11,
+      "numeroCamisa": 16,
+      "headerBar": "#AA151B",
+      "jersey": "#AA151B",
+      "sleeve": "#AA151B",
+      "collar": "#F1BF00",
+      "numberColor": "#F1BF00",
+      "hair": "#5b3f24",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "lewandowski",
@@ -189,7 +321,19 @@
       "velocidade": 74, "finalizacao": 94, "drible": 82, "passe": 79, "fisico": 84,
       "titulos": 30, "assistencias": 170, "altura": 185, "idade": 37
     },
-    "clubesCarreira": ["LECH POZNAN", "BORUSSIA DORTMUND", "BAYERN MUNICH", "BARCELONA"]
+    "clubesCarreira": ["LECH POZNAN", "BORUSSIA DORTMUND", "BAYERN MUNICH", "BARCELONA"],
+    "visual": {
+      "numeroCarta": 12,
+      "numeroCamisa": 9,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#DC143C",
+      "numberColor": "#DC143C",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "pedri",
@@ -205,7 +349,19 @@
       "velocidade": 76, "finalizacao": 72, "drible": 90, "passe": 90, "fisico": 62,
       "titulos": 8, "assistencias": 40, "altura": 174, "idade": 22
     },
-    "clubesCarreira": ["LAS PALMAS", "BARCELONA"]
+    "clubesCarreira": ["LAS PALMAS", "BARCELONA"],
+    "visual": {
+      "numeroCarta": 13,
+      "numeroCamisa": 8,
+      "headerBar": "#AA151B",
+      "jersey": "#AA151B",
+      "sleeve": "#AA151B",
+      "collar": "#F1BF00",
+      "numberColor": "#F1BF00",
+      "hair": "#241a12",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "saka",
@@ -221,7 +377,19 @@
       "velocidade": 88, "finalizacao": 82, "drible": 88, "passe": 84, "fisico": 70,
       "titulos": 3, "assistencias": 70, "altura": 178, "idade": 23
     },
-    "clubesCarreira": ["ARSENAL"]
+    "clubesCarreira": ["ARSENAL"],
+    "visual": {
+      "numeroCarta": 14,
+      "numeroCamisa": 7,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#002395",
+      "numberColor": "#002395",
+      "hair": "#241a12",
+      "skin": "#5e3a26",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "virgil",
@@ -237,7 +405,19 @@
       "velocidade": 78, "finalizacao": 60, "drible": 65, "passe": 75, "fisico": 92,
       "titulos": 14, "assistencias": 20, "altura": 193, "idade": 34
     },
-    "clubesCarreira": ["GRONINGEN", "CELTIC", "SOUTHAMPTON", "LIVERPOOL"]
+    "clubesCarreira": ["GRONINGEN", "CELTIC", "SOUTHAMPTON", "LIVERPOOL"],
+    "visual": {
+      "numeroCarta": 15,
+      "numeroCamisa": 4,
+      "headerBar": "#FF6600",
+      "jersey": "#FF6600",
+      "sleeve": "#FF6600",
+      "collar": "#FFFFFF",
+      "numberColor": "#FFFFFF",
+      "hair": "#241a12",
+      "skin": "#5e3a26",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "courtois",
@@ -253,7 +433,19 @@
       "velocidade": 52, "finalizacao": 15, "drible": 30, "passe": 50, "fisico": 85,
       "titulos": 18, "assistencias": 0, "altura": 199, "idade": 33
     },
-    "clubesCarreira": ["GENK", "CHELSEA", "ATLETICO MADRID", "REAL MADRID"]
+    "clubesCarreira": ["GENK", "CHELSEA", "ATLETICO MADRID", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 16,
+      "numeroCamisa": 1,
+      "headerBar": "#E42518",
+      "jersey": "#E42518",
+      "sleeve": "#E42518",
+      "collar": "#000000",
+      "numberColor": "#FFD700",
+      "hair": "#5b3f24",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "alisson",
@@ -269,7 +461,19 @@
       "velocidade": 48, "finalizacao": 12, "drible": 25, "passe": 55, "fisico": 82,
       "titulos": 15, "assistencias": 2, "altura": 191, "idade": 33
     },
-    "clubesCarreira": ["INTERNACIONAL", "ROMA", "LIVERPOOL"]
+    "clubesCarreira": ["INTERNACIONAL", "ROMA", "LIVERPOOL"],
+    "visual": {
+      "numeroCarta": 17,
+      "numeroCamisa": 1,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#5b3f24",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "suarez",
@@ -285,7 +489,19 @@
       "velocidade": 70, "finalizacao": 90, "drible": 86, "passe": 82, "fisico": 76,
       "titulos": 22, "assistencias": 250, "altura": 182, "idade": 39
     },
-    "clubesCarreira": ["NACIONAL", "GRONINGEN", "AJAX", "LIVERPOOL", "BARCELONA", "ATLETICO MADRID", "GREMIO", "INTER MIAMI"]
+    "clubesCarreira": ["NACIONAL", "GRONINGEN", "AJAX", "LIVERPOOL", "BARCELONA", "ATLETICO MADRID", "GREMIO", "INTER MIAMI"],
+    "visual": {
+      "numeroCarta": 18,
+      "numeroCamisa": 9,
+      "headerBar": "#5CBFEB",
+      "jersey": "#5CBFEB",
+      "sleeve": "#FFFFFF",
+      "collar": "#FFFFFF",
+      "numberColor": "#0d0b1f",
+      "hair": "#241a12",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "benzema",
@@ -301,7 +517,19 @@
       "velocidade": 76, "finalizacao": 90, "drible": 88, "passe": 84, "fisico": 78,
       "titulos": 25, "assistencias": 190, "altura": 185, "idade": 38
     },
-    "clubesCarreira": ["LYON", "REAL MADRID", "AL-ITTIHAD"]
+    "clubesCarreira": ["LYON", "REAL MADRID", "AL-ITTIHAD"],
+    "visual": {
+      "numeroCarta": 19,
+      "numeroCamisa": 9,
+      "headerBar": "#002395",
+      "jersey": "#002395",
+      "sleeve": "#002395",
+      "collar": "#FFFFFF",
+      "numberColor": "#FFFFFF",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "yamal",
@@ -317,7 +545,19 @@
       "velocidade": 93, "finalizacao": 78, "drible": 92, "passe": 85, "fisico": 55,
       "titulos": 3, "assistencias": 25, "altura": 178, "idade": 17
     },
-    "clubesCarreira": ["BARCELONA"]
+    "clubesCarreira": ["BARCELONA"],
+    "visual": {
+      "numeroCarta": 20,
+      "numeroCamisa": 19,
+      "headerBar": "#AA151B",
+      "jersey": "#AA151B",
+      "sleeve": "#AA151B",
+      "collar": "#F1BF00",
+      "numberColor": "#F1BF00",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "kroos",
@@ -333,7 +573,19 @@
       "velocidade": 55, "finalizacao": 70, "drible": 75, "passe": 93, "fisico": 72,
       "titulos": 30, "assistencias": 165, "altura": 183, "idade": 36
     },
-    "clubesCarreira": ["BAYERN MUNICH", "REAL MADRID"]
+    "clubesCarreira": ["BAYERN MUNICH", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 21,
+      "numeroCamisa": 8,
+      "headerBar": "#000000",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#000000",
+      "numberColor": "#000000",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "Son",
@@ -349,7 +601,19 @@
       "velocidade": 88, "finalizacao": 86, "drible": 84, "passe": 78, "fisico": 69,
       "titulos": 3, "assistencias": 100, "altura": 183, "idade": 33
     },
-    "clubesCarreira": ["HAMBURG", "BAYER LEVERKUSEN", "TOTTENHAM"]
+    "clubesCarreira": ["HAMBURG", "BAYER LEVERKUSEN", "TOTTENHAM"],
+    "visual": {
+      "numeroCarta": 22,
+      "numeroCamisa": 7,
+      "headerBar": "#CD2E3A",
+      "jersey": "#CD2E3A",
+      "sleeve": "#CD2E3A",
+      "collar": "#FFFFFF",
+      "numberColor": "#FFFFFF",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "dias",
@@ -365,7 +629,19 @@
       "velocidade": 72, "finalizacao": 45, "drible": 60, "passe": 72, "fisico": 88,
       "titulos": 12, "assistencias": 8, "altura": 187, "idade": 28
     },
-    "clubesCarreira": ["BENFICA", "MAN CITY"]
+    "clubesCarreira": ["BENFICA", "MAN CITY"],
+    "visual": {
+      "numeroCarta": 23,
+      "numeroCamisa": 4,
+      "headerBar": "#E42518",
+      "jersey": "#E42518",
+      "sleeve": "#006600",
+      "collar": "#006600",
+      "numberColor": "#FFD700",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "gavi",
@@ -381,7 +657,19 @@
       "velocidade": 78, "finalizacao": 65, "drible": 82, "passe": 84, "fisico": 72,
       "titulos": 5, "assistencias": 18, "altura": 173, "idade": 21
     },
-    "clubesCarreira": ["BARCELONA"]
+    "clubesCarreira": ["BARCELONA"],
+    "visual": {
+      "numeroCarta": 24,
+      "numeroCamisa": 6,
+      "headerBar": "#AA151B",
+      "jersey": "#AA151B",
+      "sleeve": "#AA151B",
+      "collar": "#F1BF00",
+      "numberColor": "#F1BF00",
+      "hair": "#5b3f24",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "foden",
@@ -397,7 +685,19 @@
       "velocidade": 85, "finalizacao": 82, "drible": 90, "passe": 85, "fisico": 58,
       "titulos": 16, "assistencias": 50, "altura": 171, "idade": 25
     },
-    "clubesCarreira": ["MAN CITY"]
+    "clubesCarreira": ["MAN CITY"],
+    "visual": {
+      "numeroCarta": 25,
+      "numeroCamisa": 47,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#002395",
+      "numberColor": "#002395",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "raphinha",
@@ -413,7 +713,19 @@
       "velocidade": 88, "finalizacao": 80, "drible": 86, "passe": 78, "fisico": 65,
       "titulos": 5, "assistencias": 55, "altura": 176, "idade": 28
     },
-    "clubesCarreira": ["SPORTING", "RENNES", "LEEDS", "BARCELONA"]
+    "clubesCarreira": ["SPORTING", "RENNES", "LEEDS", "BARCELONA"],
+    "visual": {
+      "numeroCarta": 26,
+      "numeroCamisa": 11,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#241a12",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "hakimi",
@@ -429,7 +741,19 @@
       "velocidade": 93, "finalizacao": 70, "drible": 80, "passe": 78, "fisico": 76,
       "titulos": 12, "assistencias": 60, "altura": 181, "idade": 26
     },
-    "clubesCarreira": ["REAL MADRID", "BORUSSIA DORTMUND", "INTER MILAN", "PSG"]
+    "clubesCarreira": ["REAL MADRID", "BORUSSIA DORTMUND", "INTER MILAN", "PSG"],
+    "visual": {
+      "numeroCarta": 27,
+      "numeroCamisa": 2,
+      "headerBar": "#C1272D",
+      "jersey": "#C1272D",
+      "sleeve": "#006233",
+      "collar": "#006233",
+      "numberColor": "#FFFFFF",
+      "hair": "#241a12",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "alexander-arnold",
@@ -445,7 +769,19 @@
       "velocidade": 76, "finalizacao": 65, "drible": 75, "passe": 92, "fisico": 68,
       "titulos": 10, "assistencias": 85, "altura": 175, "idade": 26
     },
-    "clubesCarreira": ["LIVERPOOL", "REAL MADRID"]
+    "clubesCarreira": ["LIVERPOOL", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 28,
+      "numeroCamisa": 66,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#002395",
+      "numberColor": "#002395",
+      "hair": "#5b3f24",
+      "skin": "#5e3a26",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "wirtz",
@@ -461,7 +797,19 @@
       "velocidade": 82, "finalizacao": 80, "drible": 90, "passe": 88, "fisico": 60,
       "titulos": 4, "assistencias": 50, "altura": 176, "idade": 22
     },
-    "clubesCarreira": ["BAYER LEVERKUSEN"]
+    "clubesCarreira": ["BAYER LEVERKUSEN"],
+    "visual": {
+      "numeroCarta": 29,
+      "numeroCamisa": 10,
+      "headerBar": "#000000",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#000000",
+      "numberColor": "#000000",
+      "hair": "#5b3f24",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "marquinhos",
@@ -477,7 +825,19 @@
       "velocidade": 76, "finalizacao": 50, "drible": 68, "passe": 74, "fisico": 84,
       "titulos": 22, "assistencias": 15, "altura": 183, "idade": 31
     },
-    "clubesCarreira": ["CORINTHIANS", "ROMA", "PSG"]
+    "clubesCarreira": ["CORINTHIANS", "ROMA", "PSG"],
+    "visual": {
+      "numeroCarta": 30,
+      "numeroCamisa": 5,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#241a12",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "casemiro",
@@ -493,7 +853,19 @@
       "velocidade": 62, "finalizacao": 65, "drible": 68, "passe": 75, "fisico": 88,
       "titulos": 25, "assistencias": 40, "altura": 185, "idade": 33
     },
-    "clubesCarreira": ["SAO PAULO", "REAL MADRID", "MAN UTD"]
+    "clubesCarreira": ["SAO PAULO", "REAL MADRID", "MAN UTD"],
+    "visual": {
+      "numeroCarta": 31,
+      "numeroCamisa": 5,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#241a12",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "kane",
@@ -509,7 +881,19 @@
       "velocidade": 72, "finalizacao": 94, "drible": 78, "passe": 86, "fisico": 83,
       "titulos": 5, "assistencias": 120, "altura": 188, "idade": 32
     },
-    "clubesCarreira": ["TOTTENHAM", "BAYERN MUNICH"]
+    "clubesCarreira": ["TOTTENHAM", "BAYERN MUNICH"],
+    "visual": {
+      "numeroCarta": 32,
+      "numeroCamisa": 9,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#002395",
+      "numberColor": "#002395",
+      "hair": "#c9c5bb",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "endrick",
@@ -525,7 +909,19 @@
       "velocidade": 86, "finalizacao": 82, "drible": 82, "passe": 68, "fisico": 72,
       "titulos": 4, "assistencias": 10, "altura": 173, "idade": 19
     },
-    "clubesCarreira": ["PALMEIRAS", "REAL MADRID"]
+    "clubesCarreira": ["PALMEIRAS", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 33,
+      "numeroCamisa": 9,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#241a12",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
   },
   {
     "id": "ruidiaz",
@@ -541,6 +937,18 @@
       "velocidade": 82, "finalizacao": 42, "drible": 55, "passe": 68, "fisico": 90,
       "titulos": 12, "assistencias": 8, "altura": 190, "idade": 32
     },
-    "clubesCarreira": ["BORUSSIA DORTMUND", "STUTTGART", "ROMA", "CHELSEA", "REAL MADRID"]
+    "clubesCarreira": ["BORUSSIA DORTMUND", "STUTTGART", "ROMA", "CHELSEA", "REAL MADRID"],
+    "visual": {
+      "numeroCarta": 34,
+      "numeroCamisa": 2,
+      "headerBar": "#000000",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#000000",
+      "numberColor": "#000000",
+      "hair": "#241a12",
+      "skin": "#5e3a26",
+      "badgeText": "#0d0b1f"
+    }
   }
 ]
