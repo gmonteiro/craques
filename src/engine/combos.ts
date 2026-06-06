@@ -139,6 +139,28 @@ export function detectCombos(escalacao: PlayerCard[]): Combo[] {
 }
 
 /**
+ * Para cada carta na mão, calcula quantos combos NOVOS ela ativaria se escalada.
+ * Retorna um Map<playerId, number> com a contagem.
+ */
+export function getComboHighlights(escalacao: PlayerCard[], mao: PlayerCard[]): Map<string, number> {
+  const currentCombos = detectCombos(escalacao)
+  const currentIds = new Set(currentCombos.map(c => c.id))
+  const highlights = new Map<string, number>()
+
+  for (const card of mao) {
+    if (escalacao.some(e => e.id === card.id)) continue
+    const simulated = [...escalacao, card]
+    const newCombos = detectCombos(simulated)
+    const newCount = newCombos.filter(c => !currentIds.has(c.id)).length
+    if (newCount > 0) {
+      highlights.set(card.id, newCount)
+    }
+  }
+
+  return highlights
+}
+
+/**
  * Retorna o progresso de todos os combos possíveis dada a escalação + mão.
  * Mostra quais estão ativos, quais estão perto, e quais são possíveis.
  */

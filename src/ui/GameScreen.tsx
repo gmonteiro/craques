@@ -9,7 +9,7 @@ import { ScoreDisplay } from './ScoreDisplay'
 import { Shop } from './Shop'
 import { ComboGuide } from './ComboGuide'
 import { DeckViewer } from './DeckViewer'
-import { getComboProgress } from '../engine/combos'
+import { getComboProgress, getComboHighlights } from '../engine/combos'
 import { calcularPontuacao } from '../engine/scoring'
 import { getAttributeLabel } from '../engine/attributes'
 import config from '../../data/config.json'
@@ -93,6 +93,7 @@ export function GameScreen({
   }
 
   const comboProgress = getComboProgress(run.escalacao, run.mao)
+  const comboHighlights = getComboHighlights(run.escalacao, run.mao)
   const combosAtivos = comboProgress.filter(c => c.ativo).length
 
   // === LOJA ===
@@ -465,6 +466,7 @@ export function GameScreen({
           onSelect={handleCardClick}
           selectedIds={modoTroca ? trocaSelecionados : (selectedCardId ? new Set([selectedCardId]) : undefined)}
           escaladoIds={escaladoIds}
+          comboHighlights={comboHighlights}
           mobile={mobile}
           deckSize={run.baralho.length}
         />

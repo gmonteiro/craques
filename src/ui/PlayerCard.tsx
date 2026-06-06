@@ -2,6 +2,14 @@ import { memo } from 'react'
 import type { PlayerCard as PlayerCardType } from '../engine/types'
 import { getAttributeLabel } from '../engine/attributes'
 
+/** Format raw stat values for display */
+function formatRaw(v: number): string {
+  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(0) + 'B'
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(0) + 'M'
+  if (v >= 1_000) return (v / 1_000).toFixed(0) + 'K'
+  return String(v)
+}
+
 const POS_COLORS: Record<string, string> = {
   GOL: 'var(--pos-gol)',
   ZAG: 'var(--pos-zag)',
@@ -37,13 +45,14 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
   const displayName = player.apelido || player.nome
   const lightBand = band === '#dfe3ea' || band === '#FFFFFF'
 
-  const stats: { label: string; value: number; color: string }[] = []
+  const stats: { label: string; value: number; rawValue: number; color: string }[] = []
   if (activeAttributes && player.pontosNormalizados) {
     for (let i = 0; i < activeAttributes.length; i++) {
       const attr = activeAttributes[i]
       stats.push({
         label: getAttributeLabel(attr),
         value: player.pontosNormalizados[attr] ?? 0,
+        rawValue: player.atributos[attr] ?? 0,
         color: STAT_COLORS[i % STAT_COLORS.length],
       })
     }
@@ -188,9 +197,12 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
               </span>
               <span style={{
                 fontFamily: '"Jersey 10", monospace', fontSize: 18, color: '#1f2a24',
-                width: 26, textAlign: 'right', flexShrink: 0,
+                textAlign: 'right', flexShrink: 0, whiteSpace: 'nowrap',
               }}>
                 {s.value}
+                <span style={{ fontSize: 11, color: '#8a9e90', marginLeft: 1 }}>
+                  ({formatRaw(s.rawValue)})
+                </span>
               </span>
             </div>
           ))}
