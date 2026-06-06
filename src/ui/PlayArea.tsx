@@ -1,6 +1,5 @@
 import type { PlayerCard } from '../engine/types'
 import { PlayerCardComponent } from './PlayerCard'
-import { detectCombos } from '../engine/combos'
 
 interface Props {
   escalacao: PlayerCard[]
@@ -10,32 +9,15 @@ interface Props {
 }
 
 export function PlayArea({ escalacao, activeAttributes, maxSlots, onRemove }: Props) {
-  const combos = detectCombos(escalacao)
   const emptySlots = maxSlots - escalacao.length
 
   return (
     <div>
       {/* Label */}
-      <div className="flex items-center justify-between mb-2 px-2">
+      <div className="mb-2 px-2">
         <span className="text-sm font-bold text-gray-300">
           Escalacao ({escalacao.length}/{maxSlots})
         </span>
-        {combos.length > 0 && (
-          <div className="flex gap-1">
-            {combos.map(combo => (
-              <span
-                key={combo.id}
-                className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                  combo.tipo === 'mult'
-                    ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                    : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                }`}
-              >
-                {combo.nome} {combo.tipo === 'mult' ? `x${combo.valor}` : `+${combo.valor}`}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Slots */}

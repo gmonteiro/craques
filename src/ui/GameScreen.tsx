@@ -7,6 +7,8 @@ import { PlayArea } from './PlayArea'
 import { BoostBar } from './BoostBar'
 import { ScoreDisplay } from './ScoreDisplay'
 import { Shop } from './Shop'
+import { ComboGuide } from './ComboGuide'
+import { getComboProgress } from '../engine/combos'
 import config from '../../data/config.json'
 
 interface Props {
@@ -124,14 +126,19 @@ export function GameScreen({
       {/* Boosts */}
       <BoostBar boosts={run.boosts} />
 
-      {/* Área de escalação */}
-      <div className="flex-1 overflow-auto p-4">
-        <PlayArea
-          escalacao={run.escalacao}
-          activeAttributes={run.era}
-          maxSlots={config.partida.maxEscalacao}
-          onRemove={onDesescalar}
-        />
+      {/* Área de escalação + Painel de combos */}
+      <div className="flex-1 overflow-auto p-4 flex gap-4">
+        <div className="flex-1">
+          <PlayArea
+            escalacao={run.escalacao}
+            activeAttributes={run.era}
+            maxSlots={config.partida.maxEscalacao}
+            onRemove={onDesescalar}
+          />
+        </div>
+        <div className="w-64 flex-shrink-0">
+          <ComboGuide combos={getComboProgress(run.escalacao, run.mao)} />
+        </div>
       </div>
 
       {/* Ações */}
