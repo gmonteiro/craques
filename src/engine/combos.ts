@@ -24,13 +24,29 @@ export const DUPLAS_HISTORICAS: Record<string, { par: [string, string]; nome: st
   'neymar_vinicius': { par: ['neymar', 'vinicius'], nome: 'Joga Bonito', valor: 2 },
 }
 
-// Formações válidas: { posições necessárias }
-const FORMACOES: Record<string, Record<string, number>> = {
-  '4-3-3': { GOL: 0, ZAG: 2, LAT: 0, MEI: 1, ATA: 2 },
-  '4-4-2': { GOL: 0, ZAG: 2, LAT: 0, MEI: 2, ATA: 1 },
-  '3-5-2': { GOL: 0, ZAG: 1, LAT: 1, MEI: 1, ATA: 2 },
-  '5-3-2': { GOL: 0, ZAG: 2, LAT: 1, MEI: 1, ATA: 1 },
-}
+// Combos posicionais para 5 jogadores
+const COMBOS_POSICAO = [
+  { id: 'equilibrio', nome: 'Equilíbrio Tático', tipo: 'mult' as const, valor: 1.5,
+    descricao: 'ATA + MEI + defensor', check: (pos: Map<string, number>) => {
+      const temAta = (pos.get('ATA') ?? 0) >= 1
+      const temMei = (pos.get('MEI') ?? 0) >= 1
+      const temDef = ((pos.get('ZAG') ?? 0) + (pos.get('LAT') ?? 0) + (pos.get('GOL') ?? 0)) >= 1
+      return temAta && temMei && temDef
+    }},
+  { id: 'ataque_total', nome: 'Ataque Total', tipo: 'mult' as const, valor: 2,
+    descricao: '4+ atacantes', check: (pos: Map<string, number>) => (pos.get('ATA') ?? 0) >= 4 },
+  { id: 'paredao', nome: 'Paredão', tipo: 'base' as const, valor: 100,
+    descricao: 'GOL + 2 ZAG/LAT', check: (pos: Map<string, number>) => {
+      const temGol = (pos.get('GOL') ?? 0) >= 1
+      const temDef = ((pos.get('ZAG') ?? 0) + (pos.get('LAT') ?? 0)) >= 2
+      return temGol && temDef
+    }},
+  { id: 'misto', nome: 'Elenco Misto', tipo: 'mult' as const, valor: 1.3,
+    descricao: '4+ posições diferentes', check: (_pos: Map<string, number>, escalacao: PlayerCard[]) => {
+      const posicoes = new Set(escalacao.map(p => p.posicao))
+      return posicoes.size >= 4
+    }},
+]
 
 /** Conta ocorrências de um campo nos jogadores */
 function countBy<K extends keyof PlayerCard>(players: PlayerCard[], key: K): Map<string, number> {
@@ -106,24 +122,16 @@ export function detectCombos(escalacao: PlayerCard[]): Combo[] {
     }
   }
 
-  // Formação Válida: verifica se escalação encaixa num esquema tático
-  for (const [formacao, reqs] of Object.entries(FORMACOES)) {
-    let valida = true
-    for (const [pos, min] of Object.entries(reqs)) {
-      if ((posCounts.get(pos) ?? 0) < min) {
-        valida = false
-        break
-      }
-    }
-    if (valida) {
+  // Combos posicionais (substituem formações)
+  for (const combo of COMBOS_POSICAO) {
+    if (combo.check(posCounts, escalacao)) {
       combos.push({
-        id: `formacao_${formacao}`,
-        nome: `Formação ${formacao}`,
-        tipo: 'mult',
-        valor: 1.5,
-        descricao: `Escalação válida no ${formacao}`,
+        id: combo.id,
+        nome: combo.nome,
+        tipo: combo.tipo,
+        valor: combo.valor,
+        descricao: combo.descricao,
       })
-      break // Só conta a primeira formação válida
     }
   }
 
@@ -231,28 +239,51 @@ export function getComboProgress(escalacao: PlayerCard[], mao: PlayerCard[]): Co
     }
   }
 
-  // --- Formações ---
-  for (const [formacao, reqs] of Object.entries(FORMACOES)) {
-    let totalReq = 0
-    let totalMet = 0
-    for (const [pos, min] of Object.entries(reqs)) {
-      if (min === 0) continue
-      totalReq += min
-      totalMet += Math.min(posCountsEsc.get(pos) ?? 0, min)
+  // --- Combos posicionais ---
+  const posCountsEscMap = countBy(escalacao, 'posicao')
+  for (const combo of COMBOS_POSICAO) {
+    const ativo = escalacao.length > 0 && combo.check(posCountsEscMap, escalacao)
+
+    // Estimar progresso
+    let progresso = 0
+    let atual = 0
+    let necessario = 1
+
+    if (combo.id === 'equilibrio') {
+      const temAta = (posCountsEscMap.get('ATA') ?? 0) >= 1 ? 1 : 0
+      const temMei = (posCountsEscMap.get('MEI') ?? 0) >= 1 ? 1 : 0
+      const temDef = ((posCountsEscMap.get('ZAG') ?? 0) + (posCountsEscMap.get('LAT') ?? 0) + (posCountsEscMap.get('GOL') ?? 0)) >= 1 ? 1 : 0
+      atual = temAta + temMei + temDef
+      necessario = 3
+    } else if (combo.id === 'ataque_total') {
+      atual = posCountsEscMap.get('ATA') ?? 0
+      necessario = 4
+    } else if (combo.id === 'paredao') {
+      const temGol = Math.min(posCountsEscMap.get('GOL') ?? 0, 1)
+      const temDef = Math.min((posCountsEscMap.get('ZAG') ?? 0) + (posCountsEscMap.get('LAT') ?? 0), 2)
+      atual = temGol + temDef
+      necessario = 3
+    } else if (combo.id === 'misto') {
+      const posicoes = new Set(escalacao.map(p => p.posicao))
+      atual = posicoes.size
+      necessario = 4
     }
-    if (totalReq > 0) {
-      progress.push({
-        id: `formacao_${formacao}`,
-        nome: `Formação ${formacao}`,
-        tipo: 'mult',
-        descricao: Object.entries(reqs).filter(([, v]) => v > 0).map(([k, v]) => `${v}${k}`).join(' '),
-        bonusLabel: totalMet >= totalReq ? `×1.5 MULT` : `×MULT`,
-        progresso: totalMet / totalReq,
-        atual: totalMet,
-        necessario: totalReq,
-        ativo: totalMet >= totalReq,
-      })
-    }
+
+    progresso = necessario > 0 ? Math.min(atual / necessario, 1) : 0
+
+    progress.push({
+      id: combo.id,
+      nome: combo.nome,
+      tipo: combo.tipo,
+      descricao: combo.descricao,
+      bonusLabel: ativo
+        ? combo.tipo === 'mult' ? `×${combo.valor} MULT` : `+${combo.valor} BASE`
+        : combo.tipo === 'mult' ? `×MULT` : `+BASE`,
+      progresso,
+      atual,
+      necessario,
+      ativo,
+    })
   }
 
   // Ordenar: ativos primeiro, depois por progresso
