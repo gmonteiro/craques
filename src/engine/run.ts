@@ -324,8 +324,8 @@ function abrirLoja(state: RunState): RunState {
   const lendas = disponiveis.filter(p => p.raridade === 'lendario' && (p.clube === 'APOSENTADO' || (p.atributos.idade ?? 0) > 50))
   const normais = disponiveis.filter(p => !lendas.includes(p))
 
-  // 20% de chance de incluir uma lenda na loja
-  const temLenda = rng() < 0.2 && lendas.length > 0
+  // 30% de chance de incluir uma lenda na loja
+  const temLenda = rng() < 0.3 && lendas.length > 0
   let lojaJogadores: PlayerCard[]
   if (temLenda) {
     const lenda = pickN(rng, lendas, 1)
@@ -418,7 +418,16 @@ export function rerollLoja(state: RunState): RunState {
   return abrirLoja({
     ...state,
     orcamento: state.orcamento - economia.custoReroll,
-    seed: state.seed + 7, // Mudar seed pra gerar itens diferentes
+    seed: state.seed + 7,
+  })
+}
+
+/** Refresh da loja sem custo (após abrir pacote) */
+export function refreshLoja(state: RunState): RunState {
+  if (state.status !== 'loja') return state
+  return abrirLoja({
+    ...state,
+    seed: state.seed + 13, // Seed diferente = cartas diferentes
   })
 }
 

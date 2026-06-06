@@ -10,7 +10,7 @@ function App() {
     escalarJogador, desescalarJogador, jogarEscalacao,
     trocarJogadores, avancarPartida,
     comprarJogadorLoja, comprarBoostLoja, venderJogadorBaralho,
-    reroll, sairLoja,
+    reroll, refresh, sairLoja,
   } = useGameStore()
 
   if (screen === 'title' || !run) {
@@ -33,6 +33,7 @@ function App() {
       onComprarBoost={comprarBoostLoja}
       onVenderJogador={venderJogadorBaralho}
       onReroll={reroll}
+      onRefresh={refresh}
       onSairLoja={sairLoja}
     />
   )

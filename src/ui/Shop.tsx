@@ -13,6 +13,7 @@ interface Props {
   onComprarBoost: (id: string, targetPlayerId?: string) => void
   onVenderJogador: (id: string) => void
   onReroll: () => void
+  onRefresh: () => void
   onSair: () => void
   custoReroll: number
 }
@@ -27,7 +28,7 @@ export function Shop({
   jogadores, boosts, orcamento, activeAttributes,
   baralhoJogadores,
   onComprarJogador, onComprarBoost, onVenderJogador,
-  onReroll, onSair, custoReroll,
+  onReroll, onRefresh, onSair, custoReroll,
 }: Props) {
   const [phase, setPhase] = useState<ShopPhase>('packs')
   const [packType, setPackType] = useState<PackType>('jogador')
@@ -52,10 +53,9 @@ export function Shop({
     if (packType === 'jogador') {
       onComprarJogador(id)
       setPacksOpened(p => p + 1)
-      onReroll()
+      onRefresh() // refresh grátis (sem custo)
       setPhase('packs')
     } else {
-      // Boost: checar se é targeted
       const boost = boosts.find(b => b.id === id)
       if (boost?.tipo === 'targeted') {
         setPendingBoostId(id)
@@ -63,7 +63,7 @@ export function Shop({
       } else {
         onComprarBoost(id)
         setPacksOpened(p => p + 1)
-        onReroll()
+        onRefresh()
         setPhase('packs')
       }
     }
@@ -74,7 +74,7 @@ export function Shop({
       onComprarBoost(pendingBoostId, playerId)
       setPendingBoostId(null)
       setPacksOpened(p => p + 1)
-      onReroll()
+      onRefresh()
       setPhase('packs')
     }
   }

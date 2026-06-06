@@ -12,6 +12,7 @@ import {
   comprarBoost,
   venderJogador,
   rerollLoja,
+  refreshLoja,
   sairDaLoja,
 } from '../engine/run'
 
@@ -31,6 +32,7 @@ interface GameStore {
   comprarBoostLoja: (id: string, targetPlayerId?: string) => void
   venderJogadorBaralho: (id: string) => void
   reroll: () => void
+  refresh: () => void
   sairLoja: () => void
   voltarTitulo: () => void
 }
@@ -116,6 +118,11 @@ export const useGameStore = create<GameStore>()(
       reroll: () => set((s) => {
         if (!s.run) return s
         return { run: rerollLoja(s.run) }
+      }),
+
+      refresh: () => set((s) => {
+        if (!s.run) return s
+        return { run: refreshLoja(s.run) }
       }),
 
       sairLoja: () => set((s) => {

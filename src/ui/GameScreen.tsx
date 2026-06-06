@@ -24,13 +24,14 @@ interface Props {
   onComprarBoost: (id: string, targetPlayerId?: string) => void
   onVenderJogador: (id: string) => void
   onReroll: () => void
+  onRefresh: () => void
   onSairLoja: () => void
 }
 
 export function GameScreen({
   run, onEscalar, onDesescalar, onJogar, onTrocar,
   onAvancar, onComprarJogador, onComprarBoost, onVenderJogador,
-  onReroll, onSairLoja,
+  onReroll, onRefresh, onSairLoja,
 }: Props) {
   const [trocaSelecionados, setTrocaSelecionados] = useState<Set<string>>(new Set())
   const [modoTroca, setModoTroca] = useState(false)
@@ -80,6 +81,7 @@ export function GameScreen({
         onComprarBoost={onComprarBoost}
         onVenderJogador={onVenderJogador}
         onReroll={onReroll}
+        onRefresh={onRefresh}
         onSair={onSairLoja}
         custoReroll={config.economia.custoReroll}
       />
