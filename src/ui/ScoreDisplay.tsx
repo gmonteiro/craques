@@ -160,7 +160,8 @@ export function ScoreDisplay({ result, meta, tentativas, trocas }: Props) {
     return (
       <div className="text-center py-3 md:py-4">
         {/* Mini campo com placar */}
-        <div className="inline-block bg-gray-900/90 border-2 border-gray-600 rounded-lg px-8 py-4 relative overflow-hidden">
+        <div className="inline-block bg-gray-900/90 border-2 border-gray-600 rounded-lg px-8 py-4 relative overflow-hidden"
+          style={{ minWidth: 280, minHeight: 160 }}>
           {/* Flash de gol */}
           {flashGol && (
             <div className={`absolute inset-0 ${flashGol === 'nos' ? 'bg-green-500/20' : 'bg-red-500/20'} animate-pulse`} />
@@ -185,18 +186,21 @@ export function ScoreDisplay({ result, meta, tentativas, trocas }: Props) {
               </div>
             </div>
           </div>
-          {flashGol === 'nos' && (
-            <div className="mt-2 text-green-400 font-black animate-bounce"
-              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 16 }}>
-              GOOOL!!!
-            </div>
-          )}
-          {flashGol === 'adv' && (
-            <div className="mt-2 text-red-400 font-black"
-              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 12 }}>
-              Gol do adversario...
-            </div>
-          )}
+          {/* Área de mensagem com altura fixa */}
+          <div className="h-8 mt-2 flex items-center justify-center">
+            {flashGol === 'nos' && (
+              <span className="text-green-400 font-black animate-bounce"
+                style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 16 }}>
+                GOOOL!!!
+              </span>
+            )}
+            {flashGol === 'adv' && (
+              <span className="text-red-400 font-black"
+                style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 11 }}>
+                Gol adversario...
+              </span>
+            )}
+          </div>
         </div>
       </div>
     )
