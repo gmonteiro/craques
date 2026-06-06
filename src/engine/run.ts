@@ -24,8 +24,8 @@ export function iniciarRun(seed?: number): RunState {
   // Normalizar todos os jogadores
   const normalized = normalizePlayers(allPlayers as PlayerCard[], era)
 
-  // Sortear baralho inicial (jogadores comuns/incomuns)
-  const pool = normalized.filter(p => p.raridade === 'comum' || p.raridade === 'incomum' || p.raridade === 'bom')
+  // Sortear baralho inicial (sem lendas aposentadas — essas só aparecem na loja com 20% de chance)
+  const pool = normalized.filter(p => p.clube !== 'APOSENTADO')
   const baralhoInicial = pickN(rng, pool.length > 0 ? pool : normalized, baralhoCfg.tamanhoInicial)
 
   // Gerar meta da primeira partida
@@ -320,7 +320,21 @@ function abrirLoja(state: RunState): RunState {
   const idsBaralho = new Set([...state.baralho, ...state.mao, ...state.escalacao, ...state.descarte].map(p => p.id))
   const disponiveis = todosNormalizados.filter(p => !idsBaralho.has(p.id))
 
-  const lojaJogadores = pickN(rng, disponiveis, economia.tamanhosLoja.jogadores)
+  // Separar lendas e normais
+  const lendas = disponiveis.filter(p => p.raridade === 'lendario' && (p.clube === 'APOSENTADO' || (p.atributos.idade ?? 0) > 50))
+  const normais = disponiveis.filter(p => !lendas.includes(p))
+
+  // 20% de chance de incluir uma lenda na loja
+  const temLenda = rng() < 0.2 && lendas.length > 0
+  let lojaJogadores: PlayerCard[]
+  if (temLenda) {
+    const lenda = pickN(rng, lendas, 1)
+    const outros = pickN(rng, normais, economia.tamanhosLoja.jogadores - 1)
+    lojaJogadores = [...lenda, ...outros]
+  } else {
+    lojaJogadores = pickN(rng, normais, economia.tamanhosLoja.jogadores)
+  }
+
   const lojaBoosts = pickN(rng, allBoosts as BoostCard[], economia.tamanhosLoja.boosts)
 
   return {
