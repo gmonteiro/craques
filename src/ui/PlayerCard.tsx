@@ -127,7 +127,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
   const h = viewH * scale
 
   const portrait = portraitPaths(hair, skin, jersey, sleeve, collar)
-  const shirtNumberPath = pixelNumberPath(numeroCamisa, 340, 291, 5)
+  const shirtNumberPath = pixelNumberPath(numeroCamisa, 340, 288, 7)
 
   return (
     <div
@@ -148,18 +148,18 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         <path d={`M156,26h10v10h-10zM514,26h10v10h-10zM156,${cardHeight - 10}h10v10h-10zM514,${cardHeight - 10}h10v10h-10z`} fill="#0d0b1f" />
         <rect x={164} y={34} width={352} height={cardHeight - 42} fill="#211d3d" />
 
-        {/* Header bar */}
+        {/* Header bar with POSITION prominent */}
         <rect x={176} y={46} width={328} height={44} fill={headerBar} />
+        {/* Card number badge */}
         <rect x={184} y={52} width={32} height={32} fill="#ffd84d" rx={2} />
         <text x={200} y={74} textAnchor="middle" fill={badgeText}
           style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 13 }}>
           {numeroCarta}
         </text>
-
-        {/* Position badge - BIG and prominent */}
-        <rect x={460} y={52} width={44} height={32} rx={4} fill={posColor} />
-        <text x={482} y={74} textAnchor="middle" fill="#FFFFFF"
-          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 11, fontWeight: 'bold' }}>
+        {/* Position - BIG on header bar */}
+        <rect x={430} y={49} width={72} height={38} rx={4} fill={posColor} />
+        <text x={466} y={76} textAnchor="middle" fill="#FFFFFF"
+          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 18 }}>
           {player.posicao}
         </text>
 
@@ -170,7 +170,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         </text>
         {/* Subtitle: nationality · club */}
         <text x={181} y={140} fill="#b9b2e0"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 17, letterSpacing: 1 }}>
+          style={{ fontFamily: "'VT323',monospace", fontSize: 18, letterSpacing: 1 }}>
           {player.nacionalidade} · {player.clube}
         </text>
 
