@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { PlayerCard as PlayerCardType } from '../engine/types'
 import { getAttributeLabel } from '../engine/attributes'
+import { SKINS } from '../lib/skins'
 
 /** Format raw stat values for display */
 function formatRaw(v: number): string {
@@ -31,11 +32,14 @@ interface Props {
   selected?: boolean
   compact?: boolean
   scale?: number
+  skinId?: string // active skin to apply
 }
 
 export const PlayerCardComponent = memo(function PlayerCardComponent({
-  player, activeAttributes, onClick, selected, scale: scaleProp,
+  player, activeAttributes, onClick, selected, scale: scaleProp, skinId,
 }: Props) {
+  // Apply skin if available
+  const skin = skinId ? SKINS.find(s => s.id === skinId) : undefined
   const v = (player.visual ?? {}) as Record<string, string | number>
   const band = (v.headerBar as string) ?? '#3a3460'
   const shirt = (v.jersey as string) ?? '#3a3460'
@@ -64,12 +68,16 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
 
   const borderStyle = selected
     ? '2px solid var(--accent)'
+    : skin
+    ? `2px solid ${skin.estilo.borderColor}`
     : player.raridade === 'lendario'
     ? '2px solid var(--gold)'
     : 'none'
 
   const shadowStyle = selected
     ? '0 0 0 3px var(--accent), 0 10px 0 rgba(0,0,0,.3), 0 16px 24px rgba(0,0,0,.45)'
+    : skin
+    ? `0 0 12px ${skin.estilo.glowColor}, 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)`
     : player.raridade === 'lendario'
     ? '0 0 10px rgba(242,193,78,.3), 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)'
     : '0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)'

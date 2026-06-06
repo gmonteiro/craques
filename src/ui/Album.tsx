@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { PlayerCard, BoostCard } from '../engine/types'
 import { PlayerCardComponent } from './PlayerCard'
 import { BoostCardComponent } from './BoostCard'
+import { ACHIEVEMENTS } from '../lib/achievements'
 import allPlayersRaw from '../../data/players.json'
 import allBoostsRaw from '../../data/boosts.json'
 
@@ -11,13 +12,14 @@ const allBoosts = allBoostsRaw as BoostCard[]
 interface Props {
   unlockedPlayers: string[]
   unlockedBoosts: string[]
+  earnedAchievements: string[]
   stats: { runs: number; wins: number; bestScore: number }
   onClose: () => void
 }
 
-type Tab = 'jogadores' | 'boosts' | 'stats'
+type Tab = 'jogadores' | 'boosts' | 'conquistas' | 'stats'
 
-export function Album({ unlockedPlayers, unlockedBoosts, stats, onClose }: Props) {
+export function Album({ unlockedPlayers, unlockedBoosts, earnedAchievements, stats, onClose }: Props) {
   const [tab, setTab] = useState<Tab>('jogadores')
 
   const unlockedP = new Set(unlockedPlayers)
@@ -26,9 +28,12 @@ export function Album({ unlockedPlayers, unlockedBoosts, stats, onClose }: Props
   const totalUnlocked = unlockedP.size + unlockedB.size
   const pct = totalCards > 0 ? Math.round((totalUnlocked / totalCards) * 100) : 0
 
+  const earnedA = new Set(earnedAchievements)
+
   const tabs: { id: Tab; label: string }[] = [
     { id: 'jogadores', label: `Jogadores (${unlockedP.size}/${allPlayers.length})` },
     { id: 'boosts', label: `Boosts (${unlockedB.size}/${allBoosts.length})` },
+    { id: 'conquistas', label: `Conquistas (${earnedA.size}/${ACHIEVEMENTS.length})` },
     { id: 'stats', label: 'Stats' },
   ]
 
@@ -101,6 +106,39 @@ export function Album({ unlockedPlayers, unlockedBoosts, stats, onClose }: Props
                   <BoostCardComponent
                     boost={unlocked ? b : { ...b, nome: '???', descricao: '???' }}
                   />
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {tab === 'conquistas' && (
+          <div style={{ display: 'grid', gap: 8, maxWidth: 500, margin: '0 auto' }}>
+            {ACHIEVEMENTS.map(a => {
+              const earned = earnedA.has(a.id)
+              return (
+                <div key={a.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  background: earned ? 'linear-gradient(180deg,#2a2c18,#21230f)' : '#141d17',
+                  border: earned ? '2px solid var(--gold)' : '2px solid #0c1510',
+                  borderRadius: 'var(--r-sm)',
+                  padding: '10px 14px',
+                  boxShadow: earned ? '0 0 10px rgba(242,193,78,.2)' : 'none',
+                }}>
+                  <span style={{ fontSize: 28, filter: earned ? 'none' : 'grayscale(1) brightness(0.3)' }}>
+                    {a.icone}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <div className="val" style={{ fontSize: 18, color: earned ? 'var(--gold)' : 'var(--ink-dim)' }}>
+                      {a.nome}
+                    </div>
+                    <div className="micro" style={{ fontSize: 9, color: earned ? 'var(--ink-dim)' : 'var(--label)', marginTop: 2 }}>
+                      {a.descricao}
+                    </div>
+                  </div>
+                  {earned && (
+                    <span className="val" style={{ fontSize: 16, color: 'var(--gold)' }}>✓</span>
+                  )}
                 </div>
               )
             })}

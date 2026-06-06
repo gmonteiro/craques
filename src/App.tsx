@@ -1,6 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGameStore } from './state/store'
 import { useCollection } from './state/collection'
+import { checkAchievements, type Achievement } from './lib/achievements'
+import { sounds } from './lib/sounds'
 import { TitleScreen } from './ui/TitleScreen'
 import { GameScreen } from './ui/GameScreen'
 import { RunEndScreen } from './ui/RunEndScreen'
@@ -53,6 +55,31 @@ function App() {
     collection.unlockBoost(id)
   }
 
+  const [achievementToast, setAchievementToast] = useState<Achievement | null>(null)
+
+  // Check achievements after each play
+  useEffect(() => {
+    if (!run || !run.ultimaPontuacao) return
+    const ctx = {
+      escalacao: run.escalacao,
+      result: run.ultimaPontuacao,
+      combosAtivos: run.ultimaPontuacao.combos.length,
+      fase: run.fase,
+      won: run.status === 'vitoria',
+      totalRuns: collection.stats.runs,
+      totalWins: collection.stats.wins,
+      unlockedPlayers: collection.unlockedPlayers.length,
+      unlockedBoosts: collection.unlockedBoosts.length,
+    }
+    const newAchievements = checkAchievements(ctx, collection.earnedAchievements)
+    if (newAchievements.length > 0) {
+      collection.earnAchievements(newAchievements.map(a => a.id))
+      setAchievementToast(newAchievements[0])
+      sounds.legendary()
+      setTimeout(() => setAchievementToast(null), 3500)
+    }
+  }, [run?.ultimaPontuacao, run?.status])
+
   // Wrap voltarTitulo to record run
   const handleVoltarTitulo = () => {
     if (run) {
@@ -63,31 +90,65 @@ function App() {
     voltarTitulo()
   }
 
+  // Achievement toast overlay
+  const toast = achievementToast ? (
+    <div style={{
+      position: 'fixed', top: 24, left: '50%', transform: 'translateX(-50%)',
+      zIndex: 100, animation: 'fadeInUp 0.4s ease-out',
+    }}>
+      <div className="panel" style={{
+        padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 12,
+        border: '2px solid var(--gold)',
+        boxShadow: '0 0 20px rgba(242,193,78,.4), 0 8px 0 rgba(0,0,0,.3)',
+      }}>
+        <span style={{ fontSize: 32 }}>{achievementToast.icone}</span>
+        <div>
+          <div className="val" style={{ fontSize: 20, color: 'var(--gold)' }}>CONQUISTA!</div>
+          <div className="val" style={{ fontSize: 16, color: 'var(--ink)' }}>{achievementToast.nome}</div>
+          <div className="micro" style={{ fontSize: 9, marginTop: 2 }}>{achievementToast.descricao}</div>
+        </div>
+      </div>
+    </div>
+  ) : null
+
   if (screen === 'title' || !run) {
-    return <TitleScreen onNovaRun={handleNovaRun} onDailyRun={handleDailyRun} />
+    return (
+      <>
+        {toast}
+        <TitleScreen onNovaRun={handleNovaRun} onDailyRun={handleDailyRun} />
+      </>
+    )
   }
 
   if (screen === 'runEnd') {
-    return <RunEndScreen run={run} onVoltarTitulo={handleVoltarTitulo} />
+    return (
+      <>
+        {toast}
+        <RunEndScreen run={run} onVoltarTitulo={handleVoltarTitulo} />
+      </>
+    )
   }
 
   return (
-    <GameScreen
-      run={run}
-      onEscalar={escalarJogador}
-      onDesescalar={desescalarJogador}
-      onJogar={jogarEscalacao}
-      onTrocar={trocarJogadores}
-      onAvancar={avancarPartida}
-      onComprarJogador={handleComprarJogador}
-      onComprarBoost={handleComprarBoost}
-      onVenderJogador={venderJogadorBaralho}
-      onReroll={reroll}
-      onRefresh={refresh}
-      onSairLoja={sairLoja}
-      onEscolherPath={escolherPath}
-      onDesistir={handleVoltarTitulo}
-    />
+    <>
+      {toast}
+      <GameScreen
+        run={run}
+        onEscalar={escalarJogador}
+        onDesescalar={desescalarJogador}
+        onJogar={jogarEscalacao}
+        onTrocar={trocarJogadores}
+        onAvancar={avancarPartida}
+        onComprarJogador={handleComprarJogador}
+        onComprarBoost={handleComprarBoost}
+        onVenderJogador={venderJogadorBaralho}
+        onReroll={reroll}
+        onRefresh={refresh}
+        onSairLoja={sairLoja}
+        onEscolherPath={escolherPath}
+        onDesistir={handleVoltarTitulo}
+      />
+    </>
   )
 }
 

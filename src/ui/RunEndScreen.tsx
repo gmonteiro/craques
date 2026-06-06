@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import type { RunState } from '../engine/types'
 import { nomeFase } from '../engine/run'
 import { getAttributeLabel } from '../engine/attributes'
+import { Leaderboard, submitScore } from './Leaderboard'
+import { dailySeed } from '../engine/rng'
 
 interface Props {
   run: RunState
@@ -9,6 +12,15 @@ interface Props {
 
 export function RunEndScreen({ run, onVoltarTitulo }: Props) {
   const venceu = run.status === 'vitoria'
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const isDaily = run.seed === dailySeed()
+
+  // Submit score for daily challenge
+  useState(() => {
+    if (isDaily && run.ultimaPontuacao) {
+      submitScore(run.seed, run.ultimaPontuacao.total, run.fase, run.ultimaPontuacao.combos.length)
+    }
+  })
 
   const handleShareSeed = () => {
     const text = venceu
@@ -63,12 +75,26 @@ export function RunEndScreen({ run, onVoltarTitulo }: Props) {
         </div>
       </div>
 
+      {/* Leaderboard modal */}
+      {showLeaderboard && (
+        <Leaderboard seed={run.seed} onClose={() => setShowLeaderboard(false)} />
+      )}
+
       {/* Ações */}
-      <div className="space-y-4 w-72">
-        <button onClick={handleShareSeed} className="btn-arcade btn-advance w-full">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: 280 }}>
+        <button onClick={handleShareSeed} className="btn-arcade btn-advance btn-md" style={{ width: '100%' }}>
           Compartilhar
         </button>
-        <button onClick={onVoltarTitulo} className="btn-arcade btn-play w-full">
+        {isDaily && (
+          <button onClick={() => setShowLeaderboard(true)} className="btn-arcade btn-md" style={{
+            width: '100%',
+            background: 'linear-gradient(180deg, #9a6cf0, #6a3fbf)',
+            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.35), 0 6px 0 #4a2a8f, 0 12px 18px rgba(0,0,0,.4)',
+          }}>
+            Ranking
+          </button>
+        )}
+        <button onClick={onVoltarTitulo} className="btn-arcade btn-play btn-md" style={{ width: '100%' }}>
           Nova Run
         </button>
       </div>

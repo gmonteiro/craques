@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { getAttributeLabel } from '../engine/attributes'
 import { useCollection } from '../state/collection'
+import { getWeeklyChallenge } from '../lib/challenges'
 import { Tutorial } from './Tutorial'
 import { Album } from './Album'
 
@@ -15,18 +16,20 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
   const [showAlbum, setShowAlbum] = useState(false)
   const collection = useCollection()
   const eraExemplo = ['gols', 'drible', 'seguidores']
+  const weekly = getWeeklyChallenge()
 
-  const totalCards = 57 + 27 // players + boosts
+  const totalCards = 57 + 27
   const totalUnlocked = collection.unlockedPlayers.length + collection.unlockedBoosts.length
   const pct = totalCards > 0 ? Math.round((totalUnlocked / totalCards) * 100) : 0
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-black/50">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8" style={{ background: 'rgba(7,18,12,.7)' }}>
       {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
       {showAlbum && (
         <Album
           unlockedPlayers={collection.unlockedPlayers}
           unlockedBoosts={collection.unlockedBoosts}
+          earnedAchievements={collection.earnedAchievements}
           stats={collection.stats}
           onClose={() => setShowAlbum(false)}
         />
@@ -34,18 +37,18 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
 
       {/* Logo */}
       <div className="mb-6 text-center">
-        <h1 className="text-6xl font-black bg-gradient-to-r from-yellow-400 via-red-500 to-purple-500 bg-clip-text text-transparent mb-2">
-          CRAQUES
-        </h1>
-        <p className="text-gray-400 text-sm">Uma Copa roguelike de cartas</p>
+        <h1 className="val shadow-hard" style={{ fontSize: 64, color: 'var(--gold)' }}>CRAQUES</h1>
+        <p style={{ fontFamily: '"Silkscreen", monospace', fontSize: 11, color: 'var(--label)', letterSpacing: 2 }}>
+          UMA COPA ROGUELIKE DE CARTAS
+        </p>
       </div>
 
       {/* Era preview */}
-      <div className="mb-6 bg-gray-800/50 rounded-lg p-3 border border-gray-700">
-        <span className="text-xs text-gray-500 block mb-1">Exemplo de Era:</span>
-        <div className="flex gap-2">
+      <div className="panel" style={{ padding: '10px 16px', marginBottom: 16 }}>
+        <span className="micro" style={{ fontSize: 9, marginBottom: 4, display: 'block' }}>Exemplo de Era:</span>
+        <div style={{ display: 'flex', gap: 6 }}>
           {eraExemplo.map(attr => (
-            <span key={attr} className="text-sm bg-white/5 px-3 py-1 rounded-full text-gray-300">
+            <span key={attr} className="postag" style={{ background: 'var(--panel-3)', fontSize: 10 }}>
               {getAttributeLabel(attr)}
             </span>
           ))}
@@ -54,58 +57,70 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
 
       {/* Collection progress */}
       {totalUnlocked > 0 && (
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-gray-500 text-xs" style={{ fontFamily: "'VT323',monospace", fontSize: 14 }}>
-            Colecao:
-          </span>
-          <div className="w-24 h-2 bg-gray-800 rounded-full overflow-hidden">
-            <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${pct}%` }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <span className="micro" style={{ fontSize: 10 }}>Colecao:</span>
+          <div style={{ width: 80, height: 6, background: '#0c1510', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${pct}%`, background: 'var(--gold)', borderRadius: 3 }} />
           </div>
-          <span className="text-yellow-400 text-xs font-bold">{totalUnlocked}/{totalCards}</span>
+          <span className="val" style={{ fontSize: 16, color: 'var(--gold)' }}>{totalUnlocked}/{totalCards}</span>
         </div>
       )}
 
       {/* Buttons */}
-      <div className="space-y-3 w-72">
-        <button onClick={() => setShowAlbum(true)} className="btn-arcade btn-advance w-full" style={{ fontSize: 10 }}>
-          Meu Album
-        </button>
-
-        <button onClick={() => setShowTutorial(true)} className="btn-arcade btn-cancel w-full" style={{ fontSize: 10 }}>
-          Como Jogar
-        </button>
-
-        <button onClick={() => onNovaRun()} className="btn-arcade btn-play w-full text-sm">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: 280 }}>
+        <button onClick={() => onNovaRun()} className="btn-arcade btn-play btn-md" style={{ width: '100%' }}>
           Nova Run
         </button>
 
-        <button onClick={onDailyRun} className="btn-arcade btn-next w-full" style={{ fontSize: 11 }}>
+        <button onClick={onDailyRun} className="btn-arcade btn-advance btn-md" style={{ width: '100%' }}>
           Desafio Diario
         </button>
 
+        {/* Weekly challenge */}
+        <button
+          onClick={() => onNovaRun(weekly.seed)}
+          className="btn-arcade btn-md"
+          style={{
+            width: '100%',
+            background: 'linear-gradient(180deg, #9a6cf0, #6a3fbf)',
+            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.35), 0 6px 0 #4a2a8f, 0 12px 18px rgba(0,0,0,.4)',
+          }}
+        >
+          <div>{weekly.nome}</div>
+          <div style={{ fontSize: 12, opacity: 0.7, marginTop: -2 }}>{weekly.descricao}</div>
+        </button>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setShowAlbum(true)} className="btn-arcade btn-cancel btn-md" style={{ flex: 1, fontSize: 18 }}>
+            Album
+          </button>
+          <button onClick={() => setShowTutorial(true)} className="btn-arcade btn-cancel btn-md" style={{ flex: 1, fontSize: 18 }}>
+            Como Jogar
+          </button>
+        </div>
+
         {/* Seed */}
-        <div className="flex gap-2">
+        <div style={{ display: 'flex', gap: 6 }}>
           <input
             value={seedInput}
             onChange={e => setSeedInput(e.target.value)}
-            placeholder="Colar seed..."
-            className="flex-1 px-3 py-2 bg-gray-800 border-2 border-gray-600 rounded text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500"
-            style={{ fontFamily: "'VT323', monospace", fontSize: 18 }}
+            placeholder="Seed..."
+            style={{
+              flex: 1, padding: '8px 12px',
+              background: '#141d17', border: '2px solid #0c1510', borderRadius: 'var(--r-sm)',
+              color: 'var(--ink)', fontFamily: '"Jersey 10", monospace', fontSize: 20,
+              outline: 'none',
+            }}
           />
           <button
             onClick={() => { const n = parseInt(seedInput); if (!isNaN(n)) onNovaRun(n) }}
             disabled={!seedInput}
             className="btn-arcade btn-swap"
-            style={{ fontSize: 9, padding: '8px 16px' }}
+            style={{ fontSize: 16, padding: '6px 14px 8px' }}
           >
             Ir
           </button>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-8 text-center text-gray-600 text-xs">
-        <p>Monte escalacoes, ative combos, bata metas.</p>
       </div>
     </div>
   )
