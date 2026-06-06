@@ -10,6 +10,7 @@ interface CollectionStats {
 interface CollectionState {
   unlockedPlayers: string[]
   unlockedBoosts: string[]
+  earnedAchievements: string[]
   stats: CollectionStats
   loaded: boolean
   userId: string | null
@@ -19,16 +20,18 @@ interface CollectionState {
   unlockPlayer: (id: string) => void
   unlockBoost: (id: string) => void
   unlockPlayers: (ids: string[]) => void
+  earnAchievement: (id: string) => void
+  earnAchievements: (ids: string[]) => void
   recordRun: (won: boolean, score: number) => void
 }
 
 const LOCAL_KEY = 'craques-collection'
 
-function saveLocal(state: { unlockedPlayers: string[]; unlockedBoosts: string[]; stats: CollectionStats }) {
+function saveLocal(state: { unlockedPlayers: string[]; unlockedBoosts: string[]; earnedAchievements: string[]; stats: CollectionStats }) {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(state))
 }
 
-function loadLocal(): { unlockedPlayers: string[]; unlockedBoosts: string[]; stats: CollectionStats } | null {
+function loadLocal(): { unlockedPlayers: string[]; unlockedBoosts: string[]; earnedAchievements: string[]; stats: CollectionStats } | null {
   try {
     const raw = localStorage.getItem(LOCAL_KEY)
     return raw ? JSON.parse(raw) : null
@@ -38,6 +41,7 @@ function loadLocal(): { unlockedPlayers: string[]; unlockedBoosts: string[]; sta
 export const useCollection = create<CollectionState>((set, get) => ({
   unlockedPlayers: [],
   unlockedBoosts: [],
+  earnedAchievements: [],
   stats: { runs: 0, wins: 0, bestScore: 0 },
   loaded: false,
   userId: null,
@@ -71,6 +75,7 @@ export const useCollection = create<CollectionState>((set, get) => ({
         saveLocal({
           unlockedPlayers: data.unlocked_players ?? [],
           unlockedBoosts: data.unlocked_boosts ?? [],
+          earnedAchievements: (data.stats as Record<string, unknown>)?.achievements as string[] ?? [],
           stats: (data.stats as CollectionStats) ?? { runs: 0, wins: 0, bestScore: 0 },
         })
         return
@@ -133,6 +138,21 @@ export const useCollection = create<CollectionState>((set, get) => ({
     syncToBackend(get)
   },
 
+  earnAchievement: (id) => {
+    const { earnedAchievements } = get()
+    if (earnedAchievements.includes(id)) return
+    set({ earnedAchievements: [...earnedAchievements, id] })
+    syncToBackend(get)
+  },
+
+  earnAchievements: (ids) => {
+    const { earnedAchievements } = get()
+    const newIds = ids.filter(id => !earnedAchievements.includes(id))
+    if (newIds.length === 0) return
+    set({ earnedAchievements: [...earnedAchievements, ...newIds] })
+    syncToBackend(get)
+  },
+
   recordRun: (won, score) => {
     const { stats } = get()
     const updated = {
@@ -148,10 +168,10 @@ export const useCollection = create<CollectionState>((set, get) => ({
 // Debounced sync to Supabase + localStorage
 let syncTimeout: ReturnType<typeof setTimeout> | null = null
 function syncToBackend(get: () => CollectionState) {
-  const { unlockedPlayers, unlockedBoosts, stats, userId } = get()
+  const { unlockedPlayers, unlockedBoosts, earnedAchievements, stats, userId } = get()
 
   // Always save locally
-  saveLocal({ unlockedPlayers, unlockedBoosts, stats })
+  saveLocal({ unlockedPlayers, unlockedBoosts, earnedAchievements, stats })
 
   // Debounce Supabase sync
   if (syncTimeout) clearTimeout(syncTimeout)
