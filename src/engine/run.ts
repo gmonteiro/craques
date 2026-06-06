@@ -57,6 +57,22 @@ export function iniciarRun(seed?: number): RunState {
     lojaJogadores: [],
     lojaBoosts: [],
     pontuacoesPartida: [],
+    streak: 0,
+    prestigeLevel: 0,
+  }
+}
+
+/** Criar run com prestige (NG+) */
+export function iniciarRunPrestige(prestigeLevel: number, seed?: number): RunState {
+  const run = iniciarRun(seed)
+  // Prestige: meta +30% por nível, -1 troca, mas +$2 orçamento
+  const metaMultiplier = 1 + prestigeLevel * 0.3
+  return {
+    ...run,
+    prestigeLevel,
+    meta: Math.round(run.meta * metaMultiplier),
+    orcamento: run.orcamento + prestigeLevel * 2,
+    trocasRestantes: Math.max(1, run.trocasRestantes - prestigeLevel),
   }
 }
 
@@ -141,7 +157,7 @@ export function jogar(state: RunState): RunState {
   const tentativasRestantes = state.tentativasRestantes - 1
 
   if (tentativasRestantes <= 0) {
-    // Sem tentativas → derrota
+    // Sem tentativas → derrota (streak resets)
     return {
       ...state,
       tentativasRestantes: 0,
@@ -149,6 +165,7 @@ export function jogar(state: RunState): RunState {
       pontuacoesPartida: novasPontuacoes,
       status: 'derrota',
       meta: metaFinal,
+      streak: 0,
     }
   }
 
@@ -230,6 +247,9 @@ function calcularRecompensa(state: RunState): number {
   const juros = Math.min(Math.floor(state.orcamento * economia.juros), economia.maxJuros)
   recompensa += juros
 
+  // Streak bonus: +1$ por vitória consecutiva (max +3)
+  recompensa += Math.min(state.streak, 3)
+
   return recompensa
 }
 
@@ -237,7 +257,8 @@ function calcularRecompensa(state: RunState): number {
 export function avancar(state: RunState): RunState {
   if (state.status !== 'resultado') return state
 
-  const recompensa = calcularRecompensa(state)
+  const novaStreak = state.streak + 1
+  const recompensa = calcularRecompensa({ ...state, streak: novaStreak })
   const novoOrcamento = state.orcamento + recompensa
 
   const proximaPartida = state.partidaAtual + 1
@@ -253,6 +274,7 @@ export function avancar(state: RunState): RunState {
       orcamento: novoOrcamento,
       partidaAtual: proximaPartida,
       meta: metaInfo.valor,
+      streak: novaStreak,
       twist: metaInfo.isClassico ? sortearTwist(createRng(state.seed + (state.fase + 1) * 200 + proximaPartida), state.era) : null,
     })
   }
@@ -271,6 +293,7 @@ export function avancar(state: RunState): RunState {
     orcamento: novoOrcamento,
     fase: proximaFase,
     partidaAtual: 0,
+    streak: novaStreak,
   })
 }
 

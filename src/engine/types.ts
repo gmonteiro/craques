@@ -105,6 +105,8 @@ export interface RunState {
   lojaJogadores: PlayerCard[]
   lojaBoosts: BoostCard[]
   pontuacoesPartida: number[] // pontuações de cada tentativa na partida
+  streak: number // vitórias consecutivas na run
+  prestigeLevel: number // NG+ level (0 = normal)
 }
 
 export type RngFn = () => number

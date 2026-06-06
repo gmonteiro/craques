@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { RunState } from '../engine/types'
 import { infoPartida } from '../engine/run'
 import { useIsMobile } from '../hooks/useIsMobile'
@@ -55,6 +55,9 @@ export function GameScreen({
     }
   }, [run.status, modoTroca])
 
+  const [comboFlash, setComboFlash] = useState<string | null>(null)
+  const prevCombosRef = useRef(0)
+
   // Clear selected card when escalacao changes
   useEffect(() => {
     setSelectedCardId(null)
@@ -99,6 +102,19 @@ export function GameScreen({
   const comboProgress = getComboProgress(run.escalacao, run.mao)
   const comboHighlights = getComboHighlights(run.escalacao, run.mao)
   const combosAtivos = comboProgress.filter(c => c.ativo).length
+
+  // Detect new combo activation → flash + sound
+  useEffect(() => {
+    if (combosAtivos > prevCombosRef.current && prevCombosRef.current >= 0) {
+      const newCombo = comboProgress.find(c => c.ativo)
+      if (newCombo) {
+        setComboFlash(newCombo.nome)
+        sounds.combo()
+        setTimeout(() => setComboFlash(null), 1500)
+      }
+    }
+    prevCombosRef.current = combosAtivos
+  }, [combosAtivos])
 
   // === LOJA ===
   if (run.status === 'loja') {
@@ -384,6 +400,29 @@ export function GameScreen({
           escalacao={run.escalacao}
           adversario={info.adversario}
         />
+      )}
+
+      {/* Combo flash toast */}
+      {comboFlash && (
+        <div style={{
+          textAlign: 'center',
+          padding: '6px 0',
+          animation: 'fadeInUp 0.3s ease-out',
+        }}>
+          <span style={{
+            fontFamily: '"Jersey 10", monospace',
+            fontSize: 22,
+            color: 'var(--gold)',
+            background: 'rgba(242,193,78,.12)',
+            border: '2px solid var(--gold)',
+            borderRadius: 'var(--r-sm)',
+            padding: '4px 16px 2px',
+            boxShadow: '0 0 16px rgba(242,193,78,.3)',
+            textShadow: '0 2px 0 rgba(0,0,0,.4)',
+          }}>
+            COMBO! {comboFlash}
+          </span>
+        </div>
       )}
 
       {/* Field */}
