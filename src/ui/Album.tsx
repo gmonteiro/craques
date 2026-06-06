@@ -89,7 +89,7 @@ export function Album({ unlockedPlayers, unlockedBoosts, earnedAchievements, sta
                 <div key={p.id} className={`transition-all ${unlocked ? '' : 'grayscale brightness-[0.15]'}`}>
                   <PlayerCardComponent
                     player={unlocked ? p : { ...p, apelido: '???', nome: '???', clube: '???', nacionalidade: '???' }}
-                    scale={0.28}
+                    scale={0.55}
                   />
                 </div>
               )

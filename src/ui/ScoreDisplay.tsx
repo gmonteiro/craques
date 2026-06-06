@@ -230,32 +230,27 @@ export function ScoreDisplay({ result, meta, tentativas, trocas, escalacao, adve
   // === SCOREBOARD ===
   if (phase === 'scoreboard') {
     return (
-      <div className="text-center py-3 md:py-4">
-        <div className="inline-block bg-gray-900/90 border-2 border-yellow-500/50 rounded-lg px-10 py-5"
-          style={{ minWidth: 320 }}>
-          <div className="text-yellow-400 mb-3" style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 10 }}>
-            FIM DE JOGO
+      <div style={{ textAlign: 'center', padding: '16px 0' }}>
+        <div className="panel" style={{ display: 'inline-block', padding: '24px 40px', minWidth: 360, border: '2px solid var(--gold)' }}>
+          <div className="micro" style={{ fontSize: 14, color: 'var(--gold)', marginBottom: 16 }}>FIM DE JOGO</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
+            <span className="val shadow-hard" style={{ fontSize: 72, color: 'var(--ink)' }}>{placarNos}</span>
+            <span className="val" style={{ fontSize: 32, color: 'var(--ink-dim)' }}>×</span>
+            <span className="val shadow-hard" style={{ fontSize: 72, color: 'var(--ink)' }}>{placarAdv}</span>
           </div>
-          <div className="flex items-center justify-center gap-8">
-            <div className="text-5xl md:text-6xl font-black text-white" style={{ fontFamily: "'Press Start 2P',monospace" }}>
-              {placarNos}
-            </div>
-            <div className="text-2xl text-gray-500" style={{ fontFamily: "'Press Start 2P',monospace" }}>×</div>
-            <div className="text-5xl md:text-6xl font-black text-white" style={{ fontFamily: "'Press Start 2P',monospace" }}>
-              {placarAdv}
-            </div>
-          </div>
-          <div className={`mt-3 font-black ${passou ? 'text-green-400' : 'text-red-400'}`}
-            style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
+          <div className="val shadow-hard" style={{
+            fontSize: 28, marginTop: 12,
+            color: passou ? 'var(--green)' : 'var(--pos-ata)',
+          }}>
             {passou ? 'VITORIA!' : 'DERROTA'}
           </div>
-          {/* Resumo dos gols */}
-          <div className="mt-3 space-y-0.5">
+          <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
             {pastEvents.map((ev, i) => (
-              <div key={i} className={`text-xs ${ev.equipe === 'nos' ? 'text-green-400/70' : 'text-red-400/70'}`}
-                style={{ fontFamily: "'VT323',monospace", fontSize: 15 }}>
+              <span key={i} className="val" style={{
+                fontSize: 20, color: ev.equipe === 'nos' ? 'var(--green)' : 'var(--pos-ata)', opacity: 0.7,
+              }}>
                 {ev.minuto}' {ev.jogador}
-              </div>
+              </span>
             ))}
           </div>
         </div>
@@ -265,44 +260,55 @@ export function ScoreDisplay({ result, meta, tentativas, trocas, escalacao, adve
 
   // === POINTS / DONE ===
   return (
-    <div className="text-center py-3 md:py-4">
-      <div className="inline-block bg-gray-900/90 border-2 border-gray-600 rounded-lg px-8 py-4" style={{ minWidth: 280 }}>
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="text-lg text-white font-black" style={{ fontFamily: "'Press Start 2P',monospace" }}>{placarNos}</span>
-          <span className="text-xs text-gray-500">×</span>
-          <span className="text-lg text-white font-black" style={{ fontFamily: "'Press Start 2P',monospace" }}>{placarAdv}</span>
-          <span className={`text-xs font-bold ml-2 ${passou ? 'text-green-400' : 'text-red-400'}`}>
+    <div style={{ textAlign: 'center', padding: '16px 0' }}>
+      <div className="panel" style={{ display: 'inline-block', padding: '20px 32px', minWidth: 340 }}>
+        {/* Placar pequeno */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 8 }}>
+          <span className="val shadow-hard" style={{ fontSize: 36, color: 'var(--ink)' }}>{placarNos}</span>
+          <span className="val" style={{ fontSize: 20, color: 'var(--ink-dim)' }}>×</span>
+          <span className="val shadow-hard" style={{ fontSize: 36, color: 'var(--ink)' }}>{placarAdv}</span>
+          <span className="val" style={{
+            fontSize: 22, marginLeft: 8,
+            color: passou ? 'var(--green)' : 'var(--pos-ata)',
+          }}>
             {passou ? 'VITORIA' : 'DERROTA'}
           </span>
         </div>
-        <div className="mb-1">
-          <span className="text-gray-500 text-xs">META: </span>
-          <span className="text-gray-300 font-bold">{meta.toLocaleString()}</span>
+
+        {/* Meta */}
+        <div style={{ marginBottom: 4 }}>
+          <span className="micro" style={{ fontSize: 11 }}>META: </span>
+          <span className="val" style={{ fontSize: 24, color: 'var(--ink-dim)' }}>{meta.toLocaleString()}</span>
         </div>
-        <div className={`text-3xl md:text-4xl font-black tabular-nums ${passou ? 'text-green-400' : 'text-red-400'}`}
-          style={{ fontFamily: "'Press Start 2P',monospace" }}>
+
+        {/* Score animado */}
+        <div className="val shadow-hard" style={{
+          fontSize: 56,
+          color: passou ? 'var(--green)' : 'var(--pos-ata)',
+        }}>
           {animatedTotal.toLocaleString()}
         </div>
+
         {phase === 'done' && (
-          <div className="mt-2 space-y-1">
-            <div className="text-xs text-gray-400">
-              <span className="text-blue-400 font-bold">{result.base}</span>
-              <span className="mx-1">×</span>
-              <span className="text-red-400 font-bold">{result.mult.toFixed(1)}</span>
+          <div style={{ marginTop: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <span className="val" style={{ fontSize: 24, color: 'var(--pos-mei)' }}>{result.base}</span>
+              <span className="val" style={{ fontSize: 18, color: 'var(--ink-dim)' }}>×</span>
+              <span className="val" style={{ fontSize: 24, color: 'var(--pos-ata)' }}>{result.mult.toFixed(1)}</span>
             </div>
             {result.combos.length > 0 && (
-              <div className="flex gap-1 justify-center flex-wrap">
+              <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap', marginTop: 6 }}>
                 {result.combos.map(c => (
-                  <span key={c.id} className="text-[9px] bg-white/5 px-1.5 py-0.5 rounded-full text-gray-400">{c.nome}</span>
+                  <span key={c.id} className="postag" style={{ background: 'var(--panel-3)', fontSize: 10 }}>{c.nome}</span>
                 ))}
               </div>
             )}
           </div>
         )}
       </div>
-      <div className="flex justify-center gap-4 mt-2">
-        <span className="text-xs text-gray-500">Escalacoes: <span className="text-white font-bold">{tentativas}</span></span>
-        <span className="text-xs text-gray-500">Trocas: <span className="text-white font-bold">{trocas}</span></span>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
+        <span className="micro" style={{ fontSize: 11 }}>Escalacoes: <span className="val" style={{ fontSize: 20, color: 'var(--ink)' }}>{tentativas}</span></span>
+        <span className="micro" style={{ fontSize: 11 }}>Trocas: <span className="val" style={{ fontSize: 20, color: 'var(--ink)' }}>{trocas}</span></span>
       </div>
     </div>
   )

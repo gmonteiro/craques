@@ -10,6 +10,7 @@ import { Shop } from './Shop'
 import { ComboGuide } from './ComboGuide'
 import { DeckViewer } from './DeckViewer'
 import { getComboProgress } from '../engine/combos'
+import { calcularPontuacao } from '../engine/scoring'
 import { getAttributeLabel } from '../engine/attributes'
 import { sounds } from '../lib/sounds'
 import config from '../../data/config.json'
@@ -42,6 +43,9 @@ export function GameScreen({
   const [showDesistir, setShowDesistir] = useState(false)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
 
+  const previewScore = run.escalacao.length > 0
+    ? calcularPontuacao(run.escalacao, run.boosts, run.era, run.meta, run.mao.length)
+    : null
   const mobile = useIsMobile()
   const info = infoPartida(run)
 
@@ -355,6 +359,25 @@ export function GameScreen({
               <span className="val" style={{ fontSize: 16, color: 'var(--orange-l)' }}>
                 {run.twist.descricao}
               </span>
+            </div>
+          </>
+        )}
+
+        {/* Preview: só BASE × MULT (sem total — jogador descobre ao jogar) */}
+        {previewScore && (
+          <>
+            <div className="hr" style={{ margin: '10px 0' }} />
+            <div style={{ textAlign: 'center' }}>
+              <span className="micro" style={{ fontSize: 9 }}>Preview</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 4 }}>
+                <span className="val shadow-hard" style={{ fontSize: 28, color: 'var(--pos-mei)' }}>
+                  {previewScore.base}
+                </span>
+                <span className="val" style={{ fontSize: 18, color: 'var(--ink-dim)' }}>×</span>
+                <span className="val shadow-hard" style={{ fontSize: 28, color: 'var(--pos-ata)' }}>
+                  {previewScore.mult.toFixed(1)}
+                </span>
+              </div>
             </div>
           </>
         )}
