@@ -127,7 +127,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
   const h = viewH * scale
 
   const portrait = portraitPaths(hair, skin, jersey, sleeve, collar)
-  const shirtNumberPath = pixelNumberPath(numeroCamisa, 340, 288, 7)
+  const shirtNumberPath = pixelNumberPath(numeroCamisa, 340, 286, 9)
 
   return (
     <div
@@ -148,13 +148,18 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         <path d={`M156,26h10v10h-10zM514,26h10v10h-10zM156,${cardHeight - 10}h10v10h-10zM514,${cardHeight - 10}h10v10h-10z`} fill="#0d0b1f" />
         <rect x={164} y={34} width={352} height={cardHeight - 42} fill="#211d3d" />
 
-        {/* Header bar with POSITION prominent */}
+        {/* Header bar */}
         <rect x={176} y={46} width={328} height={44} fill={headerBar} />
         {/* Card number badge */}
         <rect x={184} y={52} width={32} height={32} fill="#ffd84d" rx={2} />
         <text x={200} y={74} textAnchor="middle" fill={badgeText}
           style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 13 }}>
           {numeroCarta}
+        </text>
+        {/* CRAQUES DA COPA '26 */}
+        <text x={228} y={76} fill="#fff4d6"
+          style={{ fontFamily: "'VT323',monospace", fontSize: 19, letterSpacing: 2 }}>
+          CRAQUES DA COPA '26
         </text>
         {/* Position - BIG on header bar */}
         <rect x={430} y={49} width={72} height={38} rx={4} fill={posColor} />
