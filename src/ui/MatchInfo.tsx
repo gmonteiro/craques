@@ -2,38 +2,40 @@ import type { RunState } from '../engine/types'
 import { infoPartida } from '../engine/run'
 import { getAttributeLabel } from '../engine/attributes'
 
-// Country code → flag colors (simple 2-stripe representation)
-const COUNTRY_FLAGS: Record<string, { top: string; bottom: string; code: string }> = {
-  'MÉXICO': { top: '#006341', bottom: '#CE1126', code: 'MEX' },
-  'CANADÁ': { top: '#FF0000', bottom: '#FFFFFF', code: 'CAN' },
-  'AUSTRÁLIA': { top: '#002868', bottom: '#FFD700', code: 'AUS' },
-  'JAPÃO': { top: '#FFFFFF', bottom: '#BC002D', code: 'JPN' },
-  'COREIA DO SUL': { top: '#FFFFFF', bottom: '#CD2E3A', code: 'KOR' },
-  'EUA': { top: '#002868', bottom: '#BF0A30', code: 'USA' },
-  'ALEMANHA': { top: '#000000', bottom: '#FFCC00', code: 'GER' },
-  'ESPANHA': { top: '#AA151B', bottom: '#F1BF00', code: 'ESP' },
-  'HOLANDA': { top: '#FF6600', bottom: '#FFFFFF', code: 'NED' },
-  'INGLATERRA': { top: '#FFFFFF', bottom: '#CE1124', code: 'ENG' },
-  'FRANÇA': { top: '#002395', bottom: '#ED2939', code: 'FRA' },
-  'ITÁLIA': { top: '#008C45', bottom: '#CD212A', code: 'ITA' },
-  'ARGENTINA': { top: '#75AADB', bottom: '#FFFFFF', code: 'ARG' },
-  'BRASIL': { top: '#009739', bottom: '#FFDF00', code: 'BRA' },
-  'PORTUGAL': { top: '#006600', bottom: '#FF0000', code: 'POR' },
+// Bandeiras como 3 faixas (h=horizontal, v=vertical)
+interface FlagDef { c1: string; c2: string; c3: string; dir: 'h' | 'v' }
+const FLAGS: Record<string, FlagDef> = {
+  'MÉXICO':        { c1: '#006341', c2: '#FFFFFF', c3: '#CE1126', dir: 'v' },
+  'CANADÁ':        { c1: '#FF0000', c2: '#FFFFFF', c3: '#FF0000', dir: 'v' },
+  'AUSTRÁLIA':     { c1: '#002868', c2: '#002868', c3: '#002868', dir: 'h' }, // azul sólido
+  'JAPÃO':         { c1: '#FFFFFF', c2: '#BC002D', c3: '#FFFFFF', dir: 'h' }, // branco/vermelho/branco
+  'COREIA DO SUL': { c1: '#FFFFFF', c2: '#CD2E3A', c3: '#003478', dir: 'h' },
+  'EUA':           { c1: '#002868', c2: '#FFFFFF', c3: '#BF0A30', dir: 'h' },
+  'ALEMANHA':      { c1: '#000000', c2: '#DD0000', c3: '#FFCC00', dir: 'h' },
+  'ESPANHA':       { c1: '#AA151B', c2: '#F1BF00', c3: '#AA151B', dir: 'h' },
+  'HOLANDA':       { c1: '#AE1C28', c2: '#FFFFFF', c3: '#21468B', dir: 'h' },
+  'INGLATERRA':    { c1: '#FFFFFF', c2: '#CE1124', c3: '#FFFFFF', dir: 'h' }, // cruz em fundo branco
+  'FRANÇA':        { c1: '#002395', c2: '#FFFFFF', c3: '#ED2939', dir: 'v' },
+  'ITÁLIA':        { c1: '#008C45', c2: '#FFFFFF', c3: '#CD212A', dir: 'v' },
+  'ARGENTINA':     { c1: '#75AADB', c2: '#FFFFFF', c3: '#75AADB', dir: 'h' },
+  'BRASIL':        { c1: '#009739', c2: '#FFDF00', c3: '#009739', dir: 'h' },
+  'PORTUGAL':      { c1: '#006600', c2: '#006600', c3: '#FF0000', dir: 'v' }, // 1/3 verde, 2/3 vermelho
 }
 
 function Flag({ country }: { country: string }) {
-  const flag = COUNTRY_FLAGS[country.toUpperCase()]
-  if (!flag) {
+  const f = FLAGS[country.toUpperCase()]
+  if (!f) {
     return (
-      <div className="w-8 h-6 rounded bg-gray-600 flex items-center justify-center">
+      <div className="w-8 h-6 rounded bg-gray-600 flex items-center justify-center border border-white/20">
         <span className="text-[7px] text-white font-bold">{country.slice(0, 3)}</span>
       </div>
     )
   }
   return (
-    <div className="w-8 h-6 rounded overflow-hidden border border-white/20 flex-shrink-0">
-      <div className="h-1/2" style={{ backgroundColor: flag.top }} />
-      <div className="h-1/2" style={{ backgroundColor: flag.bottom }} />
+    <div className={`w-8 h-6 rounded overflow-hidden border border-white/20 flex-shrink-0 flex ${f.dir === 'v' ? 'flex-row' : 'flex-col'}`}>
+      <div className="flex-1" style={{ backgroundColor: f.c1 }} />
+      <div className="flex-1" style={{ backgroundColor: f.c2 }} />
+      <div className="flex-1" style={{ backgroundColor: f.c3 }} />
     </div>
   )
 }
