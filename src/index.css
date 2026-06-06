@@ -1,26 +1,70 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Silkscreen&family=VT323&family=Press+Start+2P&display=swap');
 
+/* ===========================================================
+   CRAQUES — design system "arcade-feltro"
+   =========================================================== */
 :root {
-  font-family: 'VT323', monospace;
+  /* gramado / feltro */
+  --felt-0: #0c1d14;
+  --felt-1: #123026;
+  --felt-2: #16382b;
+  --felt-edge: #07120c;
+  --line: rgba(225, 245, 230, 0.10);
+  --line-soft: rgba(225, 245, 230, 0.045);
+
+  /* paineis */
+  --panel: #1d2922;
+  --panel-2: #25332b;
+  --panel-3: #2e3e34;
+  --panel-line: #0e1813;
+  --panel-top: rgba(255, 255, 255, 0.055);
+
+  /* tinta */
+  --ink: #ecf4ee;
+  --ink-dim: #9db1a4;
+  --label: #6f8a78;
+
+  /* valores */
+  --gold: #f2c14e;
+  --green: #5cd089;
+  --orange: #e8762b;
+  --orange-d: #b25319;
+  --orange-l: #ff9a52;
+
+  /* posicoes */
+  --pos-ata: #df524d;
+  --pos-mei: #4f93e0;
+  --pos-lat: #e0a23e;
+  --pos-zag: #57cf86;
+  --pos-gol: #9a6cf0;
+
+  /* acento */
+  --accent: var(--orange);
+  --accent-d: var(--orange-d);
+  --accent-l: var(--orange-l);
+
+  /* raios */
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 9px;
+
+  font-family: "Jersey 10", monospace;
   color-scheme: dark;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  image-rendering: pixelated;
 }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  color: #e2e8f0;
+  color: var(--ink);
   min-height: 100vh;
-  /* Football pitch background */
-  background-color: #2d7a3a;
+  background-color: var(--felt-0);
   background-image:
-    /* Pitch stripes (alternating light/dark green) */
-    repeating-linear-gradient(
-      90deg,
-      #2d7a3a 0px,
-      #2d7a3a 120px,
-      #348a42 120px,
-      #348a42 240px
-    );
+    radial-gradient(120% 120% at 50% 0%, var(--felt-2) 0%, var(--felt-edge) 75%);
 }
 
 #root {
@@ -28,7 +72,139 @@ body {
   position: relative;
 }
 
-/* Football pitch markings overlay */
+/* ===== tipografia ===== */
+.micro {
+  font-family: "Silkscreen", monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--label);
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+}
+.val { font-family: "Jersey 10", monospace; line-height: .9; }
+.shadow-hard { text-shadow: 0 3px 0 rgba(0,0,0,.55); }
+
+/* ===== painel chunky ===== */
+.panel {
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 2px solid var(--panel-line);
+  border-radius: var(--r-lg);
+  box-shadow:
+    inset 0 2px 0 var(--panel-top),
+    inset 0 -3px 0 rgba(0,0,0,.30),
+    0 7px 0 rgba(0,0,0,.32),
+    0 14px 26px rgba(0,0,0,.42);
+}
+
+.hr {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--panel-line) 12%, var(--panel-line) 88%, transparent);
+  border-bottom: 1px solid var(--panel-top);
+}
+
+/* ===== botoes chunky ===== */
+.btn-arcade {
+  position: relative;
+  font-family: "Jersey 10", monospace;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  border-radius: var(--r-md);
+  text-shadow: 0 2px 0 rgba(0,0,0,.45);
+  transition: transform .06s ease, box-shadow .06s ease, filter .12s ease;
+  user-select: none;
+  white-space: nowrap;
+  font-size: 38px;
+  padding: 16px 34px 20px;
+  letter-spacing: 1px;
+  min-height: 50px;
+}
+.btn-arcade:active { transform: translateY(4px); }
+.btn-arcade:disabled {
+  cursor: not-allowed;
+  filter: saturate(.25) brightness(.7);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.06), 0 4px 0 rgba(0,0,0,.3) !important;
+}
+.btn-arcade:disabled:active { transform: none; }
+.btn-arcade:hover:not(:disabled) { filter: brightness(1.06); }
+
+.btn-play {
+  background: linear-gradient(180deg, #71e09c, var(--green));
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.4), 0 6px 0 #2f8a55, 0 12px 18px rgba(0,0,0,.4);
+}
+.btn-play:active { box-shadow: inset 0 2px 0 rgba(255,255,255,.3), 0 2px 0 #2f8a55; }
+
+.btn-swap {
+  background: linear-gradient(180deg, var(--accent-l), var(--accent));
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.35), 0 6px 0 var(--accent-d), 0 12px 18px rgba(0,0,0,.4);
+}
+.btn-swap:active { box-shadow: inset 0 2px 0 rgba(255,255,255,.30), 0 2px 0 var(--accent-d); }
+
+.btn-cancel {
+  background: linear-gradient(180deg, var(--panel-3), var(--panel-2));
+  box-shadow: inset 0 2px 0 var(--panel-top), 0 6px 0 var(--panel-line), 0 12px 18px rgba(0,0,0,.35);
+  color: var(--ink-dim);
+}
+
+.btn-advance {
+  background: linear-gradient(180deg, #f7d774, var(--gold));
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.4), 0 6px 0 #a87d1f, 0 12px 18px rgba(0,0,0,.4);
+  color: #1a1000;
+}
+
+.btn-next {
+  background: linear-gradient(180deg, #71e09c, var(--green));
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.4), 0 6px 0 #2f8a55, 0 12px 18px rgba(0,0,0,.4);
+}
+
+/* tamanhos */
+.btn-lg { font-size: 38px; padding: 16px 34px 20px; }
+.btn-md { font-size: 26px; padding: 11px 22px 14px; }
+.btn-sm { font-size: 20px; padding: 8px 16px 10px; }
+
+/* chips de posicao */
+.postag {
+  font-family: "Silkscreen", monospace;
+  font-size: 11px;
+  letter-spacing: .5px;
+  color: #fff;
+  padding: 3px 6px 2px;
+  border-radius: 6px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.45);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.25);
+}
+
+/* scrollbar */
+.scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--panel-3); border-radius: 6px;
+  border: 2px solid var(--panel);
+}
+.scroll::-webkit-scrollbar-thumb:hover { background: #3a4d40; }
+
+/* Prevent iOS bounce */
+html, body { overscroll-behavior: none; }
+.overflow-x-auto { -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 768px) {
+  .overflow-x-auto::-webkit-scrollbar { display: none; }
+  .overflow-x-auto { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* animacoes */
+@keyframes breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .55; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* campo marcacoes no background */
 #root::before {
   content: '';
   position: fixed;
@@ -36,140 +212,6 @@ body {
   pointer-events: none;
   z-index: 0;
   background:
-    /* Center line (vertical) */
-    linear-gradient(90deg, transparent calc(50% - 1px), rgba(255,255,255,0.12) calc(50% - 1px), rgba(255,255,255,0.12) calc(50% + 1px), transparent calc(50% + 1px)),
-    /* Center circle */
-    radial-gradient(circle at 50% 50%, transparent 79px, rgba(255,255,255,0.10) 79px, rgba(255,255,255,0.10) 81px, transparent 81px),
-    /* Top penalty area */
-    linear-gradient(180deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 50% 0 / 40% 120px,
-    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 30% 0 / 2px 120px,
-    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 70% 0 / 2px 120px,
-    /* Bottom penalty area */
-    linear-gradient(0deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 50% 100% / 40% 120px,
-    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 30% calc(100% - 120px) / 2px 120px,
-    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 70% calc(100% - 120px) / 2px 120px,
-    /* Touchlines (border) */
-    linear-gradient(180deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px),
-    linear-gradient(0deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px),
-    linear-gradient(270deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px);
+    repeating-linear-gradient(90deg, var(--line-soft) 0 90px, transparent 90px 180px);
 }
-
-/* Ensure content sits above the pitch markings */
-#root > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Prevent iOS bounce scroll */
-html, body { overscroll-behavior: none; }
-
-/* Smooth momentum scroll on touch */
-.overflow-x-auto { -webkit-overflow-scrolling: touch; }
-
-/* Hide scrollbar on mobile */
-@media (max-width: 768px) {
-  .overflow-x-auto::-webkit-scrollbar { display: none; }
-  .overflow-x-auto { -ms-overflow-style: none; scrollbar-width: none; }
-}
-
-/* === ARCADE BUTTON STYLES === */
-.btn-arcade {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 13px;
-  padding: 14px 28px;
-  min-height: 50px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.1s;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  position: relative;
-  color: #fff;
-  text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
-  box-shadow:
-    0 6px 0 rgba(0,0,0,0.35),
-    0 8px 15px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.2);
-}
-.btn-arcade:active {
-  transform: translateY(4px);
-  box-shadow:
-    0 2px 0 rgba(0,0,0,0.35),
-    0 3px 8px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.15);
-}
-.btn-arcade:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-  transform: none;
-  filter: grayscale(0.5);
-}
-.btn-arcade:hover:not(:disabled) {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-  box-shadow:
-    0 8px 0 rgba(0,0,0,0.35),
-    0 12px 20px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.25);
-}
-
-.btn-play {
-  background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
-  box-shadow:
-    0 6px 0 #0a5c2a,
-    0 8px 15px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.25);
-}
-.btn-play:active { box-shadow: 0 2px 0 #0a5c2a, inset 0 2px 0 rgba(255,255,255,0.15); }
-
-.btn-swap {
-  background: linear-gradient(180deg, #f97316 0%, #c2410c 100%);
-  box-shadow:
-    0 6px 0 #7c2d12,
-    0 8px 15px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.25);
-}
-.btn-swap:active { box-shadow: 0 2px 0 #7c2d12, inset 0 2px 0 rgba(255,255,255,0.15); }
-
-.btn-cancel {
-  background: linear-gradient(180deg, #4b5563 0%, #1f2937 100%);
-  box-shadow:
-    0 6px 0 #111827,
-    0 8px 15px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.15);
-}
-.btn-cancel:active { box-shadow: 0 2px 0 #111827, inset 0 2px 0 rgba(255,255,255,0.1); }
-
-.btn-advance {
-  background: linear-gradient(180deg, #fbbf24 0%, #b45309 100%);
-  color: #fff;
-  font-size: 14px;
-  box-shadow:
-    0 6px 0 #78350f,
-    0 8px 15px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.3);
-}
-.btn-advance:active { box-shadow: 0 2px 0 #78350f, inset 0 2px 0 rgba(255,255,255,0.2); }
-
-.btn-next {
-  background: linear-gradient(180deg, #10b981 0%, #047857 100%);
-  box-shadow:
-    0 6px 0 #064e3b,
-    0 8px 15px rgba(0,0,0,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.25);
-}
-.btn-next:active { box-shadow: 0 2px 0 #064e3b, inset 0 2px 0 rgba(255,255,255,0.15); }
-
-/* Pack opening animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+#root > * { position: relative; z-index: 1; }
