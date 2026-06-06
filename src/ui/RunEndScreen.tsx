@@ -25,7 +25,7 @@ export function RunEndScreen({ run, onVoltarTitulo }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-black/50">
       {/* Resultado */}
       <div className={`text-6xl font-black mb-4 ${venceu ? 'text-yellow-400' : 'text-red-500'}`}>
         {venceu ? 'CAMPEAO!' : 'ELIMINADO'}

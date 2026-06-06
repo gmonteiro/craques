@@ -8,11 +8,55 @@
 
 body {
   margin: 0;
-  background: #0f0f1a;
   color: #e2e8f0;
   min-height: 100vh;
+  /* Football pitch background */
+  background-color: #2d7a3a;
+  background-image:
+    /* Pitch stripes (alternating light/dark green) */
+    repeating-linear-gradient(
+      90deg,
+      #2d7a3a 0px,
+      #2d7a3a 120px,
+      #348a42 120px,
+      #348a42 240px
+    );
 }
 
 #root {
   min-height: 100vh;
+  position: relative;
+}
+
+/* Football pitch markings overlay */
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* Center line (vertical) */
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(255,255,255,0.12) calc(50% - 1px), rgba(255,255,255,0.12) calc(50% + 1px), transparent calc(50% + 1px)),
+    /* Center circle */
+    radial-gradient(circle at 50% 50%, transparent 79px, rgba(255,255,255,0.10) 79px, rgba(255,255,255,0.10) 81px, transparent 81px),
+    /* Top penalty area */
+    linear-gradient(180deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 50% 0 / 40% 120px,
+    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 30% 0 / 2px 120px,
+    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 70% 0 / 2px 120px,
+    /* Bottom penalty area */
+    linear-gradient(0deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 50% 100% / 40% 120px,
+    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 30% calc(100% - 120px) / 2px 120px,
+    linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px) no-repeat 70% calc(100% - 120px) / 2px 120px,
+    /* Touchlines (border) */
+    linear-gradient(180deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px),
+    linear-gradient(0deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px),
+    linear-gradient(270deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px);
+}
+
+/* Ensure content sits above the pitch markings */
+#root > * {
+  position: relative;
+  z-index: 1;
 }

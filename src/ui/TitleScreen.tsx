@@ -11,7 +11,7 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
   const eraExemplo = ['gols', 'drible', 'seguidores']
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-black/50">
       {/* Logo */}
       <div className="mb-8 text-center">
         <h1 className="text-6xl font-black bg-gradient-to-r from-yellow-400 via-red-500 to-purple-500 bg-clip-text text-transparent mb-2">

@@ -83,7 +83,7 @@ export function GameScreen({
   // === RESULTADO (bateu meta) ===
   if (run.status === 'resultado') {
     return (
-      <div className="p-4 text-center space-y-6">
+      <div className="p-4 text-center space-y-6 bg-black/40 min-h-screen">
         <Header info={info} run={run} />
         <ScoreDisplay
           result={run.ultimaPontuacao}
@@ -103,7 +103,7 @@ export function GameScreen({
 
   // === ESCALANDO ===
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-black/40">
       {/* Header */}
       <Header info={info} run={run} />
 

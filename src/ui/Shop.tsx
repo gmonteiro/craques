@@ -27,7 +27,7 @@ export function Shop({
   onReroll, onSair, custoReroll,
 }: Props) {
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 bg-black/40 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-black text-white">Janela de Transferencias</h2>
