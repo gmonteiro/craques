@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import type { PlayerCard, ScoreResult } from '../engine/types'
+import { sounds } from '../lib/sounds'
 
 interface Props {
   result: ScoreResult | null
@@ -127,12 +128,18 @@ export function ScoreDisplay({ result, meta, tentativas, trocas, escalacao, adve
         setCurrentEvent(ev)
         setPastEvents(prev => [...prev, ev])
 
-        // Limpar flash após 600ms
+        // Play goal sound
+        if (ev.equipe === 'nos') sounds.gol()
+        else sounds.golAdv()
+
         setTimeout(() => setCurrentEvent(null), 700)
 
         if (i === eventos.length - 1) {
           setTimeout(() => {
             setPhase('scoreboard')
+            // Play victory/defeat sound
+            if (passou) sounds.vitoria()
+            else sounds.derrota()
             setTimeout(() => { setPhase('points'); animatePoints(result.total) }, 1800)
           }, 1200)
         }

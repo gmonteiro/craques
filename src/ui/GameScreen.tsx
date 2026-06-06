@@ -12,6 +12,7 @@ import { DeckViewer } from './DeckViewer'
 import { getComboProgress, getComboHighlights } from '../engine/combos'
 import { calcularPontuacao } from '../engine/scoring'
 import { getAttributeLabel } from '../engine/attributes'
+import { sounds } from '../lib/sounds'
 import config from '../../data/config.json'
 
 interface Props {
@@ -73,6 +74,7 @@ export function GameScreen({
         setSelectedCardId(null)
       } else {
         setSelectedCardId(id)
+        sounds.select()
       }
     }
   }
@@ -81,6 +83,7 @@ export function GameScreen({
     if (selectedCardId && !escaladoIds.has(selectedCardId)) {
       onEscalar(selectedCardId)
       setSelectedCardId(null)
+      sounds.escalar()
     }
   }
 
@@ -89,6 +92,7 @@ export function GameScreen({
       onTrocar([...trocaSelecionados])
       setTrocaSelecionados(new Set())
       setModoTroca(false)
+      sounds.trocar()
     }
   }
 
