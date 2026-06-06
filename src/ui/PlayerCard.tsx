@@ -92,9 +92,9 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
   const displayName = player.apelido || player.nome
   const frameFill = player.raridade === 'lendario' ? '#ffd84d' : player.raridade === 'elite' ? '#c084fc' : '#6b7280'
 
-  // Compact layout: header(34) + name(30) + portrait(176) + stats + padding
-  const statsY = 326
-  const statsHeight = stats.length * 34
+  // Layout: header(38) + subtitle + portrait + stats + padding
+  const statsY = 330
+  const statsHeight = stats.length * 38
   const cardHeight = statsY + statsHeight + 16
   const viewH = cardHeight - 18
 
@@ -126,20 +126,20 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         <rect x={164} y={34} width={352} height={cardHeight - 42} fill="#211d3d" />
 
         {/* Header: position badge + name */}
-        <rect x={176} y={42} width={328} height={34} fill={headerBar} />
-        <rect x={180} y={45} width={52} height={28} rx={3} fill={posColor} />
-        <text x={206} y={66} textAnchor="middle" fill="#FFF"
-          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
+        <rect x={176} y={42} width={328} height={38} fill={headerBar} />
+        <rect x={180} y={46} width={56} height={30} rx={3} fill={posColor} />
+        <text x={208} y={69} textAnchor="middle" fill="#FFF"
+          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 16 }}>
           {player.posicao}
         </text>
-        <text x={240} y={67} fill="#fff"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 24, fontWeight: 'bold' }}>
-          {displayName.length > 14 ? displayName.slice(0, 12) + '..' : displayName}
+        <text x={244} y={70} fill="#fff"
+          style={{ fontFamily: "'VT323',monospace", fontSize: 30, fontWeight: 'bold' }}>
+          {displayName.length > 12 ? displayName.slice(0, 11) + '..' : displayName}
         </text>
 
         {/* Subtitle */}
-        <text x={180} y={90} fill="#b9b2e0"
-          style={{ fontFamily: "'VT323',monospace", fontSize: 16 }}>
+        <text x={180} y={94} fill="#b9b2e0"
+          style={{ fontFamily: "'VT323',monospace", fontSize: 20 }}>
           {player.nacionalidade} · {player.clube}
         </text>
 
@@ -155,19 +155,19 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         {/* Scanlines */}
         <path d="M176,108h328v2h-328zM176,128h328v2h-328zM176,148h328v2h-328zM176,168h328v2h-328zM176,188h328v2h-328zM176,220h328v2h-328z" fill="#000" opacity={0.06} />
 
-        {/* Stats — compact rows */}
+        {/* Stats */}
         {stats.map((stat, i) => {
-          const dy = statsY + i * 34
+          const dy = statsY + i * 38
           return (
             <g key={i}>
               <rect x={176} y={dy} width={328} height={1} fill="#3a3460" />
-              <rect x={182} y={dy + 10} width={8} height={8} fill="#ffd84d" />
-              <text x={196} y={dy + 20} fill="#e8e4f5"
-                style={{ fontFamily: "'VT323',monospace", fontSize: 18 }}>
+              <rect x={182} y={dy + 11} width={10} height={10} fill="#ffd84d" />
+              <text x={198} y={dy + 24} fill="#e8e4f5"
+                style={{ fontFamily: "'VT323',monospace", fontSize: 24 }}>
                 {stat.label}
               </text>
-              <text x={498} y={dy + 21} textAnchor="end" fill={TIER_COLORS[stat.tier]}
-                style={{ fontFamily: "'VT323',monospace", fontSize: 24, fontWeight: 'bold' }}>
+              <text x={498} y={dy + 25} textAnchor="end" fill={TIER_COLORS[stat.tier]}
+                style={{ fontFamily: "'VT323',monospace", fontSize: 30, fontWeight: 'bold' }}>
                 {stat.value}
               </text>
             </g>
