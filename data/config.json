@@ -15,17 +15,17 @@
     "trocas": 3
   },
   "economia": {
-    "orcamentoInicial": 10,
-    "recompensaVitoria": 5,
-    "recompensaFolga": 0.01,
+    "orcamentoInicial": 4,
+    "recompensaVitoria": 3,
+    "recompensaFolga": 0.005,
     "recompensaTrocasNaoUsadas": 1,
-    "juros": 0.2,
-    "maxJuros": 5,
+    "juros": 0.15,
+    "maxJuros": 3,
     "tamanhosLoja": {
       "jogadores": 3,
       "boosts": 3
     },
-    "custoReroll": 2
+    "custoReroll": 1
   },
   "baralho": {
     "tamanhoInicial": 12,

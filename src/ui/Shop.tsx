@@ -20,7 +20,7 @@ interface Props {
 type PackState = 'closed' | 'opening' | 'open'
 type PackType = 'jogador' | 'boost'
 
-const PRECO_PACK: Record<string, number> = { jogador: 5, boost: 4 }
+const PRECO_PACK: Record<string, number> = { jogador: 6, boost: 4 }
 
 export function Shop({
   jogadores, boosts, orcamento, activeAttributes,
@@ -39,7 +39,6 @@ export function Shop({
 
     setPackType(tipo)
     setPackState('opening')
-    // Animation delay
     setTimeout(() => setPackState('open'), 800)
   }
 
@@ -47,6 +46,8 @@ export function Shop({
     if (packType === 'jogador') onComprarJogador(id)
     else onComprarBoost(id)
     setPackState('closed')
+    // Reroll para próximo pacote ter cartas diferentes
+    onReroll()
   }
 
   const fecharPack = () => {
