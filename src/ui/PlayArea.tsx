@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react'
 import type { PlayerCard } from '../engine/types'
 import { PlayerCardComponent } from './PlayerCard'
 
@@ -9,49 +10,61 @@ interface Props {
   mobile?: boolean
 }
 
+// Card base width = 388, dynamic height ~470 (3 stats)
+const CARD_W = 388
+const GAP = 6
+
 export function PlayArea({ escalacao, activeAttributes, maxSlots, onRemove, mobile }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [fitScale, setFitScale] = useState(mobile ? 0.38 : 0.50)
+
+  // Calculate scale to fit all maxSlots cards in container width
+  useEffect(() => {
+    function calc() {
+      if (!containerRef.current) return
+      const containerW = containerRef.current.clientWidth
+      const totalGaps = (maxSlots - 1) * GAP
+      const availableW = containerW - totalGaps - 8 // 8px padding
+      const idealScale = availableW / (maxSlots * CARD_W)
+      // Clamp between 0.22 (min readable) and 0.55 (max desktop)
+      const clamped = Math.min(Math.max(idealScale, 0.22), 0.55)
+      setFitScale(clamped)
+    }
+    calc()
+    window.addEventListener('resize', calc)
+    return () => window.removeEventListener('resize', calc)
+  }, [maxSlots])
+
   const emptySlots = maxSlots - escalacao.length
-  const scale = mobile ? 0.38 : 0.50
-  const emptyW = 388 * scale
-  const emptyH = 500 * scale
 
   return (
-    <div>
-      <div className="mb-2 px-2">
+    <div ref={containerRef}>
+      <div className="mb-1 px-1">
         <span className="text-xs md:text-sm font-bold text-gray-300">
           Escalacao ({escalacao.length}/{maxSlots})
         </span>
       </div>
 
-      <div className="flex gap-1 md:gap-2 overflow-x-auto snap-x md:flex-wrap md:justify-center md:overflow-visible pb-2">
+      <div className="flex justify-center px-1" style={{ gap: GAP }}>
         {escalacao.map(card => (
-          <div key={card.id} className="snap-start flex-shrink-0 md:flex-shrink">
-            <PlayerCardComponent
-              player={card}
-              activeAttributes={activeAttributes}
-              onClick={() => onRemove(card.id)}
-              selected
-              scale={scale}
-            />
-          </div>
+          <PlayerCardComponent
+            key={card.id}
+            player={card}
+            activeAttributes={activeAttributes}
+            onClick={() => onRemove(card.id)}
+            selected
+            scale={fitScale}
+          />
         ))}
-        {!mobile && Array.from({ length: emptySlots }).map((_, i) => (
+        {Array.from({ length: emptySlots }).map((_, i) => (
           <div
             key={`empty-${i}`}
-            style={{ width: emptyW, height: emptyH }}
-            className="rounded border-2 border-dashed border-gray-700 flex items-center justify-center flex-shrink-0"
+            style={{ width: CARD_W * fitScale, height: 470 * fitScale }}
+            className="rounded border-2 border-dashed border-gray-700/50 flex items-center justify-center"
           >
-            <span className="text-gray-600 text-xs">Vazio</span>
+            <span className="text-gray-700 text-[10px]">Vazio</span>
           </div>
         ))}
-        {mobile && emptySlots > 0 && (
-          <div
-            style={{ width: emptyW * 0.5, height: emptyH }}
-            className="rounded border-2 border-dashed border-gray-700 flex items-center justify-center flex-shrink-0"
-          >
-            <span className="text-gray-600 text-[10px]">+{emptySlots}</span>
-          </div>
-        )}
       </div>
     </div>
   )
