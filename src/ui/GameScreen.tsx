@@ -393,18 +393,20 @@ export function GameScreen({
         />
       </div>
 
-      {/* Action bar */}
+      {/* Action bar — fixed height like handoff */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        gap: mobile ? 10 : 16,
-        padding: '4px 0',
+        alignItems: 'center',
+        gap: mobile ? 10 : 18,
+        height: mobile ? 56 : 76,
+        flexShrink: 0,
       }}>
         <button
           onClick={onJogar}
           disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
           className="btn-arcade btn-play"
-          style={{ fontSize: mobile ? 28 : 38 }}
+          style={{ fontSize: mobile ? 24 : 38, padding: mobile ? '10px 24px 14px' : '16px 34px 20px' }}
         >
           JOGAR!
         </button>
@@ -414,14 +416,14 @@ export function GameScreen({
               onClick={handleTrocar}
               disabled={trocaSelecionados.size === 0}
               className="btn-arcade btn-swap"
-              style={{ fontSize: mobile ? 22 : 30 }}
+              style={{ fontSize: mobile ? 20 : 30, padding: mobile ? '8px 18px 12px' : '11px 22px 14px' }}
             >
               Trocar ({trocaSelecionados.size})
             </button>
             <button
               onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
               className="btn-arcade btn-cancel"
-              style={{ fontSize: mobile ? 22 : 30 }}
+              style={{ fontSize: mobile ? 20 : 30, padding: mobile ? '8px 18px 12px' : '11px 22px 14px' }}
             >
               Cancelar
             </button>
