@@ -176,10 +176,10 @@ export function GameScreen({
         {/* Desistir */}
         <button
           onClick={() => setShowDesistir(true)}
-          className="text-[10px] text-gray-600 hover:text-red-400 transition mt-1 text-center"
-          style={{ fontFamily: "'VT323',monospace" }}
+          className="btn-arcade btn-cancel w-full mt-2"
+          style={{ fontSize: 9, padding: '10px 12px' }}
         >
-          Encerrar Run
+          Encerrar
         </button>
       </div>
 
