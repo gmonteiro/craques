@@ -30,8 +30,10 @@ export function Shop({
 }: Props) {
   const [packState, setPackState] = useState<PackState>('closed')
   const [packType, setPackType] = useState<PackType>('jogador')
+  const [usedPacks, setUsedPacks] = useState<Set<PackType>>(new Set())
 
   const abrirPack = (tipo: PackType) => {
+    if (usedPacks.has(tipo)) return
     const preco = PRECO_PACK[tipo]
     if (orcamento < preco) return
     if (tipo === 'jogador' && jogadores.length === 0) return
@@ -45,9 +47,8 @@ export function Shop({
   const escolherCarta = (id: string) => {
     if (packType === 'jogador') onComprarJogador(id)
     else onComprarBoost(id)
+    setUsedPacks(prev => new Set([...prev, packType]))
     setPackState('closed')
-    // Reroll para próximo pacote ter cartas diferentes
-    onReroll()
   }
 
   const fecharPack = () => {
@@ -149,7 +150,7 @@ export function Shop({
         <div
           onClick={() => abrirPack('jogador')}
           className={`cursor-pointer transition-all duration-200 hover:scale-105 ${
-            orcamento < PRECO_PACK.jogador || jogadores.length === 0 ? 'opacity-30 pointer-events-none' : ''
+            usedPacks.has('jogador') || orcamento < PRECO_PACK.jogador || jogadores.length === 0 ? 'opacity-30 pointer-events-none' : ''
           }`}
         >
           <PackSVG tipo="jogador" scale={1.4} />
@@ -169,7 +170,7 @@ export function Shop({
         <div
           onClick={() => abrirPack('boost')}
           className={`cursor-pointer transition-all duration-200 hover:scale-105 ${
-            orcamento < PRECO_PACK.boost || boosts.length === 0 ? 'opacity-30 pointer-events-none' : ''
+            usedPacks.has('boost') || orcamento < PRECO_PACK.boost || boosts.length === 0 ? 'opacity-30 pointer-events-none' : ''
           }`}
         >
           <PackSVG tipo="boost" scale={1.4} />

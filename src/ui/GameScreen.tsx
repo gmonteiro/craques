@@ -127,10 +127,7 @@ export function GameScreen({
         trocas={run.trocasRestantes}
       />
 
-      {/* Boosts */}
-      <BoostBar boosts={run.boosts} />
-
-      {/* Área de escalação + Combos */}
+      {/* Área de escalação + Sidebar (boosts + combos) */}
       <div className="flex-1 overflow-auto p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4">
         <div className="flex-1">
           <PlayArea
@@ -142,8 +139,12 @@ export function GameScreen({
           />
         </div>
 
-        {/* Combos: toggle no mobile, sempre visível no desktop */}
-        <div className="md:w-64 md:flex-shrink-0">
+        {/* Sidebar: boosts + combos */}
+        <div className="md:w-64 md:flex-shrink-0 space-y-2">
+          {/* Boosts ativos */}
+          {run.boosts.length > 0 && (
+            <BoostBar boosts={run.boosts} />
+          )}
           <button
             onClick={() => setShowCombos(!showCombos)}
             className="md:hidden w-full py-2 bg-gray-800/80 rounded-lg text-sm text-gray-300 flex items-center justify-center gap-2 min-h-[44px]"
