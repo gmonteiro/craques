@@ -12,7 +12,7 @@ function App() {
     escalarJogador, desescalarJogador, jogarEscalacao,
     trocarJogadores, avancarPartida,
     comprarJogadorLoja, comprarBoostLoja, venderJogadorBaralho,
-    reroll, refresh, sairLoja,
+    reroll, refresh, sairLoja, escolherPath,
   } = useGameStore()
 
   const collection = useCollection()
@@ -85,6 +85,7 @@ function App() {
       onReroll={reroll}
       onRefresh={refresh}
       onSairLoja={sairLoja}
+      onEscolherPath={escolherPath}
       onDesistir={handleVoltarTitulo}
     />
   )

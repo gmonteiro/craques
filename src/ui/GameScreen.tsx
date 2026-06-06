@@ -28,13 +28,14 @@ interface Props {
   onReroll: () => void
   onRefresh: () => void
   onSairLoja: () => void
+  onEscolherPath: (pathId: string) => void
   onDesistir: () => void
 }
 
 export function GameScreen({
   run, onEscalar, onDesescalar, onJogar, onTrocar,
   onAvancar, onComprarJogador, onComprarBoost, onVenderJogador,
-  onReroll, onRefresh, onSairLoja, onDesistir,
+  onReroll, onRefresh, onSairLoja, onEscolherPath, onDesistir,
 }: Props) {
   const [trocaSelecionados, setTrocaSelecionados] = useState<Set<string>>(new Set())
   const [modoTroca, setModoTroca] = useState(false)
@@ -115,6 +116,76 @@ export function GameScreen({
     }
     prevCombosRef.current = combosAtivos
   }, [combosAtivos])
+
+  // === ESCOLHA DE CAMINHO ===
+  if (run.status === 'escolhendo_caminho' && run.pathChoices.length > 0) {
+    return (
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 24,
+        padding: 24,
+      }}>
+        <span className="val shadow-hard" style={{ fontSize: 32, color: 'var(--gold)' }}>
+          ESCOLHA SEU CAMINHO
+        </span>
+        <span className="micro" style={{ fontSize: 12 }}>
+          {info.fase} — Partida {info.partida}/{info.totalPartidas}
+        </span>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+          {run.pathChoices.map(path => (
+            <button
+              key={path.id}
+              onClick={() => onEscolherPath(path.id)}
+              className="panel"
+              style={{
+                width: 220,
+                padding: '20px 18px',
+                cursor: 'pointer',
+                border: path.id === 'lendario' ? '2px solid var(--gold)' : '2px solid var(--panel-line)',
+                boxShadow: path.id === 'lendario'
+                  ? '0 0 16px rgba(242,193,78,.3), inset 0 2px 0 var(--panel-top), 0 7px 0 rgba(0,0,0,.32)'
+                  : undefined,
+                textAlign: 'center',
+                transition: 'transform .1s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-4px)')}
+              onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
+            >
+              <div className="val shadow-hard" style={{
+                fontSize: 22,
+                color: path.id === 'lendario' ? 'var(--gold)' : path.id === 'dificil' ? 'var(--pos-ata)' : 'var(--green)',
+                marginBottom: 8,
+              }}>
+                {path.nome}
+              </div>
+              <div style={{ fontSize: 16, color: 'var(--ink-dim)', marginBottom: 12, lineHeight: 1.3 }}>
+                {path.descricao}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
+                <span className="micro" style={{ fontSize: 9 }}>
+                  Meta ×{path.metaMultiplier}
+                </span>
+                {path.recompensaExtra > 0 && (
+                  <span className="micro" style={{ fontSize: 9, color: 'var(--green)' }}>
+                    +${path.recompensaExtra}
+                  </span>
+                )}
+                {path.legendaGarantida && (
+                  <span className="micro" style={{ fontSize: 9, color: 'var(--gold)' }}>
+                    LENDA!
+                  </span>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   // === LOJA ===
   if (run.status === 'loja') {

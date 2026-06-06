@@ -83,7 +83,16 @@ export interface Twist {
   dados?: Record<string, string> // dados dinâmicos (ex: atributo zerado)
 }
 
-export type RunStatus = 'escalando' | 'resultado' | 'loja' | 'vitoria' | 'derrota'
+export type RunStatus = 'escalando' | 'resultado' | 'loja' | 'escolhendo_caminho' | 'vitoria' | 'derrota'
+
+export interface PathChoice {
+  id: string
+  nome: string
+  descricao: string
+  metaMultiplier: number
+  recompensaExtra: number
+  legendaGarantida: boolean
+}
 
 export interface RunState {
   seed: number
@@ -107,6 +116,7 @@ export interface RunState {
   pontuacoesPartida: number[] // pontuações de cada tentativa na partida
   streak: number // vitórias consecutivas na run
   prestigeLevel: number // NG+ level (0 = normal)
+  pathChoices: PathChoice[] // opções de caminho entre fases
 }
 
 export type RngFn = () => number

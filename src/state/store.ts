@@ -14,6 +14,7 @@ import {
   rerollLoja,
   refreshLoja,
   sairDaLoja,
+  escolherCaminho,
 } from '../engine/run'
 
 interface GameStore {
@@ -34,6 +35,7 @@ interface GameStore {
   reroll: () => void
   refresh: () => void
   sairLoja: () => void
+  escolherPath: (pathId: string) => void
   voltarTitulo: () => void
 }
 
@@ -128,6 +130,11 @@ export const useGameStore = create<GameStore>()(
       sairLoja: () => set((s) => {
         if (!s.run) return s
         return { run: sairDaLoja(s.run) }
+      }),
+
+      escolherPath: (pathId) => set((s) => {
+        if (!s.run) return s
+        return { run: escolherCaminho(s.run, pathId) }
       }),
 
       voltarTitulo: () => set({

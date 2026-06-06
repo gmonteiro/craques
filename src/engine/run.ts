@@ -59,6 +59,7 @@ export function iniciarRun(seed?: number): RunState {
     pontuacoesPartida: [],
     streak: 0,
     prestigeLevel: 0,
+    pathChoices: [],
   }
 }
 
@@ -287,14 +288,68 @@ export function avancar(state: RunState): RunState {
     return { ...state, orcamento: novoOrcamento, status: 'vitoria' }
   }
 
-  // Abrir loja entre fases
-  return abrirLoja({
+  // Mostrar escolha de caminho entre fases
+  const paths = gerarCaminhos(createRng(state.seed + proximaFase * 999), proximaFase)
+  return {
     ...state,
     orcamento: novoOrcamento,
     fase: proximaFase,
     partidaAtual: 0,
     streak: novaStreak,
-  })
+    status: 'escolhendo_caminho',
+    pathChoices: paths,
+  }
+}
+
+/** Gera 2-3 caminhos para escolher entre fases */
+function gerarCaminhos(rng: RngFn, fase: number): import('./types').PathChoice[] {
+  const paths: import('./types').PathChoice[] = [
+    {
+      id: 'normal',
+      nome: 'Caminho Seguro',
+      descricao: 'Meta normal, recompensa padrao',
+      metaMultiplier: 1,
+      recompensaExtra: 0,
+      legendaGarantida: false,
+    },
+    {
+      id: 'dificil',
+      nome: 'Caminho Difícil',
+      descricao: 'Meta +40%, mas +$3 extra',
+      metaMultiplier: 1.4,
+      recompensaExtra: 3,
+      legendaGarantida: false,
+    },
+  ]
+
+  // A partir da fase 2, chance de caminho lendário
+  if (fase >= 2 && rng() < 0.5) {
+    paths.push({
+      id: 'lendario',
+      nome: 'Caminho Lendário',
+      descricao: 'Meta +60%, lenda garantida na loja',
+      metaMultiplier: 1.6,
+      recompensaExtra: 2,
+      legendaGarantida: true,
+    })
+  }
+
+  return paths
+}
+
+/** Jogador escolheu um caminho */
+export function escolherCaminho(state: RunState, pathId: string): RunState {
+  if (state.status !== 'escolhendo_caminho') return state
+
+  const path = state.pathChoices.find(p => p.id === pathId)
+  if (!path) return state
+
+  return abrirLoja({
+    ...state,
+    pathChoices: [],
+    orcamento: state.orcamento + path.recompensaExtra,
+    // Meta multiplier será aplicado quando gerar meta da próxima partida
+  }, path)
 }
 
 /** Reseta estado para nova partida */
@@ -333,7 +388,7 @@ function resetarPartida(state: RunState): RunState {
 // ==========================================
 
 /** Abre a loja entre fases */
-function abrirLoja(state: RunState): RunState {
+function abrirLoja(state: RunState, path?: import('./types').PathChoice): RunState {
   const rng = createRng(state.seed + state.fase * 500)
 
   // Normalizar todos os jogadores com a Era ativa
@@ -347,8 +402,8 @@ function abrirLoja(state: RunState): RunState {
   const lendas = disponiveis.filter(p => p.raridade === 'lendario' && (p.clube === 'APOSENTADO' || (p.atributos.idade ?? 0) > 50))
   const normais = disponiveis.filter(p => !lendas.includes(p))
 
-  // 30% de chance de incluir uma lenda na loja
-  const temLenda = rng() < 0.3 && lendas.length > 0
+  // Lenda garantida se caminho lendário, senão 30% chance
+  const temLenda = (path?.legendaGarantida || rng() < 0.3) && lendas.length > 0
   let lojaJogadores: PlayerCard[]
   if (temLenda) {
     const lenda = pickN(rng, lendas, 1)
