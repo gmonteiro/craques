@@ -1,0 +1,546 @@
+[
+  {
+    "id": "messi",
+    "nome": "LIONEL MESSI",
+    "apelido": "MESSI",
+    "nacionalidade": "ARGENTINA",
+    "clube": "INTER MIAMI",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 850, "golsSelecao": 112, "bolasDeOuro": 8,
+      "seguidores": 504000000, "valorMercado": 25000000,
+      "velocidade": 81, "finalizacao": 90, "drible": 94, "passe": 91, "fisico": 65,
+      "titulos": 45, "assistencias": 380, "altura": 170, "idade": 38
+    },
+    "clubesCarreira": ["BARCELONA", "PSG", "INTER MIAMI"]
+  },
+  {
+    "id": "cr7",
+    "nome": "CRISTIANO RONALDO",
+    "apelido": "CR7",
+    "nacionalidade": "PORTUGAL",
+    "clube": "AL-NASSR",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 947, "golsSelecao": 138, "bolasDeOuro": 5,
+      "seguidores": 665000000, "valorMercado": 15000000,
+      "velocidade": 84, "finalizacao": 92, "drible": 85, "passe": 80, "fisico": 88,
+      "titulos": 35, "assistencias": 290, "altura": 187, "idade": 41
+    },
+    "clubesCarreira": ["SPORTING", "MAN UTD", "REAL MADRID", "JUVENTUS", "AL-NASSR"]
+  },
+  {
+    "id": "mbappe",
+    "nome": "KYLIAN MBAPPÉ",
+    "apelido": "MBAPPÉ",
+    "nacionalidade": "FRANCA",
+    "clube": "REAL MADRID",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 310, "golsSelecao": 52, "bolasDeOuro": 0,
+      "seguidores": 120000000, "valorMercado": 180000000,
+      "velocidade": 97, "finalizacao": 93, "drible": 92, "passe": 80, "fisico": 78,
+      "titulos": 18, "assistencias": 120, "altura": 178, "idade": 27
+    },
+    "clubesCarreira": ["MONACO", "PSG", "REAL MADRID"]
+  },
+  {
+    "id": "haaland",
+    "nome": "ERLING HAALAND",
+    "apelido": "HAALAND",
+    "nacionalidade": "NORUEGA",
+    "clube": "MAN CITY",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 280, "golsSelecao": 38, "bolasDeOuro": 0,
+      "seguidores": 45000000, "valorMercado": 200000000,
+      "velocidade": 89, "finalizacao": 95, "drible": 80, "passe": 65, "fisico": 91,
+      "titulos": 12, "assistencias": 55, "altura": 194, "idade": 25
+    },
+    "clubesCarreira": ["MOLDE", "RB SALZBURG", "BORUSSIA DORTMUND", "MAN CITY"]
+  },
+  {
+    "id": "vinicius",
+    "nome": "VINÍCIUS JÚNIOR",
+    "apelido": "VINI JR",
+    "nacionalidade": "BRASIL",
+    "clube": "REAL MADRID",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 120, "golsSelecao": 8, "bolasDeOuro": 1,
+      "seguidores": 65000000, "valorMercado": 200000000,
+      "velocidade": 95, "finalizacao": 86, "drible": 95, "passe": 78, "fisico": 68,
+      "titulos": 14, "assistencias": 85, "altura": 176, "idade": 25
+    },
+    "clubesCarreira": ["FLAMENGO", "REAL MADRID"]
+  },
+  {
+    "id": "bellingham",
+    "nome": "JUDE BELLINGHAM",
+    "apelido": "BELLINGHAM",
+    "nacionalidade": "INGLATERRA",
+    "clube": "REAL MADRID",
+    "posicao": "MEI",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 85, "golsSelecao": 12, "bolasDeOuro": 0,
+      "seguidores": 45000000, "valorMercado": 180000000,
+      "velocidade": 82, "finalizacao": 82, "drible": 86, "passe": 85, "fisico": 84,
+      "titulos": 8, "assistencias": 55, "altura": 186, "idade": 22
+    },
+    "clubesCarreira": ["BIRMINGHAM", "BORUSSIA DORTMUND", "REAL MADRID"]
+  },
+  {
+    "id": "neymar",
+    "nome": "NEYMAR JR",
+    "apelido": "NEYMAR",
+    "nacionalidade": "BRASIL",
+    "clube": "SANTOS",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 440, "golsSelecao": 79, "bolasDeOuro": 0,
+      "seguidores": 230000000, "valorMercado": 15000000,
+      "velocidade": 82, "finalizacao": 85, "drible": 94, "passe": 88, "fisico": 58,
+      "titulos": 27, "assistencias": 310, "altura": 175, "idade": 34
+    },
+    "clubesCarreira": ["SANTOS", "BARCELONA", "PSG", "AL-HILAL", "SANTOS"]
+  },
+  {
+    "id": "debruyne",
+    "nome": "KEVIN DE BRUYNE",
+    "apelido": "DE BRUYNE",
+    "nacionalidade": "BELGICA",
+    "clube": "MAN CITY",
+    "posicao": "MEI",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 120, "golsSelecao": 28, "bolasDeOuro": 0,
+      "seguidores": 35000000, "valorMercado": 45000000,
+      "velocidade": 76, "finalizacao": 82, "drible": 84, "passe": 94, "fisico": 78,
+      "titulos": 20, "assistencias": 230, "altura": 181, "idade": 34
+    },
+    "clubesCarreira": ["GENK", "CHELSEA", "WOLFSBURG", "MAN CITY"]
+  },
+  {
+    "id": "salah",
+    "nome": "MOHAMED SALAH",
+    "apelido": "SALAH",
+    "nacionalidade": "EGITO",
+    "clube": "LIVERPOOL",
+    "posicao": "ATA",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 320, "golsSelecao": 58, "bolasDeOuro": 0,
+      "seguidores": 65000000, "valorMercado": 60000000,
+      "velocidade": 90, "finalizacao": 90, "drible": 88, "passe": 81, "fisico": 75,
+      "titulos": 14, "assistencias": 170, "altura": 175, "idade": 33
+    },
+    "clubesCarreira": ["BASEL", "CHELSEA", "FIORENTINA", "ROMA", "LIVERPOOL"]
+  },
+  {
+    "id": "modric",
+    "nome": "LUKA MODRIĆ",
+    "apelido": "MODRIĆ",
+    "nacionalidade": "CROACIA",
+    "clube": "REAL MADRID",
+    "posicao": "MEI",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 85, "golsSelecao": 25, "bolasDeOuro": 1,
+      "seguidores": 30000000, "valorMercado": 8000000,
+      "velocidade": 74, "finalizacao": 72, "drible": 88, "passe": 92, "fisico": 66,
+      "titulos": 28, "assistencias": 180, "altura": 172, "idade": 40
+    },
+    "clubesCarreira": ["DINAMO ZAGREB", "TOTTENHAM", "REAL MADRID"]
+  },
+  {
+    "id": "rodri",
+    "nome": "RODRIGO HERNÁNDEZ",
+    "apelido": "RODRI",
+    "nacionalidade": "ESPANHA",
+    "clube": "MAN CITY",
+    "posicao": "MEI",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 60, "golsSelecao": 8, "bolasDeOuro": 1,
+      "seguidores": 15000000, "valorMercado": 120000000,
+      "velocidade": 68, "finalizacao": 72, "drible": 80, "passe": 88, "fisico": 86,
+      "titulos": 16, "assistencias": 55, "altura": 191, "idade": 29
+    },
+    "clubesCarreira": ["VILLARREAL", "ATLETICO MADRID", "MAN CITY"]
+  },
+  {
+    "id": "lewandowski",
+    "nome": "ROBERT LEWANDOWSKI",
+    "apelido": "LEWANDOWSKI",
+    "nacionalidade": "POLONIA",
+    "clube": "BARCELONA",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 680, "golsSelecao": 84, "bolasDeOuro": 0,
+      "seguidores": 40000000, "valorMercado": 15000000,
+      "velocidade": 74, "finalizacao": 94, "drible": 82, "passe": 79, "fisico": 84,
+      "titulos": 30, "assistencias": 170, "altura": 185, "idade": 37
+    },
+    "clubesCarreira": ["LECH POZNAN", "BORUSSIA DORTMUND", "BAYERN MUNICH", "BARCELONA"]
+  },
+  {
+    "id": "pedri",
+    "nome": "PEDRO GONZÁLEZ",
+    "apelido": "PEDRI",
+    "nacionalidade": "ESPANHA",
+    "clube": "BARCELONA",
+    "posicao": "MEI",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 35, "golsSelecao": 6, "bolasDeOuro": 0,
+      "seguidores": 25000000, "valorMercado": 120000000,
+      "velocidade": 76, "finalizacao": 72, "drible": 90, "passe": 90, "fisico": 62,
+      "titulos": 8, "assistencias": 40, "altura": 174, "idade": 22
+    },
+    "clubesCarreira": ["LAS PALMAS", "BARCELONA"]
+  },
+  {
+    "id": "saka",
+    "nome": "BUKAYO SAKA",
+    "apelido": "SAKA",
+    "nacionalidade": "INGLATERRA",
+    "clube": "ARSENAL",
+    "posicao": "ATA",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 85, "golsSelecao": 14, "bolasDeOuro": 0,
+      "seguidores": 18000000, "valorMercado": 140000000,
+      "velocidade": 88, "finalizacao": 82, "drible": 88, "passe": 84, "fisico": 70,
+      "titulos": 3, "assistencias": 70, "altura": 178, "idade": 23
+    },
+    "clubesCarreira": ["ARSENAL"]
+  },
+  {
+    "id": "virgil",
+    "nome": "VIRGIL VAN DIJK",
+    "apelido": "VAN DIJK",
+    "nacionalidade": "HOLANDA",
+    "clube": "LIVERPOOL",
+    "posicao": "ZAG",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 55, "golsSelecao": 14, "bolasDeOuro": 0,
+      "seguidores": 25000000, "valorMercado": 35000000,
+      "velocidade": 78, "finalizacao": 60, "drible": 65, "passe": 75, "fisico": 92,
+      "titulos": 14, "assistencias": 20, "altura": 193, "idade": 34
+    },
+    "clubesCarreira": ["GRONINGEN", "CELTIC", "SOUTHAMPTON", "LIVERPOOL"]
+  },
+  {
+    "id": "courtois",
+    "nome": "THIBAUT COURTOIS",
+    "apelido": "COURTOIS",
+    "nacionalidade": "BELGICA",
+    "clube": "REAL MADRID",
+    "posicao": "GOL",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 0, "golsSelecao": 0, "bolasDeOuro": 0,
+      "seguidores": 20000000, "valorMercado": 30000000,
+      "velocidade": 52, "finalizacao": 15, "drible": 30, "passe": 50, "fisico": 85,
+      "titulos": 18, "assistencias": 0, "altura": 199, "idade": 33
+    },
+    "clubesCarreira": ["GENK", "CHELSEA", "ATLETICO MADRID", "REAL MADRID"]
+  },
+  {
+    "id": "alisson",
+    "nome": "ALISSON BECKER",
+    "apelido": "ALISSON",
+    "nacionalidade": "BRASIL",
+    "clube": "LIVERPOOL",
+    "posicao": "GOL",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 1, "golsSelecao": 0, "bolasDeOuro": 0,
+      "seguidores": 18000000, "valorMercado": 25000000,
+      "velocidade": 48, "finalizacao": 12, "drible": 25, "passe": 55, "fisico": 82,
+      "titulos": 15, "assistencias": 2, "altura": 191, "idade": 33
+    },
+    "clubesCarreira": ["INTERNACIONAL", "ROMA", "LIVERPOOL"]
+  },
+  {
+    "id": "suarez",
+    "nome": "LUIS SUÁREZ",
+    "apelido": "SUÁREZ",
+    "nacionalidade": "URUGUAI",
+    "clube": "INTER MIAMI",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 550, "golsSelecao": 69, "bolasDeOuro": 0,
+      "seguidores": 50000000, "valorMercado": 3000000,
+      "velocidade": 70, "finalizacao": 90, "drible": 86, "passe": 82, "fisico": 76,
+      "titulos": 22, "assistencias": 250, "altura": 182, "idade": 39
+    },
+    "clubesCarreira": ["NACIONAL", "GRONINGEN", "AJAX", "LIVERPOOL", "BARCELONA", "ATLETICO MADRID", "GREMIO", "INTER MIAMI"]
+  },
+  {
+    "id": "benzema",
+    "nome": "KARIM BENZEMA",
+    "apelido": "BENZEMA",
+    "nacionalidade": "FRANCA",
+    "clube": "AL-ITTIHAD",
+    "posicao": "ATA",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 470, "golsSelecao": 37, "bolasDeOuro": 1,
+      "seguidores": 75000000, "valorMercado": 8000000,
+      "velocidade": 76, "finalizacao": 90, "drible": 88, "passe": 84, "fisico": 78,
+      "titulos": 25, "assistencias": 190, "altura": 185, "idade": 38
+    },
+    "clubesCarreira": ["LYON", "REAL MADRID", "AL-ITTIHAD"]
+  },
+  {
+    "id": "yamal",
+    "nome": "LAMINE YAMAL",
+    "apelido": "YAMAL",
+    "nacionalidade": "ESPANHA",
+    "clube": "BARCELONA",
+    "posicao": "ATA",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 25, "golsSelecao": 5, "bolasDeOuro": 0,
+      "seguidores": 28000000, "valorMercado": 200000000,
+      "velocidade": 93, "finalizacao": 78, "drible": 92, "passe": 85, "fisico": 55,
+      "titulos": 3, "assistencias": 25, "altura": 178, "idade": 17
+    },
+    "clubesCarreira": ["BARCELONA"]
+  },
+  {
+    "id": "kroos",
+    "nome": "TONI KROOS",
+    "apelido": "KROOS",
+    "nacionalidade": "ALEMANHA",
+    "clube": "APOSENTADO",
+    "posicao": "MEI",
+    "raridade": "lendario",
+    "atributos": {
+      "gols": 95, "golsSelecao": 17, "bolasDeOuro": 0,
+      "seguidores": 45000000, "valorMercado": 0,
+      "velocidade": 55, "finalizacao": 70, "drible": 75, "passe": 93, "fisico": 72,
+      "titulos": 30, "assistencias": 165, "altura": 183, "idade": 36
+    },
+    "clubesCarreira": ["BAYERN MUNICH", "REAL MADRID"]
+  },
+  {
+    "id": "Son",
+    "nome": "SON HEUNG-MIN",
+    "apelido": "SON",
+    "nacionalidade": "COREIA DO SUL",
+    "clube": "TOTTENHAM",
+    "posicao": "ATA",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 220, "golsSelecao": 50, "bolasDeOuro": 0,
+      "seguidores": 15000000, "valorMercado": 40000000,
+      "velocidade": 88, "finalizacao": 86, "drible": 84, "passe": 78, "fisico": 69,
+      "titulos": 3, "assistencias": 100, "altura": 183, "idade": 33
+    },
+    "clubesCarreira": ["HAMBURG", "BAYER LEVERKUSEN", "TOTTENHAM"]
+  },
+  {
+    "id": "dias",
+    "nome": "RÚBEN DIAS",
+    "apelido": "RÚBEN DIAS",
+    "nacionalidade": "PORTUGAL",
+    "clube": "MAN CITY",
+    "posicao": "ZAG",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 15, "golsSelecao": 3, "bolasDeOuro": 0,
+      "seguidores": 12000000, "valorMercado": 75000000,
+      "velocidade": 72, "finalizacao": 45, "drible": 60, "passe": 72, "fisico": 88,
+      "titulos": 12, "assistencias": 8, "altura": 187, "idade": 28
+    },
+    "clubesCarreira": ["BENFICA", "MAN CITY"]
+  },
+  {
+    "id": "gavi",
+    "nome": "PABLO GAVI",
+    "apelido": "GAVI",
+    "nacionalidade": "ESPANHA",
+    "clube": "BARCELONA",
+    "posicao": "MEI",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 12, "golsSelecao": 2, "bolasDeOuro": 0,
+      "seguidores": 15000000, "valorMercado": 90000000,
+      "velocidade": 78, "finalizacao": 65, "drible": 82, "passe": 84, "fisico": 72,
+      "titulos": 5, "assistencias": 18, "altura": 173, "idade": 21
+    },
+    "clubesCarreira": ["BARCELONA"]
+  },
+  {
+    "id": "foden",
+    "nome": "PHIL FODEN",
+    "apelido": "FODEN",
+    "nacionalidade": "INGLATERRA",
+    "clube": "MAN CITY",
+    "posicao": "MEI",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 85, "golsSelecao": 7, "bolasDeOuro": 0,
+      "seguidores": 18000000, "valorMercado": 130000000,
+      "velocidade": 85, "finalizacao": 82, "drible": 90, "passe": 85, "fisico": 58,
+      "titulos": 16, "assistencias": 50, "altura": 171, "idade": 25
+    },
+    "clubesCarreira": ["MAN CITY"]
+  },
+  {
+    "id": "raphinha",
+    "nome": "RAPHAEL DIAS",
+    "apelido": "RAPHINHA",
+    "nacionalidade": "BRASIL",
+    "clube": "BARCELONA",
+    "posicao": "ATA",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 80, "golsSelecao": 12, "bolasDeOuro": 0,
+      "seguidores": 10000000, "valorMercado": 80000000,
+      "velocidade": 88, "finalizacao": 80, "drible": 86, "passe": 78, "fisico": 65,
+      "titulos": 5, "assistencias": 55, "altura": 176, "idade": 28
+    },
+    "clubesCarreira": ["SPORTING", "RENNES", "LEEDS", "BARCELONA"]
+  },
+  {
+    "id": "hakimi",
+    "nome": "ACHRAF HAKIMI",
+    "apelido": "HAKIMI",
+    "nacionalidade": "MARROCOS",
+    "clube": "PSG",
+    "posicao": "LAT",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 40, "golsSelecao": 10, "bolasDeOuro": 0,
+      "seguidores": 25000000, "valorMercado": 70000000,
+      "velocidade": 93, "finalizacao": 70, "drible": 80, "passe": 78, "fisico": 76,
+      "titulos": 12, "assistencias": 60, "altura": 181, "idade": 26
+    },
+    "clubesCarreira": ["REAL MADRID", "BORUSSIA DORTMUND", "INTER MILAN", "PSG"]
+  },
+  {
+    "id": "alexander-arnold",
+    "nome": "TRENT ALEXANDER-ARNOLD",
+    "apelido": "TAA",
+    "nacionalidade": "INGLATERRA",
+    "clube": "REAL MADRID",
+    "posicao": "LAT",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 25, "golsSelecao": 3, "bolasDeOuro": 0,
+      "seguidores": 20000000, "valorMercado": 70000000,
+      "velocidade": 76, "finalizacao": 65, "drible": 75, "passe": 92, "fisico": 68,
+      "titulos": 10, "assistencias": 85, "altura": 175, "idade": 26
+    },
+    "clubesCarreira": ["LIVERPOOL", "REAL MADRID"]
+  },
+  {
+    "id": "wirtz",
+    "nome": "FLORIAN WIRTZ",
+    "apelido": "WIRTZ",
+    "nacionalidade": "ALEMANHA",
+    "clube": "BAYER LEVERKUSEN",
+    "posicao": "MEI",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 55, "golsSelecao": 8, "bolasDeOuro": 0,
+      "seguidores": 12000000, "valorMercado": 150000000,
+      "velocidade": 82, "finalizacao": 80, "drible": 90, "passe": 88, "fisico": 60,
+      "titulos": 4, "assistencias": 50, "altura": 176, "idade": 22
+    },
+    "clubesCarreira": ["BAYER LEVERKUSEN"]
+  },
+  {
+    "id": "marquinhos",
+    "nome": "MARCOS AOÁS",
+    "apelido": "MARQUINHOS",
+    "nacionalidade": "BRASIL",
+    "clube": "PSG",
+    "posicao": "ZAG",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 35, "golsSelecao": 8, "bolasDeOuro": 0,
+      "seguidores": 15000000, "valorMercado": 35000000,
+      "velocidade": 76, "finalizacao": 50, "drible": 68, "passe": 74, "fisico": 84,
+      "titulos": 22, "assistencias": 15, "altura": 183, "idade": 31
+    },
+    "clubesCarreira": ["CORINTHIANS", "ROMA", "PSG"]
+  },
+  {
+    "id": "casemiro",
+    "nome": "CASEMIRO",
+    "apelido": "CASEMIRO",
+    "nacionalidade": "BRASIL",
+    "clube": "MAN UTD",
+    "posicao": "MEI",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 55, "golsSelecao": 7, "bolasDeOuro": 0,
+      "seguidores": 25000000, "valorMercado": 15000000,
+      "velocidade": 62, "finalizacao": 65, "drible": 68, "passe": 75, "fisico": 88,
+      "titulos": 25, "assistencias": 40, "altura": 185, "idade": 33
+    },
+    "clubesCarreira": ["SAO PAULO", "REAL MADRID", "MAN UTD"]
+  },
+  {
+    "id": "kane",
+    "nome": "HARRY KANE",
+    "apelido": "KANE",
+    "nacionalidade": "INGLATERRA",
+    "clube": "BAYERN MUNICH",
+    "posicao": "ATA",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 380, "golsSelecao": 72, "bolasDeOuro": 0,
+      "seguidores": 18000000, "valorMercado": 75000000,
+      "velocidade": 72, "finalizacao": 94, "drible": 78, "passe": 86, "fisico": 83,
+      "titulos": 5, "assistencias": 120, "altura": 188, "idade": 32
+    },
+    "clubesCarreira": ["TOTTENHAM", "BAYERN MUNICH"]
+  },
+  {
+    "id": "endrick",
+    "nome": "ENDRICK FELIPE",
+    "apelido": "ENDRICK",
+    "nacionalidade": "BRASIL",
+    "clube": "REAL MADRID",
+    "posicao": "ATA",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 35, "golsSelecao": 5, "bolasDeOuro": 0,
+      "seguidores": 15000000, "valorMercado": 60000000,
+      "velocidade": 86, "finalizacao": 82, "drible": 82, "passe": 68, "fisico": 72,
+      "titulos": 4, "assistencias": 10, "altura": 173, "idade": 19
+    },
+    "clubesCarreira": ["PALMEIRAS", "REAL MADRID"]
+  },
+  {
+    "id": "ruidiaz",
+    "nome": "RÜDIGER",
+    "apelido": "RÜDIGER",
+    "nacionalidade": "ALEMANHA",
+    "clube": "REAL MADRID",
+    "posicao": "ZAG",
+    "raridade": "bom",
+    "atributos": {
+      "gols": 20, "golsSelecao": 3, "bolasDeOuro": 0,
+      "seguidores": 8000000, "valorMercado": 30000000,
+      "velocidade": 82, "finalizacao": 42, "drible": 55, "passe": 68, "fisico": 90,
+      "titulos": 12, "assistencias": 8, "altura": 190, "idade": 32
+    },
+    "clubesCarreira": ["BORUSSIA DORTMUND", "STUTTGART", "ROMA", "CHELSEA", "REAL MADRID"]
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "artilheiro",
+    "nome": "Artilheiro",
+    "descricao": "+30 BASE por jogador com Gols em faixa Lendária",
+    "tipo": "aditivo",
+    "raridade": "comum",
+    "preco": 4,
+    "efeito": { "tipo": "base_per_tier", "atributo": "gols", "tier": "lendario", "valor": 30 }
+  },
+  {
+    "id": "hat_trick",
+    "nome": "Hat-trick",
+    "descricao": "Triplica o atributo Gols de UM jogador escolhido",
+    "tipo": "aditivo",
+    "raridade": "raro",
+    "preco": 7,
+    "efeito": { "tipo": "base_multiply_attr", "atributo": "gols", "valor": 3, "alvo": "escolhido" }
+  },
+  {
+    "id": "camisa10",
+    "nome": "Camisa 10",
+    "descricao": "+50 BASE ao meia de maior atributo",
+    "tipo": "aditivo",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "base_flat_posicao", "posicao": "MEI", "valor": 50, "alvo": "melhor" }
+  },
+  {
+    "id": "galacticos",
+    "nome": "Galáticos",
+    "descricao": "×2 MULT se 3+ jogadores do mesmo clube",
+    "tipo": "multiplicativo",
+    "raridade": "raro",
+    "preco": 8,
+    "efeito": { "tipo": "mult_multiply", "valor": 2, "condicao": "mesmoClube", "min": 3 }
+  },
+  {
+    "id": "torcida",
+    "nome": "Torcida",
+    "descricao": "×1.5 MULT se 3+ da mesma seleção",
+    "tipo": "multiplicativo",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "mult_multiply", "valor": 1.5, "condicao": "mesmaSelecao", "min": 3 }
+  },
+  {
+    "id": "capitao",
+    "nome": "Capitão",
+    "descricao": "×3 nos atributos do capitão da escalação",
+    "tipo": "multiplicativo",
+    "raridade": "raro",
+    "preco": 8,
+    "efeito": { "tipo": "mult_capitao", "valor": 3 }
+  },
+  {
+    "id": "geracao_ouro",
+    "nome": "Geração de Ouro",
+    "descricao": "+1 MULT por jogador da mesma década de nascimento",
+    "tipo": "condicional",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "mult_per_decade", "valor": 1 }
+  },
+  {
+    "id": "amarelinha",
+    "nome": "Amarelinha",
+    "descricao": "+20 BASE por brasileiro escalado",
+    "tipo": "condicional",
+    "raridade": "comum",
+    "preco": 3,
+    "efeito": { "tipo": "base_per_nacionalidade", "nacionalidade": "BRASIL", "valor": 20 }
+  },
+  {
+    "id": "davi_golias",
+    "nome": "Davi vs. Golias",
+    "descricao": "×2 MULT se sua BASE for menor que a meta",
+    "tipo": "condicional",
+    "raridade": "raro",
+    "preco": 6,
+    "efeito": { "tipo": "mult_underdog", "valor": 2 }
+  },
+  {
+    "id": "var",
+    "nome": "VAR",
+    "descricao": "Reduz meta do adversário em 20%",
+    "tipo": "evento",
+    "raridade": "lendario",
+    "preco": 10,
+    "efeito": { "tipo": "meta_reduce", "valor": 0.2 }
+  },
+  {
+    "id": "penalti",
+    "nome": "Pênalti",
+    "descricao": "Re-sorteia os pontos normalizados de um jogador (tenta melhor tier)",
+    "tipo": "evento",
+    "raridade": "raro",
+    "preco": 6,
+    "efeito": { "tipo": "reroll_player", "alvo": "escolhido" }
+  },
+  {
+    "id": "cartao_vermelho",
+    "nome": "Cartão Vermelho",
+    "descricao": "-30% na meta do adversário nesta partida",
+    "tipo": "evento",
+    "raridade": "lendario",
+    "preco": 10,
+    "efeito": { "tipo": "meta_reduce", "valor": 0.3 }
+  },
+  {
+    "id": "contra_ataque",
+    "nome": "Contra-Ataque",
+    "descricao": "+15 BASE por atacante com velocidade acima de 85",
+    "tipo": "aditivo",
+    "raridade": "comum",
+    "preco": 3,
+    "efeito": { "tipo": "base_per_attr_threshold", "atributo": "velocidade", "threshold": 85, "posicao": "ATA", "valor": 15 }
+  },
+  {
+    "id": "muralha",
+    "nome": "Muralha",
+    "descricao": "+1.5 MULT se 2+ zagueiros na escalação",
+    "tipo": "multiplicativo",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "mult_multiply", "valor": 1.5, "condicao": "mesmaPosicao", "posicao": "ZAG", "min": 2 }
+  },
+  {
+    "id": "craque_mundial",
+    "nome": "Craque Mundial",
+    "descricao": "+100 BASE se houver um jogador lendário escalado",
+    "tipo": "aditivo",
+    "raridade": "incomum",
+    "preco": 5,
+    "efeito": { "tipo": "base_if_raridade", "raridade": "lendario", "valor": 100 }
+  }
+]

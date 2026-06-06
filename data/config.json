@@ -1,0 +1,41 @@
+{
+  "run": {
+    "atributosAtivos": 3,
+    "fasesNomes": ["Fase de Grupos", "Oitavas de Final", "Quartas de Final", "Semifinal", "Final"],
+    "partidasPorFase": 3,
+    "metaBase": 600,
+    "metaCrescimento": 1.6,
+    "metaVariacao": 0.1,
+    "classicoMetaBonus": 0.3
+  },
+  "partida": {
+    "tamanhoMao": 8,
+    "maxEscalacao": 5,
+    "tentativas": 4,
+    "trocas": 3
+  },
+  "economia": {
+    "orcamentoInicial": 10,
+    "recompensaVitoria": 5,
+    "recompensaFolga": 0.01,
+    "recompensaTrocasNaoUsadas": 1,
+    "juros": 0.2,
+    "maxJuros": 5,
+    "tamanhosLoja": {
+      "jogadores": 3,
+      "boosts": 3
+    },
+    "custoReroll": 2
+  },
+  "baralho": {
+    "tamanhoInicial": 8,
+    "maxBaralho": 15,
+    "maxBoosts": 5
+  },
+  "raridades": {
+    "comum":   { "peso": 40, "cor": "#9CA3AF" },
+    "incomum": { "peso": 30, "cor": "#60A5FA" },
+    "raro":    { "peso": 20, "cor": "#C084FC" },
+    "lendario":{ "peso": 10, "cor": "#FFD700" }
+  }
+}

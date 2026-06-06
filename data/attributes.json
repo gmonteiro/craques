@@ -1,0 +1,25 @@
+{
+  "pool": [
+    { "id": "gols", "nome": "Gols", "tipo": "hard", "descricao": "Gols na carreira" },
+    { "id": "golsSelecao", "nome": "Gols pela Seleção", "tipo": "hard", "descricao": "Gols pela seleção nacional" },
+    { "id": "bolasDeOuro", "nome": "Bolas de Ouro", "tipo": "hard", "descricao": "Prêmios Ballon d'Or" },
+    { "id": "seguidores", "nome": "Seguidores", "tipo": "hard", "descricao": "Seguidores no Instagram" },
+    { "id": "valorMercado", "nome": "Valor de Mercado", "tipo": "hard", "descricao": "Valor de mercado em EUR" },
+    { "id": "titulos", "nome": "Títulos", "tipo": "hard", "descricao": "Títulos na carreira" },
+    { "id": "assistencias", "nome": "Assistências", "tipo": "hard", "descricao": "Assistências na carreira" },
+    { "id": "altura", "nome": "Altura", "tipo": "hard", "descricao": "Altura em cm" },
+    { "id": "idade", "nome": "Idade", "tipo": "hard", "descricao": "Idade do jogador" },
+    { "id": "velocidade", "nome": "Velocidade", "tipo": "soft", "descricao": "Velocidade (estilo EA FC)" },
+    { "id": "finalizacao", "nome": "Finalização", "tipo": "soft", "descricao": "Finalização (estilo EA FC)" },
+    { "id": "passe", "nome": "Passe", "tipo": "soft", "descricao": "Qualidade de passe" },
+    { "id": "drible", "nome": "Drible", "tipo": "soft", "descricao": "Habilidade de drible" },
+    { "id": "fisico", "nome": "Físico", "tipo": "soft", "descricao": "Força e resistência física" }
+  ],
+  "tiers": {
+    "lendario": { "label": "Lendário", "percentil": 90, "pontos": 100, "cor": "#FFD700" },
+    "elite":    { "label": "Elite",     "percentil": 70, "pontos": 75,  "cor": "#C084FC" },
+    "bom":      { "label": "Bom",       "percentil": 45, "pontos": 50,  "cor": "#60A5FA" },
+    "regular":  { "label": "Regular",   "percentil": 20, "pontos": 25,  "cor": "#9CA3AF" },
+    "fraco":    { "label": "Fraco",     "percentil": 0,  "pontos": 10,  "cor": "#6B7280" }
+  }
+}
