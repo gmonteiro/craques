@@ -122,56 +122,67 @@ export function PlayArea({ escalacao, maxSlots, onRemove, onSlotClick }: Props) 
             }}
           >
             {card ? (
-              /* Filled slot: player token */
-              <>
-                <div style={{
-                  width: 64, height: 64,
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle at 35% 35%, ${POS_COLORS[card.posicao] ?? '#6b7280'}cc, ${POS_COLORS[card.posicao] ?? '#6b7280'})`,
-                  border: '3px solid rgba(255,255,255,0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.2)',
-                  transition: 'transform 0.15s ease',
-                }}>
-                  <span className="val shadow-hard" style={{
-                    fontSize: 34,
-                    color: '#fff',
-                    lineHeight: 1,
-                  }}>
-                    {card.visual?.numeroCamisa ?? card.visual?.numeroCarta ?? '?'}
-                  </span>
-                </div>
-                {/* Position chip */}
-                <span
-                  className="postag"
-                  style={{
-                    marginTop: -6,
-                    background: POS_COLORS[card.posicao] ?? '#6b7280',
-                    fontSize: 9,
-                    padding: '2px 5px 1px',
-                    position: 'relative',
-                    zIndex: 3,
-                  }}
-                >
-                  {card.posicao}
-                </span>
-                {/* Name below */}
-                <span className="micro" style={{
-                  marginTop: 2,
-                  fontSize: 9,
-                  color: 'var(--ink)',
-                  maxWidth: 80,
-                  textAlign: 'center',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  letterSpacing: 0.5,
-                }}>
-                  {card.apelido}
-                </span>
-              </>
+              /* Filled slot: player token — uses shirt/numc from visual */
+              (() => {
+                const v = (card.visual ?? {}) as Record<string, string | number>
+                const shirtColor = (v.jersey as string) ?? (v.headerBar as string) ?? '#3a3460'
+                const numColor = (v.numberColor as string) ?? '#fff'
+                const num = (v.numeroCamisa as number) ?? 0
+                const posCol = POS_COLORS[card.posicao] ?? '#6b7280'
+                return (
+                  <>
+                    <div style={{ position: 'relative' }}>
+                      <div style={{
+                        width: 64, height: 64,
+                        borderRadius: '50%',
+                        background: shirtColor,
+                        border: '3px solid #f4f6f1',
+                        display: 'grid',
+                        placeItems: 'center',
+                        boxShadow: '0 6px 0 rgba(0,0,0,.4), 0 10px 16px rgba(0,0,0,.5), inset 0 3px 0 rgba(255,255,255,.25)',
+                      }}>
+                        <span style={{
+                          fontFamily: '"Jersey 10", monospace',
+                          fontSize: 34,
+                          color: numColor,
+                          textShadow: '0 2px 0 rgba(0,0,0,.3)',
+                          lineHeight: 1,
+                        }}>
+                          {num}
+                        </span>
+                      </div>
+                      {/* Position chip — top right of circle */}
+                      <span className="postag" style={{
+                        position: 'absolute',
+                        top: -8,
+                        right: -8,
+                        background: posCol,
+                        fontSize: 9,
+                      }}>
+                        {card.posicao}
+                      </span>
+                    </div>
+                    {/* Name badge below */}
+                    <span style={{
+                      fontFamily: '"Jersey 10", monospace',
+                      fontSize: 17,
+                      color: '#fff',
+                      background: 'rgba(8,16,11,.78)',
+                      padding: '2px 9px 1px',
+                      borderRadius: 7,
+                      textShadow: '0 1px 0 rgba(0,0,0,.6)',
+                      whiteSpace: 'nowrap',
+                      boxShadow: 'inset 0 1px 0 rgba(255,255,255,.1)',
+                      marginTop: 5,
+                      maxWidth: 100,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {card.apelido}
+                    </span>
+                  </>
+                )
+              })()
             ) : (
               /* Empty slot: dashed circle */
               <div style={{
