@@ -8,10 +8,10 @@ import { BoostBar } from './BoostBar'
 import { ScoreDisplay } from './ScoreDisplay'
 import { Shop } from './Shop'
 import { ComboGuide } from './ComboGuide'
-import { MatchInfo } from './MatchInfo'
 import { DeckViewer } from './DeckViewer'
 import { getComboProgress } from '../engine/combos'
 import { calcularPontuacao } from '../engine/scoring'
+import { getAttributeLabel } from '../engine/attributes'
 import config from '../../data/config.json'
 
 interface Props {
@@ -37,10 +37,10 @@ export function GameScreen({
 }: Props) {
   const [trocaSelecionados, setTrocaSelecionados] = useState<Set<string>>(new Set())
   const [modoTroca, setModoTroca] = useState(false)
-  const [showCombos, setShowCombos] = useState(false) // colapsado por padrão
+  const [showCombos, setShowCombos] = useState(true)
   const [showDesistir, setShowDesistir] = useState(false)
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
 
-  // Preview score em tempo real (como Balatro)
   const previewScore = run.escalacao.length > 0
     ? calcularPontuacao(run.escalacao, run.boosts, run.era, run.meta, run.mao.length)
     : null
@@ -54,6 +54,13 @@ export function GameScreen({
     }
   }, [run.status, modoTroca])
 
+  // Clear selected card when escalacao changes
+  useEffect(() => {
+    setSelectedCardId(null)
+  }, [run.escalacao.length])
+
+  const escaladoIds = new Set(run.escalacao.map(c => c.id))
+
   const handleCardClick = (id: string) => {
     if (modoTroca) {
       const novo = new Set(trocaSelecionados)
@@ -61,7 +68,19 @@ export function GameScreen({
       else novo.add(id)
       setTrocaSelecionados(novo)
     } else {
-      onEscalar(id)
+      // Toggle selection
+      if (selectedCardId === id) {
+        setSelectedCardId(null)
+      } else {
+        setSelectedCardId(id)
+      }
+    }
+  }
+
+  const handleSlotClick = (_slotIndex: number) => {
+    if (selectedCardId && !escaladoIds.has(selectedCardId)) {
+      onEscalar(selectedCardId)
+      setSelectedCardId(null)
     }
   }
 
@@ -99,242 +118,524 @@ export function GameScreen({
   // === RESULTADO ===
   if (run.status === 'resultado') {
     return (
-      <div className="h-screen bg-black/40 flex">
-        {/* Left panel */}
-        <div className="hidden md:block p-3">
-          <MatchInfo run={run} />
-        </div>
-        {/* Center */}
-        <div className="flex-1 flex flex-col items-center justify-center p-4 space-y-4">
-          <ScoreDisplay
-            result={run.ultimaPontuacao}
-            meta={run.meta}
-            tentativas={run.tentativasRestantes}
-            trocas={run.trocasRestantes}
-            escalacao={run.escalacao}
-            adversario={info.adversario}
-          />
-          <button onClick={onAvancar} className="btn-arcade btn-advance">
-            Avancar →
-          </button>
-        </div>
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: 16,
+        padding: 16,
+      }}>
+        <ScoreDisplay
+          result={run.ultimaPontuacao}
+          meta={run.meta}
+          tentativas={run.tentativasRestantes}
+          trocas={run.trocasRestantes}
+          escalacao={run.escalacao}
+          adversario={info.adversario}
+        />
+        <button onClick={onAvancar} className="btn-arcade btn-advance btn-lg">
+          Avancar
+        </button>
       </div>
     )
   }
 
-  // === ESCALANDO — Layout estilo Balatro ===
-  return (
-    <div className="h-screen bg-black/40 flex flex-col md:flex-row overflow-hidden">
+  // === ESCALANDO ===
 
-      {/* === LEFT PANEL (Balatro-style stacked info) === */}
-      <div className="hidden md:flex flex-col gap-2 p-3 w-52 flex-shrink-0 overflow-y-auto">
-        <MatchInfo run={run} />
+  /* ---- Left column: Dossie + Combos ---- */
+  const leftColumn = (
+    <div style={{
+      width: mobile ? '100%' : 376,
+      flexShrink: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10,
+      padding: mobile ? '8px 8px 0' : 12,
+      overflowY: 'auto',
+      maxHeight: mobile ? 'none' : '100vh',
+    }}>
+      {/* === DOSSIE DA PARTIDA === */}
+      <div className="panel" style={{ padding: '16px 18px 14px' }}>
+        {/* Header */}
+        <div className="micro" style={{ marginBottom: 8 }}>Dossie da Partida</div>
 
-        {/* Live score preview */}
-        {previewScore && (
-          <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-3 text-center">
-            <div className="text-[10px] text-gray-500 uppercase tracking-wider">Preview</div>
-            <div className="flex items-center justify-center gap-1 mt-1">
-              <span className="text-blue-400 font-bold text-lg" style={{ fontFamily: "'VT323',monospace" }}>
-                {previewScore.base}
-              </span>
-              <span className="text-gray-500 text-xs">×</span>
-              <span className="text-red-400 font-bold text-lg" style={{ fontFamily: "'VT323',monospace" }}>
-                {previewScore.mult.toFixed(1)}
-              </span>
-            </div>
-            <div className={`text-xl font-black ${previewScore.total >= run.meta ? 'text-green-400' : 'text-yellow-400'}`}
-              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
-              {previewScore.total.toLocaleString()}
-            </div>
-            <div className="text-[10px] text-gray-500 mt-1">
-              Meta: {run.meta.toLocaleString()}
+        {/* Grid info */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '6px 16px',
+        }}>
+          {/* Fase */}
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Fase</span>
+            <div className="val shadow-hard" style={{ fontSize: 26, color: 'var(--ink)' }}>
+              {info.fase}
             </div>
           </div>
+
+          {/* Partida */}
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Partida</span>
+            <div className="val shadow-hard" style={{ fontSize: 26, color: 'var(--ink)' }}>
+              {info.partida}/{info.totalPartidas}
+              {info.isClassico && (
+                <span className="micro" style={{
+                  fontSize: 9,
+                  color: 'var(--orange)',
+                  marginLeft: 6,
+                  verticalAlign: 'middle',
+                }}>CL</span>
+              )}
+            </div>
+          </div>
+
+          {/* Adversario */}
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Adversario</span>
+            <div className="val shadow-hard" style={{ fontSize: 26, color: 'var(--ink)' }}>
+              {info.adversario}
+            </div>
+          </div>
+
+          {/* Meta */}
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Meta</span>
+            <div className="val shadow-hard" style={{ fontSize: 28, color: 'var(--gold)' }}>
+              {run.meta.toLocaleString()}
+            </div>
+          </div>
+        </div>
+
+        <div className="hr" style={{ margin: '10px 0' }} />
+
+        {/* Escalacoes + Trocas + Orcamento */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: 8,
+          textAlign: 'center',
+        }}>
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Escalacoes</span>
+            <div className="val shadow-hard" style={{ fontSize: 30, color: 'var(--ink)' }}>
+              {run.tentativasRestantes}
+            </div>
+          </div>
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Trocas</span>
+            <div className="val shadow-hard" style={{ fontSize: 30, color: 'var(--ink)' }}>
+              {run.trocasRestantes}
+            </div>
+          </div>
+          <div>
+            <span className="micro" style={{ fontSize: 9 }}>Verba</span>
+            <div className="val shadow-hard" style={{ fontSize: 30, color: 'var(--green)' }}>
+              ${run.orcamento}
+            </div>
+          </div>
+        </div>
+
+        <div className="hr" style={{ margin: '10px 0' }} />
+
+        {/* Era */}
+        <div>
+          <span className="micro" style={{ fontSize: 9, marginBottom: 4, display: 'block' }}>Era</span>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {run.era.map(attr => (
+              <span key={attr} className="postag" style={{
+                background: 'var(--panel-3)',
+                fontSize: 10,
+              }}>
+                {getAttributeLabel(attr)}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Twist warning */}
+        {run.twist && (
+          <>
+            <div className="hr" style={{ margin: '10px 0' }} />
+            <div style={{
+              background: 'rgba(232,118,43,0.08)',
+              border: '1px solid rgba(232,118,43,0.25)',
+              borderRadius: 'var(--r-sm)',
+              padding: '6px 8px',
+            }}>
+              <span className="micro" style={{ fontSize: 9, color: 'var(--orange)' }}>Classico: </span>
+              <span className="val" style={{ fontSize: 16, color: 'var(--orange-l)' }}>
+                {run.twist.descricao}
+              </span>
+            </div>
+          </>
         )}
 
-        {run.boosts.length > 0 && <BoostBar boosts={run.boosts} />}
+        {/* Preview Score */}
+        {previewScore && (
+          <>
+            <div className="hr" style={{ margin: '10px 0' }} />
+            <div style={{ textAlign: 'center' }}>
+              <span className="micro" style={{ fontSize: 9 }}>Preview</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 2 }}>
+                <span className="val shadow-hard" style={{ fontSize: 24, color: 'var(--pos-mei)' }}>
+                  {previewScore.base}
+                </span>
+                <span className="val" style={{ fontSize: 16, color: 'var(--ink-dim)' }}>x</span>
+                <span className="val shadow-hard" style={{ fontSize: 24, color: 'var(--pos-ata)' }}>
+                  {previewScore.mult.toFixed(1)}
+                </span>
+              </div>
+              <div className="val shadow-hard" style={{
+                fontSize: 32,
+                color: previewScore.total >= run.meta ? 'var(--green)' : 'var(--gold)',
+              }}>
+                {previewScore.total.toLocaleString()}
+              </div>
+            </div>
+          </>
+        )}
 
-        {/* Combos — colapsável */}
-        <div className="bg-gray-900/60 border border-gray-800 rounded-lg overflow-hidden">
-          <button onClick={() => setShowCombos(!showCombos)}
-            className="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-white/5 transition">
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-              Combos ({combosAtivos}/{comboProgress.length})
-            </span>
-            <span className={`text-gray-500 text-xs transition-transform ${showCombos ? 'rotate-180' : ''}`}>▼</span>
-          </button>
-          {showCombos && <div className="px-2 pb-2"><ComboGuide combos={comboProgress} /></div>}
-        </div>
-        <DeckViewer
-          mao={run.mao}
-          baralho={run.baralho}
-          escalacao={run.escalacao}
-          descarte={run.descarte}
-          activeAttributes={run.era}
-        />
-        {/* Desistir */}
-        <button
-          onClick={() => setShowDesistir(true)}
-          className="btn-arcade btn-cancel w-full mt-2"
-          style={{ fontSize: 9, padding: '10px 12px' }}
-        >
-          Encerrar
-        </button>
+        {/* Boosts */}
+        {run.boosts.length > 0 && (
+          <>
+            <div className="hr" style={{ margin: '10px 0' }} />
+            <BoostBar boosts={run.boosts} />
+          </>
+        )}
       </div>
+
+      {/* === COMBOS === */}
+      <div className="panel" style={{ padding: '12px 14px 10px' }}>
+        <button
+          onClick={() => setShowCombos(!showCombos)}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+            marginBottom: showCombos ? 8 : 0,
+          }}
+        >
+          <span className="micro">
+            Combos ({combosAtivos}/{comboProgress.length})
+          </span>
+          <span className="val" style={{
+            fontSize: 14,
+            color: 'var(--label)',
+            transform: showCombos ? 'rotate(180deg)' : 'rotate(0)',
+            transition: 'transform 0.2s ease',
+            display: 'inline-block',
+          }}>
+            ▼
+          </span>
+        </button>
+        {showCombos && <ComboGuide combos={comboProgress} />}
+      </div>
+
+      {/* Deck Viewer */}
+      <DeckViewer
+        mao={run.mao}
+        baralho={run.baralho}
+        escalacao={run.escalacao}
+        descarte={run.descarte}
+        activeAttributes={run.era}
+      />
+
+      {/* Encerrar button */}
+      <button
+        onClick={() => setShowDesistir(true)}
+        className="btn-arcade btn-cancel btn-sm"
+        style={{ width: '100%', fontSize: 14, padding: '8px 12px 10px' }}
+      >
+        Encerrar
+      </button>
+    </div>
+  )
+
+  /* ---- Right column: Field + Actions + Hand ---- */
+  const rightColumn = (
+    <div style={{
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      minWidth: 0,
+      overflow: 'hidden',
+      padding: mobile ? '0 8px 8px' : '12px 12px 12px 0',
+      gap: 8,
+    }}>
+      {/* Score (only shows if already attempted) */}
+      {run.ultimaPontuacao && (
+        <ScoreDisplay
+          result={run.ultimaPontuacao}
+          meta={run.meta}
+          tentativas={run.tentativasRestantes}
+          trocas={run.trocasRestantes}
+          escalacao={run.escalacao}
+          adversario={info.adversario}
+        />
+      )}
+
+      {/* Field */}
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <PlayArea
+          escalacao={run.escalacao}
+          activeAttributes={run.era}
+          maxSlots={config.partida.maxEscalacao}
+          onRemove={onDesescalar}
+          onSlotClick={handleSlotClick}
+          mobile={mobile}
+        />
+      </div>
+
+      {/* Action bar */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: mobile ? 10 : 16,
+        padding: '4px 0',
+      }}>
+        <button
+          onClick={onJogar}
+          disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
+          className="btn-arcade btn-play"
+          style={{ fontSize: mobile ? 28 : 38 }}
+        >
+          JOGAR!
+        </button>
+        {modoTroca ? (
+          <>
+            <button
+              onClick={handleTrocar}
+              disabled={trocaSelecionados.size === 0}
+              className="btn-arcade btn-swap"
+              style={{ fontSize: mobile ? 22 : 30 }}
+            >
+              Trocar ({trocaSelecionados.size})
+            </button>
+            <button
+              onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
+              className="btn-arcade btn-cancel"
+              style={{ fontSize: mobile ? 22 : 30 }}
+            >
+              Cancelar
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setModoTroca(true)}
+            disabled={run.trocasRestantes <= 0}
+            className="btn-arcade btn-swap"
+            style={{ fontSize: mobile ? 28 : 38 }}
+          >
+            TROCAR ({run.trocasRestantes})
+          </button>
+        )}
+      </div>
+
+      {/* Hand */}
+      <div className="panel" style={{ padding: mobile ? '8px 8px 6px' : '12px 14px 10px' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 6,
+        }}>
+          <span className="micro" style={{ fontSize: 10 }}>
+            Mao ({run.mao.length})
+            {modoTroca && (
+              <span style={{ color: 'var(--orange)', marginLeft: 8 }}>Selecione para trocar</span>
+            )}
+            {!modoTroca && selectedCardId && (
+              <span style={{ color: 'var(--green)', marginLeft: 8 }}>Clique em um slot</span>
+            )}
+          </span>
+        </div>
+        <Hand
+          cards={run.mao}
+          activeAttributes={run.era}
+          onSelect={handleCardClick}
+          selectedIds={modoTroca ? trocaSelecionados : (selectedCardId ? new Set([selectedCardId]) : undefined)}
+          escaladoIds={escaladoIds}
+          mobile={mobile}
+          deckSize={run.baralho.length}
+        />
+      </div>
+    </div>
+  )
+
+  return (
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      flexDirection: mobile ? 'column' : 'row',
+      overflow: 'hidden',
+    }}>
+      {/* Mobile: show a compact top bar instead of full left column */}
+      {mobile ? (
+        <>
+          {/* Compact mobile top bar */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '6px 10px',
+            background: 'var(--panel)',
+            borderBottom: '2px solid var(--panel-line)',
+            flexShrink: 0,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span className="val" style={{ fontSize: 18, color: 'var(--ink)' }}>{info.fase}</span>
+              <span className="micro" style={{ fontSize: 9 }}>
+                {info.partida}/{info.totalPartidas}
+                {info.isClassico && <span style={{ color: 'var(--orange)', marginLeft: 4 }}>CL</span>}
+              </span>
+            </div>
+            <span className="val" style={{ fontSize: 16, color: 'var(--ink)' }}>
+              vs {info.adversario}
+            </span>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <span className="val" style={{ fontSize: 16, color: 'var(--gold)' }}>{run.meta}</span>
+              <span className="val" style={{ fontSize: 16, color: 'var(--green)' }}>${run.orcamento}</span>
+            </div>
+          </div>
+
+          {/* Twist warning mobile */}
+          {run.twist && (
+            <div style={{
+              background: 'rgba(232,118,43,0.08)',
+              border: '1px solid rgba(232,118,43,0.25)',
+              padding: '4px 10px',
+              textAlign: 'center',
+            }}>
+              <span className="micro" style={{ fontSize: 9, color: 'var(--orange)' }}>Classico: </span>
+              <span className="val" style={{ fontSize: 14, color: 'var(--orange-l)' }}>{run.twist.descricao}</span>
+            </div>
+          )}
+
+          {/* Mobile boosts */}
+          {run.boosts.length > 0 && (
+            <div style={{ padding: '4px 8px' }}>
+              <BoostBar boosts={run.boosts} />
+            </div>
+          )}
+
+          {/* Mobile preview score */}
+          {previewScore && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '4px 8px',
+            }}>
+              <span className="val" style={{ fontSize: 18, color: 'var(--pos-mei)' }}>{previewScore.base}</span>
+              <span className="val" style={{ fontSize: 12, color: 'var(--ink-dim)' }}>x</span>
+              <span className="val" style={{ fontSize: 18, color: 'var(--pos-ata)' }}>{previewScore.mult.toFixed(1)}</span>
+              <span className="val" style={{
+                fontSize: 22,
+                color: previewScore.total >= run.meta ? 'var(--green)' : 'var(--gold)',
+                marginLeft: 4,
+              }}>=  {previewScore.total.toLocaleString()}</span>
+              <span className="micro" style={{ fontSize: 9, marginLeft: 4 }}>meta {run.meta.toLocaleString()}</span>
+            </div>
+          )}
+
+          {/* Main content */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+            {rightColumn}
+
+            {/* Mobile combos toggle */}
+            <div style={{ padding: '0 8px 4px' }}>
+              <button
+                onClick={() => setShowCombos(!showCombos)}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: 'var(--panel)',
+                  border: '2px solid var(--panel-line)',
+                  borderRadius: 'var(--r-sm)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                }}
+              >
+                <span className="micro" style={{ fontSize: 10 }}>
+                  Combos ({combosAtivos})
+                </span>
+                <span className="val" style={{
+                  fontSize: 12,
+                  color: 'var(--label)',
+                  transform: showCombos ? 'rotate(180deg)' : 'rotate(0)',
+                  transition: 'transform 0.2s ease',
+                  display: 'inline-block',
+                }}>▼</span>
+              </button>
+            </div>
+            {showCombos && (
+              <div style={{ padding: '0 8px 8px' }}>
+                <ComboGuide combos={comboProgress} />
+                <div style={{ marginTop: 6 }}>
+                  <DeckViewer
+                    mao={run.mao}
+                    baralho={run.baralho}
+                    escalacao={run.escalacao}
+                    descarte={run.descarte}
+                    activeAttributes={run.era}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+          {leftColumn}
+          {rightColumn}
+        </>
+      )}
 
       {/* Confirm desistir modal */}
       {showDesistir && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
-          <div className="bg-gray-900 border-2 border-red-500/50 rounded-lg p-6 text-center max-w-sm">
-            <div className="text-red-400 font-black mb-3"
-              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 50,
+          background: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div className="panel" style={{
+            padding: 24,
+            textAlign: 'center',
+            maxWidth: 340,
+            border: '2px solid var(--pos-ata)',
+          }}>
+            <div className="val shadow-hard" style={{ fontSize: 28, color: 'var(--pos-ata)', marginBottom: 12 }}>
               ENCERRAR RUN?
             </div>
-            <p className="text-gray-400 text-sm mb-4" style={{ fontFamily: "'VT323',monospace", fontSize: 18 }}>
+            <p className="val" style={{ fontSize: 20, color: 'var(--ink-dim)', marginBottom: 16 }}>
               Voce vai perder todo o progresso desta run.
             </p>
-            <div className="flex gap-3 justify-center">
-              <button onClick={onDesistir} className="btn-arcade btn-cancel" style={{ fontSize: 10 }}>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button onClick={onDesistir} className="btn-arcade btn-cancel btn-sm">
                 Sim, encerrar
               </button>
-              <button onClick={() => setShowDesistir(false)} className="btn-arcade btn-play" style={{ fontSize: 10 }}>
+              <button onClick={() => setShowDesistir(false)} className="btn-arcade btn-play btn-sm">
                 Continuar
               </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* === CENTER (main game area) === */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-
-        {/* Mobile: compact top bar */}
-        <div className="md:hidden flex items-center justify-between bg-gray-900/80 px-3 py-2 border-b border-gray-700 gap-2">
-          <div className="text-[11px]">
-            <span className="text-white font-bold">{info.fase}</span>
-            <span className="text-gray-500 ml-1">{info.partida}/{info.totalPartidas}</span>
-            {info.isClassico && <span className="text-orange-400 ml-1">CL</span>}
-          </div>
-          <div className="text-[11px]">
-            vs <span className="text-white font-bold">{info.adversario}</span>
-          </div>
-          <div className="text-[11px] flex gap-2">
-            <span className="text-yellow-400 font-bold">{run.meta}</span>
-            <span className="text-green-400 font-bold">${run.orcamento}</span>
-          </div>
-        </div>
-
-        {/* Twist warning */}
-        {run.twist && (
-          <div className="mx-2 my-1 bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 text-center">
-            <span className="text-xs text-orange-400 font-bold">CLÁSSICO: </span>
-            <span className="text-xs text-orange-300">{run.twist.descricao}</span>
-          </div>
-        )}
-
-        {/* Boosts row on top (like Balatro jokers) */}
-        <div className="md:hidden px-2 py-1">
-          {run.boosts.length > 0 && <BoostBar boosts={run.boosts} />}
-        </div>
-
-        {/* Score (só mostra se já tentou) */}
-        {run.ultimaPontuacao && (
-          <ScoreDisplay
-            result={run.ultimaPontuacao}
-            meta={run.meta}
-            tentativas={run.tentativasRestantes}
-            trocas={run.trocasRestantes}
-            escalacao={run.escalacao}
-            adversario={info.adversario}
-          />
-        )}
-
-        {/* Escalação (centro) */}
-        <div className="flex-1 overflow-auto px-2 py-1 md:px-4 md:py-2">
-          <PlayArea
-            escalacao={run.escalacao}
-            activeAttributes={run.era}
-            maxSlots={config.partida.maxEscalacao}
-            onRemove={onDesescalar}
-            mobile={mobile}
-          />
-        </div>
-
-        {/* Ações — arcade buttons */}
-        <div className="flex justify-center gap-3 md:gap-4 py-2 md:py-3">
-          <button
-            onClick={onJogar}
-            disabled={run.escalacao.length === 0 || run.tentativasRestantes <= 0}
-            className="btn-arcade btn-play"
-          >
-            Jogar!
-          </button>
-          {modoTroca ? (
-            <>
-              <button
-                onClick={handleTrocar}
-                disabled={trocaSelecionados.size === 0}
-                className="btn-arcade btn-swap"
-              >
-                Trocar ({trocaSelecionados.size})
-              </button>
-              <button
-                onClick={() => { setModoTroca(false); setTrocaSelecionados(new Set()) }}
-                className="btn-arcade btn-cancel"
-              >
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setModoTroca(true)}
-              disabled={run.trocasRestantes <= 0}
-              className="btn-arcade btn-swap"
-            >
-              Trocar ({run.trocasRestantes})
-            </button>
-          )}
-        </div>
-
-        {/* Mobile: combos + deck toggle */}
-        <div className="md:hidden px-2 pb-1 flex gap-2">
-          <button
-            onClick={() => setShowCombos(!showCombos)}
-            className="flex-1 py-1.5 bg-gray-800/80 rounded-lg text-xs text-gray-300 flex items-center justify-center gap-1 min-h-[36px]"
-          >
-            <span>Combos ({combosAtivos})</span>
-            <span className={`transition-transform ${showCombos ? 'rotate-180' : ''}`}>▼</span>
-          </button>
-        </div>
-        {showCombos && (
-          <div className="md:hidden px-2 pb-1 space-y-1">
-            <ComboGuide combos={comboProgress} />
-            <DeckViewer
-              mao={run.mao}
-              baralho={run.baralho}
-              escalacao={run.escalacao}
-              descarte={run.descarte}
-              activeAttributes={run.era}
-            />
-          </div>
-        )}
-
-        {/* Mão (embaixo, como no Balatro) */}
-        <div className="border-t border-gray-800 bg-gray-900/50 p-2 md:p-3">
-          <span className="text-[10px] md:text-xs text-gray-500 mb-1 block">
-            Mao ({run.mao.length})
-            {modoTroca && <span className="text-orange-400 ml-2">Selecione para trocar</span>}
-          </span>
-          <Hand
-            cards={run.mao}
-            activeAttributes={run.era}
-            onSelect={handleCardClick}
-            selectedIds={modoTroca ? trocaSelecionados : undefined}
-            mobile={mobile}
-          />
-        </div>
-      </div>
     </div>
   )
 }

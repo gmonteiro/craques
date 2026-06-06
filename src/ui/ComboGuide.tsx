@@ -8,59 +8,100 @@ export function ComboGuide({ combos }: Props) {
   if (combos.length === 0) return null
 
   return (
-    <div className="bg-gray-900/60 border border-gray-800 rounded-lg p-2 md:p-3 overflow-hidden">
-      <span className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1.5">
-        Combos
-      </span>
-      <div className="space-y-1">
-        {combos.map(combo => (
+    <div className="scroll" style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
+      overflowY: 'auto',
+      maxHeight: 320,
+      paddingRight: 4,
+    }}>
+      {combos.map(combo => {
+        const isGold = combo.ativo
+        const barColor = combo.ativo
+          ? combo.tipo === 'mult' ? '#df524d' : '#5cd089'
+          : combo.progresso > 0 ? '#6f8a78' : '#2e3e34'
+
+        return (
           <div
             key={combo.id}
-            className={`text-[10px] md:text-[11px] rounded px-1.5 py-1 transition-all ${
-              combo.ativo
-                ? 'bg-white/5 border border-white/10'
-                : 'opacity-60'
-            }`}
+            style={{
+              background: '#141d17',
+              border: isGold ? '2px solid var(--gold)' : '2px solid #0c1510',
+              borderRadius: 'var(--r-sm)',
+              padding: '8px 10px 6px',
+              boxShadow: isGold
+                ? '0 0 12px rgba(242,193,78,0.25), inset 0 1px 0 rgba(255,255,255,0.08)'
+                : 'inset 0 1px 0 rgba(255,255,255,0.04)',
+              transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+            }}
           >
-            {/* Linha 1: dot + nome + progresso */}
-            <div className="flex items-center gap-1 min-w-0">
-              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-                combo.ativo
-                  ? combo.tipo === 'mult' ? 'bg-red-400' : 'bg-blue-400'
-                  : 'bg-gray-600'
-              }`} />
-              <span className={`font-bold truncate min-w-0 ${
-                combo.ativo ? 'text-white' : 'text-gray-400'
-              }`}>
-                {combo.nome}
-              </span>
-              <span className={`tabular-nums flex-shrink-0 ml-auto ${
-                combo.ativo ? 'text-white' : 'text-gray-500'
-              }`}>
-                {combo.atual}/{combo.necessario}
-              </span>
-              <span className={`flex-shrink-0 font-bold text-[9px] md:text-[10px] ${
-                combo.ativo
-                  ? combo.tipo === 'mult' ? 'text-red-400' : 'text-blue-400'
-                  : 'text-gray-600'
-              }`}>
-                {combo.ativo ? combo.bonusLabel : ''}
-              </span>
+            {/* Top row: name + progress count */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 4,
+              marginBottom: 4,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, minWidth: 0, flex: 1 }}>
+                <span style={{
+                  width: 7, height: 7,
+                  borderRadius: '50%',
+                  flexShrink: 0,
+                  background: combo.ativo
+                    ? combo.tipo === 'mult' ? 'var(--pos-ata)' : 'var(--green)'
+                    : 'var(--panel-3)',
+                }} />
+                <span className="micro" style={{
+                  fontSize: 10,
+                  color: combo.ativo ? 'var(--ink)' : 'var(--ink-dim)',
+                  letterSpacing: 1,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {combo.nome}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                <span className="val" style={{
+                  fontSize: 16,
+                  color: combo.ativo ? 'var(--ink)' : 'var(--ink-dim)',
+                }}>
+                  {combo.atual}/{combo.necessario}
+                </span>
+                {combo.ativo && (
+                  <span className="micro" style={{
+                    fontSize: 9,
+                    color: combo.tipo === 'mult' ? 'var(--pos-ata)' : 'var(--green)',
+                    letterSpacing: 0.5,
+                  }}>
+                    {combo.bonusLabel}
+                  </span>
+                )}
+              </div>
             </div>
-            {/* Barra de progresso */}
-            <div className="h-1 bg-gray-800 rounded-full overflow-hidden mt-0.5">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${
-                  combo.ativo
-                    ? combo.tipo === 'mult' ? 'bg-red-400' : 'bg-blue-400'
-                    : combo.progresso > 0 ? 'bg-gray-500' : 'bg-gray-700'
-                }`}
-                style={{ width: `${combo.progresso * 100}%` }}
-              />
+
+            {/* Progress bar */}
+            <div style={{
+              height: 4,
+              background: '#0c1510',
+              borderRadius: 2,
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                height: '100%',
+                borderRadius: 2,
+                width: `${combo.progresso * 100}%`,
+                background: barColor,
+                transition: 'width 0.3s ease',
+              }} />
             </div>
           </div>
-        ))}
-      </div>
+        )
+      })}
     </div>
   )
 }
