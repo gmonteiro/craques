@@ -109,7 +109,8 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
     }
   }
 
-  const subtitle = `${player.apelido} · ${player.nacionalidade} · ${player.posicao}`
+  const displayName = player.apelido || player.nome
+  const subtitle = `${player.nacionalidade} · ${player.posicao} · ${player.clube}`
   const clubLines = packClubLines(player.clubesCarreira)
   const scale = scaleProp ?? 0.32
   const w = 388 * scale
@@ -153,7 +154,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({ player, a
         {/* Name & subtitle */}
         <text x={180} y={124} fill="#ffd84d"
           style={{ fontFamily: "'VT323',monospace", fontSize: 32, letterSpacing: 1 }}>
-          {player.nome.length > 20 ? player.nome.slice(0, 18) + '…' : player.nome}
+          {displayName.length > 20 ? displayName.slice(0, 18) + '…' : displayName}
         </text>
         <text x={181} y={146} fill="#b9b2e0"
           style={{ fontFamily: "'VT323',monospace", fontSize: 17, letterSpacing: 1 }}>

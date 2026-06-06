@@ -61,7 +61,7 @@ export function Shop({
                   player={p}
                   activeAttributes={activeAttributes}
                   onClick={() => onComprarJogador(p.id)}
-                  scale={0.32}
+                  scale={0.38}
                 />
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-yellow-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   ${preco}
@@ -105,7 +105,7 @@ export function Shop({
                   player={p}
                   activeAttributes={activeAttributes}
                   onClick={() => onVenderJogador(p.id)}
-                  scale={0.24}
+                  scale={0.30}
                 />
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                   Vender ${precoVenda}
