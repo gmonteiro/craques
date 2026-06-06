@@ -1,41 +1,41 @@
-import type { PlayerCard, BoostCard, Combo, ScoreResult, ScoreDetalhe } from './types'
+import type { PlayerCard, BoostCard, ScoreResult, ScoreDetalhe } from './types'
 import { detectCombos } from './combos'
 import { playerScore } from './normalize'
 
 /**
  * Aplica boosts aditivos e retorna o total de BASE extra.
  */
-function aplicarBoostsBase(boosts: BoostCard[], escalacao: PlayerCard[], meta: number): number {
+function aplicarBoostsBase(boosts: BoostCard[], escalacao: PlayerCard[], atributosAtivos: string[], maoSize: number): number {
   let extra = 0
 
   for (const boost of boosts) {
     const ef = boost.efeito
     switch (ef.tipo) {
-      case 'base_per_tier': {
-        // +valor por jogador com atributo X em tier Y
+      case 'base_per_any_legendary': {
+        // +valor por jogador com QUALQUER atributo ativo em Lendário
         for (const p of escalacao) {
-          if (p.tiersPorAtributo?.[ef.atributo as string] === ef.tier) {
-            extra += ef.valor as number
-          }
+          const temLendario = atributosAtivos.some(attr => p.tiersPorAtributo?.[attr] === 'lendario')
+          if (temLendario) extra += ef.valor as number
         }
         break
       }
-      case 'base_multiply_attr': {
-        // Multiplica o atributo de um jogador (o melhor nesse atributo)
-        const attr = ef.atributo as string
-        const melhor = escalacao.reduce((best, p) =>
-          (p.pontosNormalizados?.[attr] ?? 0) > (best.pontosNormalizados?.[attr] ?? 0) ? p : best
-        , escalacao[0])
-        if (melhor?.pontosNormalizados?.[attr]) {
-          extra += melhor.pontosNormalizados[attr] * ((ef.valor as number) - 1)
+      case 'base_triple_best': {
+        // Triplica o melhor atributo ativo do jogador com maior pontuação
+        if (escalacao.length === 0) break
+        const melhor = escalacao.reduce((best, p) => playerScore(p) > playerScore(best) ? p : best, escalacao[0])
+        if (melhor?.pontosNormalizados) {
+          let maxPts = 0
+          for (const attr of atributosAtivos) {
+            maxPts = Math.max(maxPts, melhor.pontosNormalizados[attr] ?? 0)
+          }
+          extra += maxPts * ((ef.valor as number) - 1)
         }
         break
       }
       case 'base_flat_posicao': {
-        // +valor ao melhor jogador de uma posição
+        // +valor se houver jogador da posição
         const pos = ef.posicao as string
-        const meias = escalacao.filter(p => p.posicao === pos)
-        if (meias.length > 0) {
+        if (escalacao.some(p => p.posicao === pos)) {
           extra += ef.valor as number
         }
         break
@@ -46,18 +46,6 @@ function aplicarBoostsBase(boosts: BoostCard[], escalacao: PlayerCard[], meta: n
         extra += count * (ef.valor as number)
         break
       }
-      case 'base_per_attr_threshold': {
-        const attr = ef.atributo as string
-        const threshold = ef.threshold as number
-        const pos = ef.posicao as string | undefined
-        for (const p of escalacao) {
-          if (pos && p.posicao !== pos) continue
-          if ((p.atributos[attr] ?? 0) >= threshold) {
-            extra += ef.valor as number
-          }
-        }
-        break
-      }
       case 'base_if_raridade': {
         const rar = ef.raridade as string
         if (escalacao.some(p => p.raridade === rar)) {
@@ -65,9 +53,18 @@ function aplicarBoostsBase(boosts: BoostCard[], escalacao: PlayerCard[], meta: n
         }
         break
       }
+      case 'base_per_bench': {
+        // +valor por carta na mão (não escalada)
+        extra += maoSize * (ef.valor as number)
+        break
+      }
+      case 'base_per_unique_position': {
+        // +valor por posição diferente na escalação
+        const posicoes = new Set(escalacao.map(p => p.posicao))
+        extra += posicoes.size * (ef.valor as number)
+        break
+      }
     }
-    // Suppress unused meta warning for underdog check below
-    void meta
   }
 
   return extra
@@ -76,7 +73,7 @@ function aplicarBoostsBase(boosts: BoostCard[], escalacao: PlayerCard[], meta: n
 /**
  * Aplica boosts multiplicativos e retorna o MULT total.
  */
-function aplicarBoostsMult(boosts: BoostCard[], escalacao: PlayerCard[], baseFinal: number, meta: number): number {
+function aplicarBoostsMult(boosts: BoostCard[], escalacao: PlayerCard[], atributosAtivos: string[], baseFinal: number, meta: number): number {
   let mult = 1
 
   for (const boost of boosts) {
@@ -107,17 +104,12 @@ function aplicarBoostsMult(boosts: BoostCard[], escalacao: PlayerCard[], baseFin
         break
       }
       case 'mult_capitao': {
-        // Aplica ao jogador com maior pontuação total
-        const melhor = escalacao.reduce((best, p) =>
-          playerScore(p) > playerScore(best) ? p : best
-        , escalacao[0])
-        if (melhor) {
+        if (escalacao.length > 0) {
           mult *= ef.valor as number
         }
         break
       }
       case 'mult_per_decade': {
-        // +valor por jogador da década mais frequente
         const decades = new Map<number, number>()
         for (const p of escalacao) {
           const decade = Math.floor((2026 - p.atributos.idade) / 10) * 10
@@ -135,6 +127,17 @@ function aplicarBoostsMult(boosts: BoostCard[], escalacao: PlayerCard[], baseFin
         }
         break
       }
+      case 'mult_per_all_elite': {
+        // +valor por jogador com TODOS os atributos ativos em Elite ou acima
+        for (const p of escalacao) {
+          const allElite = atributosAtivos.every(attr => {
+            const tier = p.tiersPorAtributo?.[attr]
+            return tier === 'lendario' || tier === 'elite'
+          })
+          if (allElite) mult += ef.valor as number
+        }
+        break
+      }
     }
   }
 
@@ -147,8 +150,9 @@ function aplicarBoostsMult(boosts: BoostCard[], escalacao: PlayerCard[], baseFin
 export function calcularPontuacao(
   escalacao: PlayerCard[],
   boosts: BoostCard[],
-  _atributosAtivos: string[],
-  meta: number
+  atributosAtivos: string[],
+  meta: number,
+  maoSize: number = 0
 ): ScoreResult {
   // 1. Calcular detalhes por jogador
   const detalhes: ScoreDetalhe[] = escalacao.map(p => ({
@@ -172,7 +176,7 @@ export function calcularPontuacao(
 
   // 5. Aplicar boosts aditivos
   const boostsBase = boosts.filter(b => b.tipo === 'aditivo' || b.tipo === 'condicional')
-  base += aplicarBoostsBase(boostsBase, escalacao, meta)
+  base += aplicarBoostsBase(boostsBase, escalacao, atributosAtivos, maoSize)
 
   // 6. Calcular MULT
   let mult = 1
@@ -186,7 +190,7 @@ export function calcularPontuacao(
 
   // Boosts multiplicativos
   const boostsMult = boosts.filter(b => b.tipo === 'multiplicativo' || b.tipo === 'condicional')
-  mult *= aplicarBoostsMult(boostsMult, escalacao, base, meta)
+  mult *= aplicarBoostsMult(boostsMult, escalacao, atributosAtivos, base, meta)
 
   // 7. Total
   const total = Math.round(base * mult)

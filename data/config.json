@@ -28,7 +28,7 @@
     "custoReroll": 2
   },
   "baralho": {
-    "tamanhoInicial": 8,
+    "tamanhoInicial": 12,
     "maxBaralho": 15,
     "maxBoosts": 5
   },

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { RunState } from '../engine/types'
 import { nomeFase, infoPartida } from '../engine/run'
 import { getAttributeLabel } from '../engine/attributes'
@@ -33,10 +33,12 @@ export function GameScreen({
   const info = infoPartida(run)
 
   // Reset troca mode when not escalando
-  if (modoTroca && run.status !== 'escalando') {
-    setModoTroca(false)
-    setTrocaSelecionados(new Set())
-  }
+  useEffect(() => {
+    if (modoTroca && run.status !== 'escalando') {
+      setModoTroca(false)
+      setTrocaSelecionados(new Set())
+    }
+  }, [run.status, modoTroca])
 
   const handleCardClick = (id: string) => {
     if (modoTroca) {

@@ -1,26 +1,26 @@
 [
   {
-    "id": "artilheiro",
-    "nome": "Artilheiro",
-    "descricao": "+30 BASE por jogador com Gols em faixa Lendária",
+    "id": "craque_era",
+    "nome": "Craque da Era",
+    "descricao": "+30 BASE por jogador Lendário em qualquer atributo ativo",
     "tipo": "aditivo",
     "raridade": "comum",
     "preco": 4,
-    "efeito": { "tipo": "base_per_tier", "atributo": "gols", "tier": "lendario", "valor": 30 }
+    "efeito": { "tipo": "base_per_any_legendary", "valor": 30 }
   },
   {
-    "id": "hat_trick",
-    "nome": "Hat-trick",
-    "descricao": "Triplica o atributo Gols de UM jogador escolhido",
+    "id": "especialista",
+    "nome": "Especialista",
+    "descricao": "Triplica o MELHOR atributo ativo do melhor jogador",
     "tipo": "aditivo",
     "raridade": "raro",
     "preco": 7,
-    "efeito": { "tipo": "base_multiply_attr", "atributo": "gols", "valor": 3, "alvo": "escolhido" }
+    "efeito": { "tipo": "base_triple_best", "valor": 3 }
   },
   {
     "id": "camisa10",
     "nome": "Camisa 10",
-    "descricao": "+50 BASE ao meia de maior atributo",
+    "descricao": "+50 BASE ao meia de maior pontuação",
     "tipo": "aditivo",
     "raridade": "incomum",
     "preco": 5,
@@ -47,7 +47,7 @@
   {
     "id": "capitao",
     "nome": "Capitão",
-    "descricao": "×3 nos atributos do capitão da escalação",
+    "descricao": "×3 MULT do jogador com maior pontuação",
     "tipo": "multiplicativo",
     "raridade": "raro",
     "preco": 8,
@@ -92,7 +92,7 @@
   {
     "id": "penalti",
     "nome": "Pênalti",
-    "descricao": "Re-sorteia os pontos normalizados de um jogador (tenta melhor tier)",
+    "descricao": "Re-sorteia os tiers de um jogador",
     "tipo": "evento",
     "raridade": "raro",
     "preco": 6,
@@ -108,18 +108,18 @@
     "efeito": { "tipo": "meta_reduce", "valor": 0.3 }
   },
   {
-    "id": "contra_ataque",
-    "nome": "Contra-Ataque",
-    "descricao": "+15 BASE por atacante com velocidade acima de 85",
+    "id": "banco_forte",
+    "nome": "Banco Forte",
+    "descricao": "+15 BASE por jogador na mão (não escalado)",
     "tipo": "aditivo",
     "raridade": "comum",
     "preco": 3,
-    "efeito": { "tipo": "base_per_attr_threshold", "atributo": "velocidade", "threshold": 85, "posicao": "ATA", "valor": 15 }
+    "efeito": { "tipo": "base_per_bench", "valor": 15 }
   },
   {
     "id": "muralha",
     "nome": "Muralha",
-    "descricao": "+1.5 MULT se 2+ zagueiros na escalação",
+    "descricao": "×1.5 MULT se 2+ zagueiros na escalação",
     "tipo": "multiplicativo",
     "raridade": "incomum",
     "preco": 5,
@@ -133,5 +133,23 @@
     "raridade": "incomum",
     "preco": 5,
     "efeito": { "tipo": "base_if_raridade", "raridade": "lendario", "valor": 100 }
+  },
+  {
+    "id": "elite_squad",
+    "nome": "Elite Squad",
+    "descricao": "+0.5 MULT por jogador com todos os atributos ativos em Elite ou acima",
+    "tipo": "condicional",
+    "raridade": "raro",
+    "preco": 6,
+    "efeito": { "tipo": "mult_per_all_elite", "valor": 0.5 }
+  },
+  {
+    "id": "versatilidade",
+    "nome": "Versatilidade",
+    "descricao": "+25 BASE por posição diferente na escalação",
+    "tipo": "aditivo",
+    "raridade": "comum",
+    "preco": 3,
+    "efeito": { "tipo": "base_per_unique_position", "valor": 25 }
   }
 ]

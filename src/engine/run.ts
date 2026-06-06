@@ -119,7 +119,8 @@ export function jogar(state: RunState): RunState {
     twistDesativaCombos(state.twist) ? escalacaoFinal.map(p => ({ ...p, clube: '_', nacionalidade: '_', posicao: 'ATA' as const })) : escalacaoFinal,
     boostsAtivos,
     state.era,
-    metaFinal
+    metaFinal,
+    state.mao.length
   )
 
   const novasPontuacoes = [...state.pontuacoesPartida, resultado.total]
@@ -170,7 +171,7 @@ export function trocar(state: RunState, jogadorIds: string[]): RunState {
   const novaMao = [...state.mao]
   const novaEscalacao = [...state.escalacao]
   const novoDescarte = [...state.descarte]
-  const novoBaralho = [...state.baralho]
+  let novoBaralho = [...state.baralho]
 
   // Remover jogadores selecionados da mão e da escalação
   for (const id of jogadorIds) {
@@ -185,7 +186,14 @@ export function trocar(state: RunState, jogadorIds: string[]): RunState {
     }
   }
 
-  // Comprar novos do baralho (se houver)
+  // Se baralho vazio, reciclar descarte (exceto cartas recém-descartadas)
+  if (novoBaralho.length === 0 && novoDescarte.length > 0) {
+    const rng = createRng(state.seed + state.fase * 777 + state.trocasRestantes)
+    novoBaralho = shuffle(rng, [...novoDescarte])
+    novoDescarte.length = 0
+  }
+
+  // Comprar novos do baralho
   const nComprar = Math.min(jogadorIds.length, novoBaralho.length)
   for (let i = 0; i < nComprar; i++) {
     novaMao.push(novoBaralho.pop()!)
