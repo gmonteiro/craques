@@ -7,12 +7,11 @@ interface Props {
   onSelect: (id: string) => void
   selectedIds?: Set<string>
   escaladoIds?: Set<string>
-  comboHighlights?: Map<string, number>
   mobile?: boolean
   deckSize?: number
 }
 
-export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoIds, comboHighlights, mobile, deckSize }: Props) {
+export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoIds, mobile, deckSize }: Props) {
   if (cards.length === 0 && !deckSize) {
     return (
       <div className="val" style={{
@@ -36,6 +35,7 @@ export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoI
           gap: mobile ? 2 : 6,
           overflowX: 'auto',
           paddingBottom: 4,
+          paddingTop: 20,
           flex: 1,
           minWidth: 0,
         }}
@@ -43,7 +43,6 @@ export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoI
         {cards.map(card => {
           const isSelected = selectedIds?.has(card.id) ?? false
           const isEscalado = escaladoIds?.has(card.id) ?? false
-          const comboCount = comboHighlights?.get(card.id) ?? 0
 
           return (
             <div
@@ -55,38 +54,8 @@ export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoI
                 opacity: isEscalado ? 0.32 : 1,
                 filter: isEscalado ? 'grayscale(0.5)' : 'none',
                 cursor: isEscalado ? 'not-allowed' : 'pointer',
-                position: 'relative',
               }}
             >
-              {/* Combo highlight glow */}
-              {comboCount > 0 && !isEscalado && (
-                <div style={{
-                  position: 'absolute',
-                  inset: -3,
-                  borderRadius: 18,
-                  border: '2px solid var(--gold)',
-                  boxShadow: '0 0 12px rgba(242,193,78,.4), inset 0 0 8px rgba(242,193,78,.1)',
-                  pointerEvents: 'none',
-                  zIndex: 10,
-                  animation: 'breathe 1.4s ease-in-out infinite',
-                }}>
-                  <span style={{
-                    position: 'absolute',
-                    top: -8,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: 'var(--gold)',
-                    color: '#1a1000',
-                    fontFamily: '"Silkscreen", monospace',
-                    fontSize: 8,
-                    padding: '1px 5px',
-                    borderRadius: 4,
-                    whiteSpace: 'nowrap',
-                  }}>
-                    +{comboCount} COMBO
-                  </span>
-                </div>
-              )}
               <PlayerCardComponent
                 player={card}
                 activeAttributes={activeAttributes}

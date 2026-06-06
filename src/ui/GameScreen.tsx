@@ -9,8 +9,7 @@ import { ScoreDisplay } from './ScoreDisplay'
 import { Shop } from './Shop'
 import { ComboGuide } from './ComboGuide'
 import { DeckViewer } from './DeckViewer'
-import { getComboProgress, getComboHighlights } from '../engine/combos'
-import { calcularPontuacao } from '../engine/scoring'
+import { getComboProgress } from '../engine/combos'
 import { getAttributeLabel } from '../engine/attributes'
 import { sounds } from '../lib/sounds'
 import config from '../../data/config.json'
@@ -43,9 +42,6 @@ export function GameScreen({
   const [showDesistir, setShowDesistir] = useState(false)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
 
-  const previewScore = run.escalacao.length > 0
-    ? calcularPontuacao(run.escalacao, run.boosts, run.era, run.meta, run.mao.length)
-    : null
   const mobile = useIsMobile()
   const info = infoPartida(run)
 
@@ -101,7 +97,6 @@ export function GameScreen({
   }
 
   const comboProgress = getComboProgress(run.escalacao, run.mao)
-  const comboHighlights = getComboHighlights(run.escalacao, run.mao)
   const combosAtivos = comboProgress.filter(c => c.ativo).length
 
   // Detect new combo activation → flash + sound
@@ -364,31 +359,6 @@ export function GameScreen({
           </>
         )}
 
-        {/* Preview Score */}
-        {previewScore && (
-          <>
-            <div className="hr" style={{ margin: '10px 0' }} />
-            <div style={{ textAlign: 'center' }}>
-              <span className="micro" style={{ fontSize: 9 }}>Preview</span>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 2 }}>
-                <span className="val shadow-hard" style={{ fontSize: 24, color: 'var(--pos-mei)' }}>
-                  {previewScore.base}
-                </span>
-                <span className="val" style={{ fontSize: 16, color: 'var(--ink-dim)' }}>x</span>
-                <span className="val shadow-hard" style={{ fontSize: 24, color: 'var(--pos-ata)' }}>
-                  {previewScore.mult.toFixed(1)}
-                </span>
-              </div>
-              <div className="val shadow-hard" style={{
-                fontSize: 32,
-                color: previewScore.total >= run.meta ? 'var(--green)' : 'var(--gold)',
-              }}>
-                {previewScore.total.toLocaleString()}
-              </div>
-            </div>
-          </>
-        )}
-
         {/* Boosts */}
         {run.boosts.length > 0 && (
           <>
@@ -580,7 +550,6 @@ export function GameScreen({
           onSelect={handleCardClick}
           selectedIds={modoTroca ? trocaSelecionados : (selectedCardId ? new Set([selectedCardId]) : undefined)}
           escaladoIds={escaladoIds}
-          comboHighlights={comboHighlights}
           mobile={mobile}
           deckSize={run.baralho.length}
         />
@@ -641,27 +610,6 @@ export function GameScreen({
           {run.boosts.length > 0 && (
             <div style={{ padding: '4px 8px' }}>
               <BoostBar boosts={run.boosts} />
-            </div>
-          )}
-
-          {/* Mobile preview score */}
-          {previewScore && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              padding: '4px 8px',
-            }}>
-              <span className="val" style={{ fontSize: 18, color: 'var(--pos-mei)' }}>{previewScore.base}</span>
-              <span className="val" style={{ fontSize: 12, color: 'var(--ink-dim)' }}>x</span>
-              <span className="val" style={{ fontSize: 18, color: 'var(--pos-ata)' }}>{previewScore.mult.toFixed(1)}</span>
-              <span className="val" style={{
-                fontSize: 22,
-                color: previewScore.total >= run.meta ? 'var(--green)' : 'var(--gold)',
-                marginLeft: 4,
-              }}>=  {previewScore.total.toLocaleString()}</span>
-              <span className="micro" style={{ fontSize: 9, marginLeft: 4 }}>meta {run.meta.toLocaleString()}</span>
             </div>
           )}
 

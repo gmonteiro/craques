@@ -3,6 +3,19 @@ import type { PlayerCard as PlayerCardType } from '../engine/types'
 import { getAttributeLabel } from '../engine/attributes'
 import { SKINS } from '../lib/skins'
 
+/** Abbreviate long stat labels */
+function abbreviate(label: string): string {
+  const map: Record<string, string> = {
+    'Velocidade': 'Vel',
+    'Finalização': 'Fin',
+    'Assistências': 'Ast',
+    'Gols pela Seleção': 'GSel',
+    'Valor de Mercado': 'Val',
+    'Seguidores': 'Seg',
+  }
+  return map[label] ?? label
+}
+
 /** Format raw stat values for display */
 function formatRaw(v: number): string {
   if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(0) + 'B'
@@ -187,9 +200,10 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
               }} />
               <span style={{
                 fontFamily: '"Jersey 10", monospace', fontSize: 17, color: '#3a4a40',
-                flexShrink: 0, width: 52,
+                flexShrink: 0, width: 40,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
-                {s.label}
+                {abbreviate(s.label)}
               </span>
               <span style={{
                 flex: 1, height: 8, background: '#dde4dd', borderRadius: 4, overflow: 'hidden',
