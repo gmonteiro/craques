@@ -13,6 +13,7 @@ import { getComboProgress } from '../engine/combos'
 import { calcularPontuacao } from '../engine/scoring'
 import { getAttributeLabel } from '../engine/attributes'
 import { sounds } from '../lib/sounds'
+import { cycleBgm, getBgmState } from '../lib/bgm'
 import { Flag } from './MatchInfo'
 import { COACHES } from '../engine/coaches'
 import config from '../../data/config.json'
@@ -41,6 +42,8 @@ export function GameScreen({
 }: Props) {
   const [trocaSelecionados, setTrocaSelecionados] = useState<Set<string>>(new Set())
   const [modoTroca, setModoTroca] = useState(false)
+  const [bgmLabel, setBgmLabel] = useState(getBgmState().label)
+  const [bgmIcon, setBgmIcon] = useState(getBgmState().state === 'muted' ? '🔇' : '🔊')
   const [showCombos, setShowCombos] = useState(true)
   const [showDesistir, setShowDesistir] = useState(false)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
@@ -277,7 +280,26 @@ export function GameScreen({
       maxHeight: mobile ? 'none' : '100vh',
     }}>
       {/* === DOSSIE DA PARTIDA (compact) === */}
-      <div className="panel" style={{ padding: '14px 16px', display: 'grid', gap: 10 }}>
+      <div className="panel" style={{ padding: '14px 16px', display: 'grid', gap: 10, position: 'relative' }}>
+        {/* Music toggle — top right */}
+        <button
+          onClick={() => {
+            const s = cycleBgm()
+            setBgmLabel(s.label)
+            setBgmIcon(s.state === 'muted' ? '🔇' : '🔊')
+          }}
+          title={bgmLabel}
+          style={{
+            position: 'absolute', top: 10, right: 10,
+            width: 32, height: 32, borderRadius: 8,
+            background: '#141d17', border: '2px solid #0c1510',
+            cursor: 'pointer', display: 'grid', placeItems: 'center',
+            fontSize: 16, zIndex: 5,
+          }}
+        >
+          {bgmIcon}
+        </button>
+
         {/* Fase + Partida */}
         <div>
           <div className="micro" style={{ fontSize: 10 }}>Fase</div>

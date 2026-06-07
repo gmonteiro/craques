@@ -80,6 +80,21 @@ const OVR: Record<string, Partial<{ skin: [string, string]; hair: string; style:
   romario:     { skin: SKINS[3], hair: '#0c0c0c', style: 'short', beard: false },
   platini:     { skin: SKINS[0], hair: '#4a3320', style: 'volume', beard: false },
   beckenbauer: { skin: SKINS[0], hair: '#caa14a', style: 'short', beard: false },
+  // === Técnicos (paletó escuro como camisa) ===
+  guardiola:   { skin: SKINS[1], hair: '#2e2014', style: 'buzz', beard: true },
+  mourinho:    { skin: SKINS[1], hair: '#5b3a1e', style: 'short', beard: false },
+  ancelotti:   { skin: SKINS[1], hair: '#caa14a', style: 'short', beard: false },
+  klopp:       { skin: SKINS[0], hair: '#5b3a1e', style: 'volume', beard: true },
+  bielsa:      { skin: SKINS[1], hair: '#caa14a', style: 'short', beard: false },
+  tite:        { skin: SKINS[1], hair: '#2e2014', style: 'short', beard: false },
+  zidane_coach:{ skin: SKINS[2], hair: '#1d150e', style: 'buzz', beard: true },
+  simeone:     { skin: SKINS[1], hair: '#1d150e', style: 'short', beard: true },
+  flick:       { skin: SKINS[0], hair: '#5b3a1e', style: 'short', beard: false },
+  scaloni:     { skin: SKINS[1], hair: '#1d150e', style: 'short', beard: true },
+  // === Goleiros extras ===
+  oblak:       { skin: SKINS[0], hair: '#2e2014', style: 'short', beard: true },
+  ederson:     { skin: SKINS[3], hair: '#0c0c0c', style: 'buzz', beard: true },
+  donnarumma:  { skin: SKINS[1], hair: '#2e2014', style: 'short', beard: false },
 }
 
 function hash(s: string): number {

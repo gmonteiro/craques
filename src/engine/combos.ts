@@ -46,6 +46,8 @@ const COMBOS_POSICAO = [
       const posicoes = new Set(escalacao.map(p => p.posicao))
       return posicoes.size >= 4
     }},
+  { id: 'goleiros', nome: 'Parede de Luvas', tipo: 'mult' as const, valor: 5,
+    descricao: '5 goleiros escalados', check: (pos: Map<string, number>) => (pos.get('GOL') ?? 0) >= 5 },
 ]
 
 /** Conta ocorrências de um campo nos jogadores */

@@ -2351,5 +2351,126 @@
       "skin": "#e9b58f",
       "badgeText": "#0d0b1f"
     }
+  },
+  {
+    "id": "oblak",
+    "nome": "JAN OBLAK",
+    "apelido": "OBLAK",
+    "nacionalidade": "ESLOVENIA",
+    "clube": "ATLETICO MADRID",
+    "posicao": "GOL",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 0,
+      "golsSelecao": 0,
+      "seguidores": 8000000,
+      "valorMercado": 30000000,
+      "velocidade": 42,
+      "finalizacao": 10,
+      "drible": 20,
+      "passe": 48,
+      "fisico": 82,
+      "titulos": 12,
+      "assistencias": 0,
+      "altura": 188,
+      "idade": 32
+    },
+    "clubesCarreira": [
+      "BENFICA",
+      "ATLETICO MADRID"
+    ],
+    "visual": {
+      "numeroCarta": 58,
+      "numeroCamisa": 13,
+      "headerBar": "#FFFFFF",
+      "jersey": "#FFFFFF",
+      "sleeve": "#FFFFFF",
+      "collar": "#002868",
+      "numberColor": "#FFFFFF",
+      "hair": "#2e2014",
+      "skin": "#e9b58f",
+      "badgeText": "#0d0b1f"
+    }
+  },
+  {
+    "id": "ederson",
+    "nome": "EDERSON MORAES",
+    "apelido": "EDERSON",
+    "nacionalidade": "BRASIL",
+    "clube": "MAN CITY",
+    "posicao": "GOL",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 0,
+      "golsSelecao": 0,
+      "seguidores": 12000000,
+      "valorMercado": 35000000,
+      "velocidade": 55,
+      "finalizacao": 15,
+      "drible": 30,
+      "passe": 65,
+      "fisico": 80,
+      "titulos": 16,
+      "assistencias": 1,
+      "altura": 188,
+      "idade": 31
+    },
+    "clubesCarreira": [
+      "SAO PAULO",
+      "BENFICA",
+      "MAN CITY"
+    ],
+    "visual": {
+      "numeroCarta": 59,
+      "numeroCamisa": 31,
+      "headerBar": "#009739",
+      "jersey": "#FFDF00",
+      "sleeve": "#FFDF00",
+      "collar": "#009739",
+      "numberColor": "#009739",
+      "hair": "#0c0c0c",
+      "skin": "#8a5a3c",
+      "badgeText": "#0d0b1f"
+    }
+  },
+  {
+    "id": "donnarumma",
+    "nome": "GIANLUIGI DONNARUMMA",
+    "apelido": "DONNARUMMA",
+    "nacionalidade": "ITALIA",
+    "clube": "PSG",
+    "posicao": "GOL",
+    "raridade": "elite",
+    "atributos": {
+      "gols": 0,
+      "golsSelecao": 0,
+      "seguidores": 10000000,
+      "valorMercado": 40000000,
+      "velocidade": 44,
+      "finalizacao": 12,
+      "drible": 22,
+      "passe": 50,
+      "fisico": 84,
+      "titulos": 8,
+      "assistencias": 0,
+      "altura": 196,
+      "idade": 26
+    },
+    "clubesCarreira": [
+      "AC MILAN",
+      "PSG"
+    ],
+    "visual": {
+      "numeroCarta": 60,
+      "numeroCamisa": 99,
+      "headerBar": "#008C45",
+      "jersey": "#008C45",
+      "sleeve": "#FFFFFF",
+      "collar": "#CD212A",
+      "numberColor": "#FFFFFF",
+      "hair": "#2e2014",
+      "skin": "#d39a6a",
+      "badgeText": "#0d0b1f"
+    }
   }
 ]
