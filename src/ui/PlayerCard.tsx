@@ -1,42 +1,28 @@
 import { memo } from 'react'
 import type { PlayerCard as PlayerCardType } from '../engine/types'
 import { getAttributeLabel } from '../engine/attributes'
-import { SKINS } from '../lib/skins'
 
-/** Abbreviate long stat labels */
+const POS_COLORS: Record<string, string> = {
+  GOL: 'var(--pos-gol)', ZAG: 'var(--pos-zag)', LAT: 'var(--pos-lat)',
+  MEI: 'var(--pos-mei)', ATA: 'var(--pos-ata)',
+}
+
+const STAT_COLORS = ['var(--green)', 'var(--gold)', 'var(--pos-mei)']
+
 function abbreviate(label: string): string {
   const map: Record<string, string> = {
-    'Velocidade': 'Vel',
-    'Finalização': 'Fin',
-    'Assistências': 'Ast',
-    'Gols pela Seleção': 'GSel',
-    'Valor de Mercado': 'Val',
-    'Seguidores': 'Seg',
+    'Velocidade': 'Vel', 'Finalização': 'Fin', 'Assistências': 'Ast',
+    'Gols pela Seleção': 'GSel', 'Valor de Mercado': 'Val', 'Seguidores': 'Seg',
   }
   return map[label] ?? label
 }
 
-/** Format raw stat values for display */
 function formatRaw(v: number): string {
   if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(0) + 'B'
   if (v >= 1_000_000) return (v / 1_000_000).toFixed(0) + 'M'
   if (v >= 1_000) return (v / 1_000).toFixed(0) + 'K'
   return String(v)
 }
-
-const POS_COLORS: Record<string, string> = {
-  GOL: 'var(--pos-gol)',
-  ZAG: 'var(--pos-zag)',
-  LAT: 'var(--pos-lat)',
-  MEI: 'var(--pos-mei)',
-  ATA: 'var(--pos-ata)',
-}
-
-const STAT_COLORS = [
-  'var(--green)',    // first attribute
-  'var(--gold)',     // second
-  'var(--pos-mei)',  // third
-]
 
 interface Props {
   player: PlayerCardType & { visual?: Record<string, unknown> }
@@ -45,14 +31,12 @@ interface Props {
   selected?: boolean
   compact?: boolean
   scale?: number
-  skinId?: string // active skin to apply
+  skinId?: string
 }
 
 export const PlayerCardComponent = memo(function PlayerCardComponent({
-  player, activeAttributes, onClick, selected, scale: scaleProp, skinId,
+  player, activeAttributes, onClick, selected, scale: scaleProp,
 }: Props) {
-  // Apply cosmetic skin if available
-  const cardSkin = skinId ? SKINS.find(s => s.id === skinId) : undefined
   const v = (player.visual ?? {}) as Record<string, string | number>
   const band = (v.headerBar as string) ?? '#3a3460'
   const shirt = (v.jersey as string) ?? '#3a3460'
@@ -62,14 +46,13 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
   const numeroCamisa = (v.numeroCamisa as number) ?? 0
   const posColor = POS_COLORS[player.posicao] ?? 'var(--label)'
   const displayName = player.apelido || player.nome
-  const lightBand = band === '#dfe3ea' || band === '#FFFFFF'
 
   const stats: { label: string; value: number; rawValue: number; color: string }[] = []
   if (activeAttributes && player.pontosNormalizados) {
     for (let i = 0; i < activeAttributes.length; i++) {
       const attr = activeAttributes[i]
       stats.push({
-        label: getAttributeLabel(attr),
+        label: abbreviate(getAttributeLabel(attr)),
         value: player.pontosNormalizados[attr] ?? 0,
         rawValue: player.atributos[attr] ?? 0,
         color: STAT_COLORS[i % STAT_COLORS.length],
@@ -77,187 +60,112 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
     }
   }
 
-  const scale = scaleProp ?? 1
+  const scale = scaleProp ?? 0.85
   const baseW = 176
   const w = baseW * scale
 
-  const borderStyle = selected
-    ? '2px solid var(--accent)'
-    : cardSkin
-    ? `2px solid ${cardSkin.estilo.borderColor}`
+  const borderColor = selected ? 'var(--accent)' : band
+  const shadow = selected
+    ? '0 0 0 3px var(--accent), 0 10px 0 rgba(0,0,0,.32), 0 16px 22px rgba(0,0,0,.45)'
     : player.raridade === 'lendario'
-    ? '2px solid var(--gold)'
-    : 'none'
-
-  const shadowStyle = selected
-    ? '0 0 0 3px var(--accent), 0 10px 0 rgba(0,0,0,.3), 0 16px 24px rgba(0,0,0,.45)'
-    : cardSkin
-    ? `0 0 12px ${cardSkin.estilo.glowColor}, 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)`
-    : player.raridade === 'lendario'
-    ? '0 0 10px rgba(242,193,78,.3), 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)'
-    : '0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)'
+    ? '0 0 12px rgba(242,193,78,.3), 0 7px 0 rgba(0,0,0,.34), 0 12px 20px rgba(0,0,0,.4)'
+    : '0 7px 0 rgba(0,0,0,.34), 0 12px 20px rgba(0,0,0,.4)'
 
   return (
-    <div
-      onClick={onClick}
-      style={{ width: w, flexShrink: 0, cursor: 'pointer', display: 'inline-block' }}
-    >
+    <div onClick={onClick} style={{ width: w, flexShrink: 0, cursor: 'pointer', display: 'inline-block' }}>
       <div style={{
         width: baseW,
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
-        borderRadius: 16,
+        position: 'relative',
+        borderRadius: 12,
         overflow: 'hidden',
-        background: '#f4f6f1',
-        border: borderStyle,
-        boxShadow: shadowStyle,
+        padding: 4,
+        background: 'linear-gradient(180deg, #11201a, #0c1812)',
+        border: `3px solid ${borderColor}`,
+        boxShadow: shadow,
         transition: 'border-color .15s, box-shadow .15s',
       }}>
-        {/* Band header */}
-        <div style={{
-          background: band,
-          padding: '8px 10px 9px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 7,
-          boxShadow: 'inset 0 -3px 0 rgba(0,0,0,.18), inset 0 2px 0 rgba(255,255,255,.18)',
-        }}>
+        {/* Header: pos + name */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '4px 5px 6px' }}>
           <span className="postag" style={{ background: posColor }}>{player.posicao}</span>
-          <span style={{
-            fontFamily: '"Jersey 10", monospace',
-            fontSize: 21,
-            lineHeight: 1,
-            color: lightBand ? '#222a2e' : '#fff',
-            textShadow: lightBand ? 'none' : '0 2px 0 rgba(0,0,0,.4)',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            flex: 1,
-          }}>
-            {displayName}
-          </span>
+          <span className="val" style={{
+            fontSize: 22, color: '#fff', lineHeight: 1,
+            textShadow: '0 2px 0 rgba(0,0,0,.5)',
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          }}>{displayName}</span>
         </div>
 
-        {/* Subtitle bar */}
-        <div className="micro" style={{
-          padding: '6px 11px 8px',
-          fontSize: 9.5,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          color: '#5d7466',
-          background: '#eef1ea',
-        }}>
+        {/* Subtitle */}
+        <div className="micro" style={{ padding: '0 6px 6px', fontSize: 9, color: '#7c9686' }}>
           {player.nacionalidade} · {player.clube}
         </div>
 
-        {/* Portrait placeholder */}
-        <div style={{ padding: '0 11px' }}>
+        {/* Portrait with sky frame + scanlines */}
+        <div style={{
+          background: 'linear-gradient(180deg, #7fc4e6, #cfe9f4)',
+          borderRadius: 6, overflow: 'hidden',
+          border: '2px solid rgba(0,0,0,.25)',
+        }}>
           <div style={{
-            position: 'relative',
-            height: 96,
-            borderRadius: 8,
-            overflow: 'hidden',
+            position: 'relative', height: 96, borderRadius: 4, overflow: 'hidden',
             background: `repeating-linear-gradient(135deg, ${band}22 0 8px, ${band}33 8px 16px)`,
-            border: '2px solid rgba(0,0,0,.10)',
-            display: 'grid',
-            placeItems: 'center',
+            display: 'grid', placeItems: 'center',
           }}>
-            {/* Grass strip */}
+            {/* Grass */}
             <div style={{
               position: 'absolute', left: 0, right: 0, bottom: 0, height: 30,
               background: 'linear-gradient(180deg, #3f9d57, #2f7e43)',
               borderTop: '2px solid rgba(0,0,0,.12)',
             }} />
-            {/* Head + Shirt */}
-            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -4 }}>
+
+            {/* Player figure */}
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -6 }}>
               {/* Hair */}
-              <div style={{
-                width: 32, height: 14,
-                background: hair,
-                borderRadius: '16px 16px 0 0',
-              }} />
+              <div style={{ width: 30, height: 12, background: hair, borderRadius: '15px 15px 2px 2px' }} />
               {/* Face */}
               <div style={{
-                width: 28, height: 18,
-                background: skinColor,
-                borderRadius: '0 0 10px 10px',
-                marginTop: -2,
+                width: 26, height: 16, background: skinColor,
+                borderRadius: '2px 2px 8px 8px', marginTop: -1,
                 position: 'relative',
               }}>
-                {/* Eyes */}
-                <div style={{
-                  position: 'absolute', top: 4, left: 4,
-                  width: 5, height: 4, borderRadius: 1,
-                  background: '#241a12',
-                }} />
-                <div style={{
-                  position: 'absolute', top: 4, right: 4,
-                  width: 5, height: 4, borderRadius: 1,
-                  background: '#241a12',
-                }} />
+                <div style={{ position: 'absolute', top: 4, left: 3, width: 5, height: 4, borderRadius: 1, background: '#241a12' }} />
+                <div style={{ position: 'absolute', top: 4, right: 3, width: 5, height: 4, borderRadius: 1, background: '#241a12' }} />
+                <div style={{ position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)', width: 8, height: 3, borderRadius: 2, background: '#b5654a' }} />
               </div>
               {/* Neck */}
-              <div style={{ width: 10, height: 4, background: skinColor }} />
-              {/* Shirt + number */}
+              <div style={{ width: 8, height: 3, background: skinColor }} />
+              {/* Shirt */}
               <div style={{
-                width: 60, height: 44,
-                background: shirt,
-                borderRadius: '10px 10px 6px 6px',
+                width: 52, height: 38, background: shirt,
+                borderRadius: '8px 8px 4px 4px',
                 boxShadow: 'inset 0 2px 0 rgba(255,255,255,.25), inset 0 -3px 0 rgba(0,0,0,.18)',
                 display: 'grid', placeItems: 'center',
                 marginTop: -1,
               }}>
-                <span style={{
-                  fontFamily: '"Jersey 10", monospace',
-                  fontSize: 30,
-                  color: numc,
-                  textShadow: '0 2px 0 rgba(0,0,0,.25)',
-                }}>
+                <span className="val" style={{ fontSize: 28, color: numc, textShadow: '0 2px 0 rgba(0,0,0,.25)' }}>
                   {numeroCamisa}
                 </span>
               </div>
             </div>
+
+            {/* Scanlines overlay */}
+            <div style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none',
+              background: 'repeating-linear-gradient(0deg, rgba(0,0,0,.10) 0 1px, transparent 1px 3px)',
+            }} />
           </div>
         </div>
 
         {/* Stats */}
-        <div style={{ padding: '11px 12px 13px', display: 'grid', gap: 7 }}>
+        <div style={{ display: 'grid', gap: 5, padding: '8px 6px 5px' }}>
           {stats.map((s) => (
-            <div key={s.label} style={{
-              display: 'flex', alignItems: 'center', gap: 7, height: 20,
-            }}>
-              <span style={{
-                width: 7, height: 7, background: s.color, borderRadius: 2, flexShrink: 0,
-                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.3)',
-              }} />
-              <span style={{
-                fontFamily: '"Jersey 10", monospace', fontSize: 17, color: '#3a4a40',
-                flexShrink: 0, width: 40,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {abbreviate(s.label)}
-              </span>
-              <span style={{
-                flex: 1, height: 8, background: '#dde4dd', borderRadius: 4, overflow: 'hidden',
-                boxShadow: 'inset 0 1px 1px rgba(0,0,0,.18)',
-              }}>
-                <span style={{
-                  display: 'block', height: '100%',
-                  width: s.value + '%',
-                  background: s.color, borderRadius: 4,
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,.4)',
-                  transition: 'width .3s',
-                }} />
-              </span>
-              <span style={{
-                fontFamily: '"Jersey 10", monospace', fontSize: 18, color: '#1f2a24',
-                textAlign: 'right', flexShrink: 0, whiteSpace: 'nowrap',
-              }}>
+            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 7, height: 7, background: s.color, flexShrink: 0 }} />
+              <span className="val" style={{ fontSize: 16, color: '#cfe0d4', flex: 1 }}>{s.label}</span>
+              <span className="val" style={{ fontSize: 19, color: '#fff', textShadow: '0 1px 0 rgba(0,0,0,.6)' }}>
                 {s.value}
-                <span style={{ fontSize: 11, color: '#8a9e90', marginLeft: 1 }}>
-                  ({formatRaw(s.rawValue)})
-                </span>
+                <span style={{ fontSize: 11, color: '#8ea597', marginLeft: 2 }}>({formatRaw(s.rawValue)})</span>
               </span>
             </div>
           ))}
