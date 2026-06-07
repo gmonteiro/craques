@@ -51,12 +51,14 @@ interface Props {
 export const PlayerCardComponent = memo(function PlayerCardComponent({
   player, activeAttributes, onClick, selected, scale: scaleProp, skinId,
 }: Props) {
-  // Apply skin if available
-  const skin = skinId ? SKINS.find(s => s.id === skinId) : undefined
+  // Apply cosmetic skin if available
+  const cardSkin = skinId ? SKINS.find(s => s.id === skinId) : undefined
   const v = (player.visual ?? {}) as Record<string, string | number>
   const band = (v.headerBar as string) ?? '#3a3460'
   const shirt = (v.jersey as string) ?? '#3a3460'
   const numc = (v.numberColor as string) ?? '#fff'
+  const hair = (v.hair as string) ?? '#241a12'
+  const skinColor = (v.skin as string) ?? '#d39a6a'
   const numeroCamisa = (v.numeroCamisa as number) ?? 0
   const posColor = POS_COLORS[player.posicao] ?? 'var(--label)'
   const displayName = player.apelido || player.nome
@@ -81,16 +83,16 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
 
   const borderStyle = selected
     ? '2px solid var(--accent)'
-    : skin
-    ? `2px solid ${skin.estilo.borderColor}`
+    : cardSkin
+    ? `2px solid ${cardSkin.estilo.borderColor}`
     : player.raridade === 'lendario'
     ? '2px solid var(--gold)'
     : 'none'
 
   const shadowStyle = selected
     ? '0 0 0 3px var(--accent), 0 10px 0 rgba(0,0,0,.3), 0 16px 24px rgba(0,0,0,.45)'
-    : skin
-    ? `0 0 12px ${skin.estilo.glowColor}, 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)`
+    : cardSkin
+    ? `0 0 12px ${cardSkin.estilo.glowColor}, 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)`
     : player.raridade === 'lendario'
     ? '0 0 10px rgba(242,193,78,.3), 0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)'
     : '0 7px 0 rgba(0,0,0,.32), 0 13px 22px rgba(0,0,0,.4)'
@@ -167,23 +169,54 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
               background: 'linear-gradient(180deg, #3f9d57, #2f7e43)',
               borderTop: '2px solid rgba(0,0,0,.12)',
             }} />
-            {/* Shirt + number */}
-            <div style={{
-              position: 'relative', zIndex: 1,
-              width: 60, height: 52, marginTop: 8,
-              background: shirt,
-              borderRadius: '10px 10px 6px 6px',
-              boxShadow: 'inset 0 2px 0 rgba(255,255,255,.25), inset 0 -3px 0 rgba(0,0,0,.18)',
-              display: 'grid', placeItems: 'center',
-            }}>
-              <span style={{
-                fontFamily: '"Jersey 10", monospace',
-                fontSize: 34,
-                color: numc,
-                textShadow: '0 2px 0 rgba(0,0,0,.25)',
+            {/* Head + Shirt */}
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: -4 }}>
+              {/* Hair */}
+              <div style={{
+                width: 32, height: 14,
+                background: hair,
+                borderRadius: '16px 16px 0 0',
+              }} />
+              {/* Face */}
+              <div style={{
+                width: 28, height: 18,
+                background: skinColor,
+                borderRadius: '0 0 10px 10px',
+                marginTop: -2,
+                position: 'relative',
               }}>
-                {numeroCamisa}
-              </span>
+                {/* Eyes */}
+                <div style={{
+                  position: 'absolute', top: 4, left: 4,
+                  width: 5, height: 4, borderRadius: 1,
+                  background: '#241a12',
+                }} />
+                <div style={{
+                  position: 'absolute', top: 4, right: 4,
+                  width: 5, height: 4, borderRadius: 1,
+                  background: '#241a12',
+                }} />
+              </div>
+              {/* Neck */}
+              <div style={{ width: 10, height: 4, background: skinColor }} />
+              {/* Shirt + number */}
+              <div style={{
+                width: 60, height: 44,
+                background: shirt,
+                borderRadius: '10px 10px 6px 6px',
+                boxShadow: 'inset 0 2px 0 rgba(255,255,255,.25), inset 0 -3px 0 rgba(0,0,0,.18)',
+                display: 'grid', placeItems: 'center',
+                marginTop: -1,
+              }}>
+                <span style={{
+                  fontFamily: '"Jersey 10", monospace',
+                  fontSize: 30,
+                  color: numc,
+                  textShadow: '0 2px 0 rgba(0,0,0,.25)',
+                }}>
+                  {numeroCamisa}
+                </span>
+              </div>
             </div>
           </div>
         </div>
