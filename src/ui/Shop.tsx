@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type { PlayerCard, BoostCard } from '../engine/types'
 import { PlayerCardComponent } from './PlayerCard'
 import { BoostCardComponent } from './BoostCard'
@@ -18,11 +18,25 @@ interface Props {
   custoReroll: number
 }
 
-type ShopPhase = 'packs' | 'opening' | 'reveal' | 'pickTarget'
+type AnimPhase = 'in' | 'tear' | 'pop' | 'done'
 type PackType = 'jogador' | 'boost'
 
 const PRECO_PACK: Record<string, number> = { jogador: 6, boost: 4 }
-const MAX_PACKS = 3 // máximo de pacotes por janela
+const MAX_PACKS = 3
+
+/* sell value = half of rarity price, matches engine logic */
+function precoRaridade(raridade: string): number {
+  const precos: Record<string, number> = {
+    comum: 2, incomum: 3, bom: 4, raro: 5, elite: 6, lendario: 8,
+  }
+  return precos[raridade] ?? 4
+}
+function sellValue(p: PlayerCard): number {
+  return Math.floor(precoRaridade(p.raridade) / 2)
+}
+
+/* sparkle angles: 12 sparkles, 30deg apart */
+const SPARKLE_ANGLES = Array.from({ length: 12 }, (_, i) => `${i * 30}deg`)
 
 export function Shop({
   jogadores, boosts, orcamento, activeAttributes,
@@ -30,249 +44,289 @@ export function Shop({
   onComprarJogador, onComprarBoost, onVenderJogador,
   onReroll, onRefresh, onSair, custoReroll,
 }: Props) {
-  const [phase, setPhase] = useState<ShopPhase>('packs')
-  const [packType, setPackType] = useState<PackType>('jogador')
   const [packsOpened, setPacksOpened] = useState(0)
+  const [animPhase, setAnimPhase] = useState<AnimPhase | null>(null)
+  const [revealType, setRevealType] = useState<PackType>('jogador')
+  const [revealPlayer, setRevealPlayer] = useState<PlayerCard | null>(null)
+  const [revealBoost, setRevealBoost] = useState<BoostCard | null>(null)
   const [pendingBoostId, setPendingBoostId] = useState<string | null>(null)
+  const [pickTarget, setPickTarget] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([])
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const canOpenMore = packsOpened < MAX_PACKS
 
-  const abrirPack = (tipo: PackType) => {
-    if (!canOpenMore) return
-    const preco = PRECO_PACK[tipo]
-    if (orcamento < preco) return
-    if (tipo === 'jogador' && jogadores.length === 0) return
-    if (tipo === 'boost' && boosts.length === 0) return
+  const flash = useCallback((txt: string) => {
+    setToast(txt)
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => setToast(null), 1700)
+  }, [])
 
-    setPackType(tipo)
-    setPhase('opening')
-    setTimeout(() => setPhase('reveal'), 800)
-  }
+  const startAnim = useCallback(() => {
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+    setAnimPhase('in')
+    timers.current.push(setTimeout(() => setAnimPhase('tear'), 340))
+    timers.current.push(setTimeout(() => setAnimPhase('pop'), 800))
+    timers.current.push(setTimeout(() => setAnimPhase('done'), 1300))
+  }, [])
 
-  const escolherCarta = (id: string) => {
-    if (packType === 'jogador') {
-      onComprarJogador(id)
-      setPacksOpened(p => p + 1)
-      onRefresh() // refresh grátis (sem custo)
-      setPhase('packs')
-    } else {
-      const boost = boosts.find(b => b.id === id)
-      if (boost?.tipo === 'targeted') {
-        setPendingBoostId(id)
-        setPhase('pickTarget')
-      } else {
-        onComprarBoost(id)
-        setPacksOpened(p => p + 1)
-        onRefresh()
-        setPhase('packs')
-      }
+  const skipAnim = useCallback(() => {
+    if (animPhase !== 'done') {
+      timers.current.forEach(clearTimeout)
+      setAnimPhase('done')
     }
-  }
+  }, [animPhase])
 
-  const escolherAlvo = (playerId: string) => {
+  const abrirPack = useCallback((tipo: PackType) => {
+    if (!canOpenMore) return flash('Limite de pacotes desta fase atingido')
+    const preco = PRECO_PACK[tipo]
+    if (orcamento < preco) return flash('Dinheiro insuficiente')
+
+    if (tipo === 'jogador') {
+      if (jogadores.length === 0) return flash('Sem jogadores disponíveis')
+      // pick random from available
+      const pick = jogadores[Math.floor(Math.random() * jogadores.length)]
+      setRevealPlayer(pick)
+      setRevealBoost(null)
+    } else {
+      if (boosts.length === 0) return flash('Sem boosts disponíveis')
+      const pick = boosts[Math.floor(Math.random() * boosts.length)]
+      setRevealBoost(pick)
+      setRevealPlayer(null)
+    }
+    setRevealType(tipo)
+    startAnim()
+  }, [canOpenMore, orcamento, jogadores, boosts, flash, startAnim])
+
+  const keep = useCallback(() => {
+    if (revealType === 'jogador' && revealPlayer) {
+      onComprarJogador(revealPlayer.id)
+      setPacksOpened(p => p + 1)
+      onRefresh()
+      flash(`${revealPlayer.apelido || revealPlayer.nome} entrou no elenco!`)
+    } else if (revealType === 'boost' && revealBoost) {
+      if (revealBoost.tipo === 'targeted') {
+        setPendingBoostId(revealBoost.id)
+        setPickTarget(true)
+        timers.current.forEach(clearTimeout)
+        setAnimPhase(null)
+        return
+      }
+      onComprarBoost(revealBoost.id)
+      setPacksOpened(p => p + 1)
+      onRefresh()
+      flash(`Boost aplicado: ${revealBoost.nome}`)
+    }
+    timers.current.forEach(clearTimeout)
+    setAnimPhase(null)
+    setRevealPlayer(null)
+    setRevealBoost(null)
+  }, [revealType, revealPlayer, revealBoost, onComprarJogador, onComprarBoost, onRefresh, flash])
+
+  const escolherAlvo = useCallback((playerId: string) => {
     if (pendingBoostId) {
       onComprarBoost(pendingBoostId, playerId)
       setPendingBoostId(null)
       setPacksOpened(p => p + 1)
       onRefresh()
-      setPhase('packs')
+      flash('Boost aplicado!')
     }
-  }
+    setPickTarget(false)
+  }, [pendingBoostId, onComprarBoost, onRefresh, flash])
 
-  // === PICK TARGET: escolher jogador para boost targeted ===
-  if (phase === 'pickTarget') {
+  // === PICK TARGET: choose player for targeted boost ===
+  if (pickTarget) {
     const boost = boosts.find(b => b.id === pendingBoostId)
-    const allPlayers = [...baralhoJogadores]
     return (
-      <div className="p-4 bg-black/40 h-screen flex flex-col items-center justify-center overflow-hidden">
-        <h2 className="text-xl font-black text-yellow-400 mb-2"
-          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
-          ESCOLHA O JOGADOR
-        </h2>
-        <p className="text-sm text-gray-400 mb-6" style={{ fontFamily: "'VT323',monospace", fontSize: 18 }}>
-          {boost?.nome}: {boost?.descricao}
-        </p>
-        <div className="flex gap-3 overflow-x-auto snap-x pb-4 max-w-full px-4">
-          {allPlayers.map(p => (
-            <div key={p.id} className="snap-start flex-shrink-0 hover:scale-105 transition-transform">
-              <PlayerCardComponent
-                player={p}
-                activeAttributes={activeAttributes}
-                onClick={() => escolherAlvo(p.id)}
-                scale={0.45}
-              />
-            </div>
-          ))}
-        </div>
-        <button onClick={() => { setPendingBoostId(null); setPhase('packs') }}
-          className="btn-arcade btn-cancel mt-4">
-          Cancelar
-        </button>
-      </div>
-    )
-  }
-
-  // === OPENING ANIMATION ===
-  if (phase === 'opening') {
-    return (
-      <div className="p-4 bg-black/40 h-screen flex flex-col items-center justify-center overflow-hidden">
-        <div className="animate-bounce">
-          <PackSVG tipo={packType} scale={2} opening />
-          <p className="text-center text-yellow-400 mt-4 animate-pulse"
-            style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 12 }}>
-            Abrindo...
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  // === REVEAL: cartas reveladas ===
-  if (phase === 'reveal') {
-    return (
-      <div className="p-4 bg-black/40 h-screen flex flex-col items-center justify-center overflow-hidden">
-        <h2 className="text-center font-black text-yellow-400 mb-6"
-          style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
-          ESCOLHA UMA CARTA!
-        </h2>
-        <div className="flex gap-3 md:gap-6 justify-center mb-6 overflow-x-auto snap-x pb-2">
-          {packType === 'jogador' ? (
-            jogadores.map(p => (
-              <div key={p.id} className="animate-[fadeInUp_0.5s_ease-out] snap-start flex-shrink-0 hover:scale-105 transition-transform">
-                <PlayerCardComponent
-                  player={p}
-                  activeAttributes={activeAttributes}
-                  onClick={() => escolherCarta(p.id)}
-                  scale={0.50}
-                />
-              </div>
-            ))
-          ) : (
-            boosts.map(b => (
-              <div key={b.id} className="animate-[fadeInUp_0.5s_ease-out] snap-start flex-shrink-0 hover:scale-105 transition-transform">
-                <BoostCardComponent
-                  boost={b}
-                  onClick={() => escolherCarta(b.id)}
-                />
-              </div>
-            ))
+      <div className="open-bg" onClick={() => { setPendingBoostId(null); setPickTarget(false) }}>
+        <div className="reveal" onClick={e => e.stopPropagation()}
+          style={{ background: 'linear-gradient(180deg, var(--panel-2), var(--panel))', borderRadius: 20, border: '2px solid var(--panel-line)' }}>
+          <div className="micro">BOOST DIRECIONADO</div>
+          <h3 style={{ fontFamily: '"Jersey 10", monospace', fontSize: 30, color: 'var(--gold)', textShadow: '0 3px 0 rgba(0,0,0,.5)', margin: '4px 0 8px' }}>
+            Escolha o jogador
+          </h3>
+          {boost && (
+            <p style={{ fontFamily: '"Jersey 10", monospace', fontSize: 18, color: 'var(--ink-dim)', marginBottom: 16 }}>
+              {boost.nome}: {boost.descricao}
+            </p>
           )}
+          <div style={{ display: 'flex', gap: 12, overflowX: 'auto', padding: '14px 2px 8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {baralhoJogadores.map(p => (
+              <div key={p.id} style={{ flex: '0 0 auto', cursor: 'pointer' }}
+                onClick={() => escolherAlvo(p.id)}>
+                <PlayerCardComponent player={p} activeAttributes={activeAttributes} scale={0.45} />
+              </div>
+            ))}
+          </div>
+          <button className="btn-arcade btn-cancel btn-md" style={{ marginTop: 16 }}
+            onClick={() => { setPendingBoostId(null); setPickTarget(false) }}>
+            Cancelar
+          </button>
         </div>
-        <button onClick={() => { setPacksOpened(p => p + 1); setPhase('packs') }}
-          className="btn-arcade btn-cancel">
-          Pular
-        </button>
       </div>
     )
   }
 
-  // === MAIN SHOP: packs ===
+  const isGreen = revealType === 'jogador'
+  const packOff = (tipo: PackType) => {
+    const preco = PRECO_PACK[tipo]
+    if (!canOpenMore) return true
+    if (orcamento < preco) return true
+    if (tipo === 'jogador' && jogadores.length === 0) return true
+    if (tipo === 'boost' && boosts.length === 0) return true
+    return false
+  }
+
   return (
-    <div className="p-4 md:p-6 bg-black/40 min-h-screen">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 md:mb-6">
-        <h2 className="text-white" style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 14 }}>
-          TRANSFERENCIAS
-        </h2>
-        <div className="flex items-center gap-3">
-          <span className="text-yellow-400 font-bold"
-            style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 16 }}>
-            ${orcamento}
-          </span>
-          <span className="text-gray-500 text-xs"
-            style={{ fontFamily: "'VT323',monospace" }}>
-            {packsOpened}/{MAX_PACKS} pacotes
-          </span>
-          <button onClick={onSair} className="btn-arcade btn-next" style={{ fontSize: 10, padding: '10px 18px' }}>
-            Proxima Fase
+    <div id="stage-t">
+      {/* HEADER */}
+      <div className="t-header panel" style={{ borderRadius: 0, border: 'none' }}>
+        <div className="t-title">
+          <div className="badge"><span>&#x21C4;</span></div>
+          <h1>Transferências</h1>
+        </div>
+        <div className="t-right">
+          <div className="stat-pill">
+            <span className="coin" />
+            <span className="val" style={{ fontFamily: '"Jersey 10",monospace', fontSize: 26, color: 'var(--gold)' }}>{orcamento}</span>
+          </div>
+          <div className="stat-pill">
+            <span className="micro">Pacotes</span>
+            <span style={{ fontFamily: '"Jersey 10",monospace', fontSize: 22, color: packsOpened >= MAX_PACKS ? 'var(--green)' : 'var(--ink)' }}>
+              {packsOpened}/{MAX_PACKS}
+            </span>
+          </div>
+          <button className="btn-arcade btn-next btn-md" onClick={onSair}>
+            Próxima Fase →
           </button>
         </div>
       </div>
 
-      {/* Packs */}
-      <div className="flex flex-col gap-4 items-center md:flex-row md:gap-8 md:justify-center mb-6 md:mb-8">
-        <div
-          onClick={() => abrirPack('jogador')}
-          className={`cursor-pointer transition-all duration-200 hover:scale-105 ${
-            !canOpenMore || orcamento < PRECO_PACK.jogador || jogadores.length === 0 ? 'opacity-30 pointer-events-none' : ''
-          }`}
-        >
-          <PackSVG tipo="jogador" scale={1.4} />
-          <div className="text-center mt-2">
-            <span className="text-yellow-400 font-bold"
-              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 12 }}>
-              ${PRECO_PACK.jogador}
-            </span>
-          </div>
+      {/* SHOP */}
+      <div className="shop">
+        <div className="shop-head">
+          <h2>Abra seus pacotes</h2>
+          <p>Compre e abra até {MAX_PACKS} pacotes por fase.</p>
         </div>
+        <div className="packs">
+          {/* JOGADORES pack */}
+          <div className={'pack-col' + (packOff('jogador') ? ' off' : '')}>
+            <div className="pack green" onClick={packOff('jogador') ? undefined : () => abrirPack('jogador')}>
+              <div className="tear" />
+              <div className="gems">
+                <span className="gem green" />
+                <span className="gem big green" />
+                <span className="gem green" />
+              </div>
+              <div className="body">
+                <div className="kicker">CRAQUES</div>
+                <div className="ptitle">JOGADORES</div>
+                <div className="psub">1 craque</div>
+              </div>
+              <div className="shine" />
+            </div>
+            <div className="price-coin"><span className="coin" /><b>{PRECO_PACK.jogador}</b></div>
+          </div>
 
-        <div
-          onClick={() => abrirPack('boost')}
-          className={`cursor-pointer transition-all duration-200 hover:scale-105 ${
-            !canOpenMore || orcamento < PRECO_PACK.boost || boosts.length === 0 ? 'opacity-30 pointer-events-none' : ''
-          }`}
-        >
-          <PackSVG tipo="boost" scale={1.4} />
-          <div className="text-center mt-2">
-            <span className="text-yellow-400 font-bold"
-              style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 12 }}>
-              ${PRECO_PACK.boost}
-            </span>
+          {/* BOOSTS pack */}
+          <div className={'pack-col' + (packOff('boost') ? ' off' : '')}>
+            <div className="pack purple" onClick={packOff('boost') ? undefined : () => abrirPack('boost')}>
+              <div className="tear" />
+              <div className="gems">
+                <span className="gem purple" />
+                <span className="gem big purple" />
+                <span className="gem purple" />
+              </div>
+              <div className="body">
+                <div className="kicker">CRAQUES</div>
+                <div className="ptitle">BOOSTS</div>
+                <div className="psub">1 reforço</div>
+              </div>
+              <div className="shine" />
+            </div>
+            <div className="price-coin"><span className="coin" /><b>{PRECO_PACK.boost}</b></div>
           </div>
         </div>
       </div>
 
-      {/* Elenco (vender) */}
-      {baralhoJogadores.length > 0 && (
-        <div>
-          <h3 className="text-gray-400 mb-3"
-            style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 9 }}>
-            SEU ELENCO (CLIQUE P/ VENDER)
-          </h3>
-          <div className="flex gap-2 flex-wrap">
-            {baralhoJogadores.map(p => (
-              <div key={p.id} className="relative opacity-80 hover:opacity-100 transition">
-                <PlayerCardComponent
-                  player={p}
-                  activeAttributes={activeAttributes}
-                  onClick={() => onVenderJogador(p.id)}
-                  scale={0.28}
-                />
+      {/* ROSTER */}
+      <div className="roster panel">
+        <div className="roster-head">
+          <span className="val shadow-hard rtitle" style={{ fontFamily: '"Jersey 10",monospace', fontSize: 24, color: '#fff' }}>
+            Seu elenco
+          </span>
+          <span className="hint">clique numa carta p/ vender · {baralhoJogadores.length} cartas</span>
+        </div>
+        {baralhoJogadores.length > 0 ? (
+          <div className="roster-row scroll">
+            {baralhoJogadores.map(p => {
+              const sv = sellValue(p)
+              return (
+                <div key={p.id} className="rcard">
+                  <span className="sell-chip">${sv}</span>
+                  <div style={{ transform: 'scale(0.85)', transformOrigin: 'top left' }}>
+                    <PlayerCardComponent player={p} activeAttributes={activeAttributes} />
+                  </div>
+                  <div className="sell-over" onClick={() => onVenderJogador(p.id)}>
+                    <b>VENDER ${sv}</b>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="roster-empty">Elenco vazio — compre um pacote de jogadores!</div>
+        )}
+      </div>
+
+      {/* PACK OPENING OVERLAY */}
+      {animPhase && (
+        <div className="open-bg" onClick={skipAnim}>
+          <div className={`open-stage ${isGreen ? 'green' : 'purple'}`} data-phase={animPhase}
+            onClick={e => e.stopPropagation()}>
+            <div className="op-area">
+              <div className="beam" />
+              <div className="flash" />
+              <div className="open-pack">
+                <div className="op-base">
+                  <div className="op-front">
+                    <span className="kicker">CRAQUES</span>
+                    <span className="ptitle">{isGreen ? 'JOGADORES' : 'BOOSTS'}</span>
+                  </div>
+                </div>
+                <div className="tear-strip">
+                  <span className="gem" /><span className="gem big" /><span className="gem" />
+                </div>
               </div>
-            ))}
+              <div className="eject">
+                {revealType === 'jogador' && revealPlayer ? (
+                  <PlayerCardComponent player={revealPlayer} activeAttributes={activeAttributes} scale={0.65} />
+                ) : revealBoost ? (
+                  <BoostCardComponent boost={revealBoost} />
+                ) : null}
+              </div>
+              <div className="sparkles">
+                {SPARKLE_ANGLES.map((a, i) => (
+                  <span key={i} style={{ '--a': a } as React.CSSProperties} />
+                ))}
+              </div>
+            </div>
+            <div className="open-cta">
+              <div className="micro">{revealType === 'jogador' ? 'Novo craque' : 'Novo boost'}</div>
+              <h3>{revealType === 'jogador' ? 'Novo craque!' : 'Reforço tático!'}</h3>
+              <button className="btn-arcade btn-next btn-md" onClick={keep}>
+                {revealType === 'jogador' ? 'Guardar no elenco' : 'Aplicar boost'}
+              </button>
+            </div>
+            {animPhase !== 'done' && <div className="skip-hint">toque para pular</div>}
           </div>
         </div>
       )}
+
+      {/* TOAST */}
+      {toast && <div className="t-toast">{toast}</div>}
     </div>
-  )
-}
-
-function PackSVG({ tipo, scale = 1, opening }: { tipo: PackType; scale?: number; opening?: boolean }) {
-  const w = 120 * scale
-  const h = 160 * scale
-  const isJogador = tipo === 'jogador'
-  const color1 = isJogador ? '#1a5c2a' : '#2a1a5c'
-  const color2 = isJogador ? '#2d8a42' : '#5c2a8a'
-  const accent = '#ffd84d'
-
-  return (
-    <svg viewBox="0 0 120 160" width={w} height={h} xmlns="http://www.w3.org/2000/svg"
-      className={opening ? 'animate-spin' : ''}>
-      <rect x={5} y={20} width={110} height={130} rx={6} fill={color1} />
-      <rect x={10} y={25} width={100} height={120} rx={4} fill={color2} />
-      <path d="M5,20 L15,30 L25,20 L35,30 L45,20 L55,30 L65,20 L75,30 L85,20 L95,30 L105,20 L115,30 L115,20 L5,20z" fill={color1} />
-      <rect x={20} y={45} width={8} height={8} fill={accent} opacity={0.6} transform="rotate(45,24,49)" />
-      <rect x={90} y={45} width={8} height={8} fill={accent} opacity={0.6} transform="rotate(45,94,49)" />
-      <rect x={55} y={35} width={10} height={10} fill={accent} opacity={0.8} transform="rotate(45,60,40)" />
-      <text x={60} y={80} textAnchor="middle" fill={accent}
-        style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 8 }}>
-        CRAQUES
-      </text>
-      <text x={60} y={100} textAnchor="middle" fill="#FFFFFF"
-        style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 7 }}>
-        {isJogador ? 'JOGADORES' : 'BOOSTS'}
-      </text>
-      <rect x={15} y={30} width={3} height={100} fill="white" opacity={0.05} rx={1} />
-    </svg>
   )
 }
