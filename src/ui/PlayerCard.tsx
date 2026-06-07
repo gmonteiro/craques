@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { PlayerCard as PlayerCardType } from '../engine/types'
 import { getAttributeLabel } from '../engine/attributes'
+import { PixelFace } from './PixelFace'
 
 const POS_COLORS: Record<string, string> = {
   GOL: 'var(--pos-gol)',
@@ -119,42 +120,42 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
           {player.nacionalidade} · {player.clube}
         </div>
 
-        {/* Portrait placeholder */}
+        {/* Portrait with pixel face */}
         <div style={{ padding: '0 11px' }}>
           <div style={{
             position: 'relative',
             height: 96,
             borderRadius: 8,
             overflow: 'hidden',
-            background: `repeating-linear-gradient(135deg, ${band}22 0 8px, ${band}33 8px 16px)`,
+            background: 'linear-gradient(180deg, #8fcde8, #cfe9f4)',
             border: '2px solid rgba(0,0,0,.10)',
             display: 'grid',
-            placeItems: 'center',
+            placeItems: 'end center',
           }}>
             {/* Grass strip */}
             <div style={{
-              position: 'absolute', left: 0, right: 0, bottom: 0, height: 30,
+              position: 'absolute', left: 0, right: 0, bottom: 0, height: 24,
               background: 'linear-gradient(180deg, #3f9d57, #2f7e43)',
               borderTop: '2px solid rgba(0,0,0,.12)',
+              zIndex: 0,
             }} />
-            {/* Shirt + number */}
-            <div style={{
-              position: 'relative', zIndex: 1,
-              width: 60, height: 52, marginTop: 8,
-              background: shirt,
-              borderRadius: '10px 10px 6px 6px',
-              boxShadow: 'inset 0 2px 0 rgba(255,255,255,.25), inset 0 -3px 0 rgba(0,0,0,.18)',
-              display: 'grid', placeItems: 'center',
-            }}>
-              <span style={{
-                fontFamily: '"Jersey 10", monospace',
-                fontSize: 34,
-                color: numc,
-                textShadow: '0 2px 0 rgba(0,0,0,.25)',
-              }}>
-                {numeroCamisa}
-              </span>
+            {/* Pixel face avatar */}
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <PixelFace playerId={player.id} shirt={shirt} numc={numc} size={90} />
             </div>
+            {/* Squad number chip */}
+            <div style={{
+              position: 'absolute', bottom: 4, right: 6, zIndex: 2,
+              background: 'rgba(8,16,11,.62)', borderRadius: 6,
+              padding: '1px 6px 0',
+            }}>
+              <span className="val" style={{ fontSize: 16, color: numc }}>{numeroCamisa}</span>
+            </div>
+            {/* Scanlines */}
+            <div style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 3,
+              background: 'repeating-linear-gradient(0deg, rgba(0,0,0,.10) 0 1px, transparent 1px 3px)',
+            }} />
           </div>
         </div>
 
