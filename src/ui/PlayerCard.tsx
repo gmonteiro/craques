@@ -158,7 +158,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
             }} />
             {/* Pixel face avatar */}
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <PixelFace playerId={player.id} shirt={shirt} numc={numc} size={90} />
+              <PixelFace playerId={player.id} shirt={shirt} numc="#fff" size={90} />
             </div>
             {/* Squad number chip */}
             <div style={{
@@ -166,7 +166,7 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
               background: 'rgba(8,16,11,.62)', borderRadius: 6,
               padding: '1px 6px 0',
             }}>
-              <span className="val" style={{ fontSize: 16, color: numc }}>{numeroCamisa}</span>
+              <span className="val" style={{ fontSize: 16, color: '#fff' }}>{numeroCamisa}</span>
             </div>
             {/* Scanlines */}
             <div style={{

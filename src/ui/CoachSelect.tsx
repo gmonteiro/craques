@@ -1,93 +1,73 @@
+import { useState } from 'react'
 import { COACHES, type Coach } from '../engine/coaches'
+import { PixelFace } from './PixelFace'
 
 interface Props {
   onSelect: (coach: Coach) => void
 }
 
-export function CoachSelect({ onSelect }: Props) {
+/* ---- flag data (simple colored stripes, no emblems) ---- */
+const FLAGS: Record<string, { o: 'h' | 'v'; c: string[] }> = {
+  ESPANHA:   { o: 'h', c: ['#c60b1e', '#ffc400', '#c60b1e'] },
+  PORTUGAL:  { o: 'v', c: ['#1c7a3f', '#d52b1e'] },
+  'ITÁLIA':  { o: 'v', c: ['#1c8a4a', '#f2f2ee', '#c0392b'] },
+  ALEMANHA:  { o: 'h', c: ['#161616', '#d8232a', '#ffce00'] },
+  ARGENTINA: { o: 'h', c: ['#74acdf', '#ffffff', '#74acdf'] },
+  BRASIL:    { o: 'h', c: ['#1c8a4a', '#ffd23f', '#1c8a4a'] },
+  'FRANÇA':  { o: 'v', c: ['#2452a0', '#f2f2ee', '#c0392b'] },
+}
+
+function Flag({ pais }: { pais: string }) {
+  const f = FLAGS[pais]
+  if (!f) return null
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '32px 16px',
-      background: 'rgba(7,18,12,.7)',
-    }}>
-      <span className="val shadow-hard" style={{ fontSize: 36, color: 'var(--gold)', marginBottom: 4 }}>
-        ESCOLHA SEU TÉCNICO
-      </span>
-      <span className="micro" style={{ fontSize: 11, marginBottom: 24 }}>
-        Cada técnico tem um buff e um debuff que muda sua run
-      </span>
+    <span className={'flag ' + (f.o === 'h' ? 'h' : '')}>
+      {f.c.map((c, i) => <i key={i} style={{ background: c }} />)}
+    </span>
+  )
+}
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gap: 12,
-        width: '100%',
-        maxWidth: 900,
-      }}>
-        {COACHES.map(coach => (
-          <button
-            key={coach.id}
-            onClick={() => onSelect(coach)}
-            className="panel"
-            style={{
-              padding: '14px 16px',
-              cursor: 'pointer',
-              textAlign: 'left',
-              border: '2px solid var(--panel-line)',
-              transition: 'transform .1s, border-color .15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.borderColor = 'var(--gold)'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.borderColor = 'var(--panel-line)'
-            }}
-          >
-            {/* Name + country */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-              <span className="val shadow-hard" style={{ fontSize: 22, color: 'var(--ink)' }}>
-                {coach.nome}
-              </span>
-              <span className="micro" style={{ fontSize: 9 }}>{coach.pais}</span>
-            </div>
+function CoachCard({ coach, selected, onPick }: { coach: Coach; selected: boolean; onPick: () => void }) {
+  return (
+    <div className={'panel coach' + (selected ? ' sel' : '')} onClick={onPick}>
+      <div className="check">&#x2713;</div>
+      <div className="c-top">
+        <div className="portrait">
+          <PixelFace playerId={coach.id} shirt={coach.suit} numc="#fff" size={54} />
+        </div>
+        <div className="c-meta">
+          <h3 className="cname">{coach.nome}</h3>
+          <div className="c-country"><Flag pais={coach.pais} /><span>{coach.pais}</span></div>
+          <div className="c-style">{coach.estilo}</div>
+        </div>
+      </div>
+      <div className="perk buff"><span className="ar">&#x25B2;</span><span>{coach.buff.descricao}</span></div>
+      <div className="perk debuff"><span className="ar">&#x25BC;</span><span>{coach.debuff.descricao}</span></div>
+    </div>
+  )
+}
 
-            {/* Style */}
-            <div className="val" style={{ fontSize: 15, color: 'var(--ink-dim)', marginBottom: 10 }}>
-              {coach.estilo}
-            </div>
+export function CoachSelect({ onSelect }: Props) {
+  const [sel, setSel] = useState<string | null>(null)
+  const chosen = COACHES.find(c => c.id === sel) ?? null
 
-            {/* Buff */}
-            <div style={{
-              background: 'rgba(92,208,137,.08)',
-              border: '1px solid rgba(92,208,137,.25)',
-              borderRadius: 7,
-              padding: '5px 8px',
-              marginBottom: 6,
-            }}>
-              <span className="val" style={{ fontSize: 14, color: 'var(--green)' }}>
-                ▲ {coach.buff.descricao}
-              </span>
-            </div>
-
-            {/* Debuff */}
-            <div style={{
-              background: 'rgba(223,82,77,.08)',
-              border: '1px solid rgba(223,82,77,.25)',
-              borderRadius: 7,
-              padding: '5px 8px',
-            }}>
-              <span className="val" style={{ fontSize: 14, color: 'var(--pos-ata)' }}>
-                ▼ {coach.debuff.descricao}
-              </span>
-            </div>
-          </button>
+  return (
+    <div id="stage-c">
+      <div className="stripes" />
+      <div className="c-head">
+        <h1>Escolha seu t&eacute;cnico</h1>
+        <p>Cada t&eacute;cnico tem um buff e um debuff que mudam sua run</p>
+      </div>
+      <div className="grid">
+        {COACHES.map(c => (
+          <CoachCard key={c.id} coach={c} selected={sel === c.id} onPick={() => setSel(c.id)} />
         ))}
+      </div>
+      <div className={'confirm-bar' + (chosen ? ' show' : '')}>
+        <span className="pick">T&eacute;cnico: <b>{chosen ? chosen.nome : ''}</b></span>
+        <button className="btn-arcade btn-play btn-md" onClick={() => { if (chosen) onSelect(chosen) }}>
+          Confirmar t&eacute;cnico &rarr;
+        </button>
       </div>
     </div>
   )
