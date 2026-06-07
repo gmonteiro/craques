@@ -79,6 +79,8 @@ export function Shop({
     }
   }, [animPhase])
 
+  const [showChoose, setShowChoose] = useState(false)
+
   const abrirPack = useCallback((tipo: PackType) => {
     if (!canOpenMore) return flash('Limite de pacotes desta fase atingido')
     const preco = PRECO_PACK[tipo]
@@ -86,44 +88,58 @@ export function Shop({
 
     if (tipo === 'jogador') {
       if (jogadores.length === 0) return flash('Sem jogadores disponíveis')
-      // pick random from available
-      const pick = jogadores[Math.floor(Math.random() * jogadores.length)]
-      setRevealPlayer(pick)
-      setRevealBoost(null)
     } else {
       if (boosts.length === 0) return flash('Sem boosts disponíveis')
-      const pick = boosts[Math.floor(Math.random() * boosts.length)]
-      setRevealBoost(pick)
-      setRevealPlayer(null)
     }
     setRevealType(tipo)
+    setRevealPlayer(null)
+    setRevealBoost(null)
+    setShowChoose(false)
     startAnim()
   }, [canOpenMore, orcamento, jogadores, boosts, flash, startAnim])
 
-  const keep = useCallback(() => {
-    if (revealType === 'jogador' && revealPlayer) {
-      onComprarJogador(revealPlayer.id)
-      setPacksOpened(p => p + 1)
-      onRefresh()
-      flash(`${revealPlayer.apelido || revealPlayer.nome} entrou no elenco!`)
-    } else if (revealType === 'boost' && revealBoost) {
-      if (revealBoost.tipo === 'targeted') {
-        setPendingBoostId(revealBoost.id)
+  // When animation reaches 'done', show 3 cards to choose from
+  const onAnimDone = useCallback(() => {
+    setShowChoose(true)
+  }, [])
+
+  // Player picks 1 card from the 3 revealed
+  const escolherCarta = useCallback((id: string) => {
+    if (revealType === 'jogador') {
+      onComprarJogador(id)
+      const p = jogadores.find(j => j.id === id)
+      flash(`${p?.apelido || p?.nome || 'Jogador'} entrou no elenco!`)
+    } else {
+      const b = boosts.find(b => b.id === id)
+      if (b?.tipo === 'targeted') {
+        setPendingBoostId(id)
         setPickTarget(true)
-        timers.current.forEach(clearTimeout)
         setAnimPhase(null)
+        setShowChoose(false)
         return
       }
-      onComprarBoost(revealBoost.id)
-      setPacksOpened(p => p + 1)
-      onRefresh()
-      flash(`Boost aplicado: ${revealBoost.nome}`)
+      onComprarBoost(id)
+      flash(`Boost aplicado: ${b?.nome || 'Boost'}`)
     }
+    setPacksOpened(p => p + 1)
+    onRefresh()
     timers.current.forEach(clearTimeout)
     setAnimPhase(null)
-    setRevealPlayer(null)
-    setRevealBoost(null)
-  }, [revealType, revealPlayer, revealBoost, onComprarJogador, onComprarBoost, onRefresh, flash])
+    setShowChoose(false)
+  }, [revealType, jogadores, boosts, onComprarJogador, onComprarBoost, onRefresh, flash])
+
+  const skipChoose = useCallback(() => {
+    // Skip without choosing — still counts as opened
+    setPacksOpened(p => p + 1)
+    timers.current.forEach(clearTimeout)
+    setAnimPhase(null)
+    setShowChoose(false)
+  }, [])
+
+  // keep() is called from the old "Guardar" button — now just triggers choose screen
+  const keep = useCallback(() => {
+    setShowChoose(true)
+  }, [])
 
   const escolherAlvo = useCallback((playerId: string) => {
     if (pendingBoostId) {
@@ -281,8 +297,8 @@ export function Shop({
         )}
       </div>
 
-      {/* PACK OPENING OVERLAY */}
-      {animPhase && (
+      {/* PACK OPENING OVERLAY — animation phases */}
+      {animPhase && !showChoose && (
         <div className="open-bg" onClick={skipAnim}>
           <div className={`open-stage ${isGreen ? 'green' : 'purple'}`} data-phase={animPhase}
             onClick={e => e.stopPropagation()}>
@@ -300,13 +316,6 @@ export function Shop({
                   <span className="gem" /><span className="gem big" /><span className="gem" />
                 </div>
               </div>
-              <div className="eject">
-                {revealType === 'jogador' && revealPlayer ? (
-                  <PlayerCardComponent player={revealPlayer} activeAttributes={activeAttributes} scale={0.65} />
-                ) : revealBoost ? (
-                  <BoostCardComponent boost={revealBoost} />
-                ) : null}
-              </div>
               <div className="sparkles">
                 {SPARKLE_ANGLES.map((a, i) => (
                   <span key={i} style={{ '--a': a } as React.CSSProperties} />
@@ -314,13 +323,53 @@ export function Shop({
               </div>
             </div>
             <div className="open-cta">
-              <div className="micro">{revealType === 'jogador' ? 'Novo craque' : 'Novo boost'}</div>
-              <h3>{revealType === 'jogador' ? 'Novo craque!' : 'Reforço tático!'}</h3>
-              <button className="btn-arcade btn-next btn-md" onClick={keep}>
-                {revealType === 'jogador' ? 'Guardar no elenco' : 'Aplicar boost'}
+              <div className="micro">{isGreen ? 'Pacote aberto!' : 'Pacote aberto!'}</div>
+              <h3 style={{ fontFamily: '"Jersey 10", monospace', fontSize: 30, color: 'var(--gold)', textShadow: '0 3px 0 rgba(0,0,0,.5)', margin: '4px 0 12px' }}>
+                Escolha 1 de 3!
+              </h3>
+              <button className="btn-arcade btn-next btn-md" onClick={() => setShowChoose(true)}>
+                Ver cartas
               </button>
             </div>
             {animPhase !== 'done' && <div className="skip-hint">toque para pular</div>}
+          </div>
+        </div>
+      )}
+
+      {/* CHOOSE 1 of 3 cards */}
+      {showChoose && (
+        <div className="open-bg" onClick={skipChoose}>
+          <div onClick={e => e.stopPropagation()} style={{ textAlign: 'center' }}>
+            <div className="micro" style={{ fontSize: 12, marginBottom: 4 }}>
+              {revealType === 'jogador' ? 'Novo craque!' : 'Reforço tático!'}
+            </div>
+            <h3 style={{ fontFamily: '"Jersey 10", monospace', fontSize: 36, color: 'var(--gold)', textShadow: '0 3px 0 rgba(0,0,0,.5)', marginBottom: 16 }}>
+              ESCOLHA UMA CARTA
+            </h3>
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
+              {revealType === 'jogador' ? (
+                jogadores.map(p => (
+                  <div key={p.id} style={{ cursor: 'pointer', transition: 'transform .12s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                    onClick={() => escolherCarta(p.id)}>
+                    <PlayerCardComponent player={p} activeAttributes={activeAttributes} scale={0.75} />
+                  </div>
+                ))
+              ) : (
+                boosts.map(b => (
+                  <div key={b.id} style={{ cursor: 'pointer', transition: 'transform .12s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                    onClick={() => escolherCarta(b.id)}>
+                    <BoostCardComponent boost={b} />
+                  </div>
+                ))
+              )}
+            </div>
+            <button className="btn-arcade btn-cancel btn-md" onClick={skipChoose}>
+              Pular
+            </button>
           </div>
         </div>
       )}
