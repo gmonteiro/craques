@@ -429,15 +429,6 @@ export function GameScreen({
         {showCombos && <ComboGuide combos={comboProgress} />}
       </div>
 
-      {/* Deck Viewer */}
-      <DeckViewer
-        mao={run.mao}
-        baralho={run.baralho}
-        escalacao={run.escalacao}
-        descarte={run.descarte}
-        activeAttributes={run.era}
-      />
-
       {/* Encerrar button */}
       <button
         onClick={() => setShowDesistir(true)}
@@ -678,15 +669,6 @@ export function GameScreen({
             {showCombos && (
               <div style={{ padding: '0 8px 8px' }}>
                 <ComboGuide combos={comboProgress} />
-                <div style={{ marginTop: 6 }}>
-                  <DeckViewer
-                    mao={run.mao}
-                    baralho={run.baralho}
-                    escalacao={run.escalacao}
-                    descarte={run.descarte}
-                    activeAttributes={run.era}
-                  />
-                </div>
               </div>
             )}
           </div>

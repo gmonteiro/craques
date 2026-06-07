@@ -68,43 +68,40 @@ export function Hand({ cards, activeAttributes, onSelect, selectedIds, escaladoI
         })}
       </div>
 
-      {/* Deck stack (right side) */}
+      {/* Deck stack (right side) — red card backs like handoff */}
       {deckSize != null && deckSize > 0 && (
         <div style={{
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          marginLeft: 4,
+          paddingLeft: 8,
+          borderLeft: '2px solid var(--panel-line)',
         }}>
-          <div style={{ position: 'relative', width: 48, height: 64 }}>
-            {/* Stacked card backs */}
-            {[2, 1, 0].map(i => (
-              <div
-                key={i}
-                style={{
-                  position: 'absolute',
-                  left: i * 2,
-                  top: i * 2,
-                  width: 44,
-                  height: 58,
-                  background: 'linear-gradient(180deg, var(--panel-3), var(--panel))',
-                  border: '2px solid var(--panel-line)',
-                  borderRadius: 'var(--r-sm)',
-                  boxShadow: i === 0
-                    ? 'inset 0 1px 0 var(--panel-top), 0 3px 6px rgba(0,0,0,0.3)'
-                    : 'none',
-                }}
-              />
+          <div style={{ position: 'relative', width: 92, height: 128 }}>
+            {[0, 1, 2].map(i => (
+              <div key={i} style={{
+                position: 'absolute',
+                inset: 0,
+                transform: `translate(${i * 3}px, ${-i * 3}px)`,
+                borderRadius: 12,
+                background: 'linear-gradient(135deg, #c0392b, #8e2a20)',
+                border: '3px solid #f4f6f1',
+                boxShadow: '0 5px 0 rgba(0,0,0,.35)',
+              }}>
+                {i === 2 && (
+                  <div style={{
+                    position: 'absolute', inset: 8, borderRadius: 6,
+                    border: '2px solid rgba(255,255,255,.5)',
+                    background: 'repeating-linear-gradient(45deg, rgba(255,255,255,.12) 0 6px, transparent 6px 12px)',
+                  }} />
+                )}
+              </div>
             ))}
           </div>
-          <span className="micro" style={{
-            marginTop: 4,
-            fontSize: 9,
-            color: 'var(--label)',
-          }}>
-            {deckSize}
-          </span>
+          <div className="micro" style={{ fontSize: 12, color: 'var(--ink-dim)', marginTop: 6 }}>
+            Cartas {deckSize}
+          </div>
         </div>
       )}
     </div>
