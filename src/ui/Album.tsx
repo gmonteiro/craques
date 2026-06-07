@@ -42,21 +42,18 @@ export function Album({ unlockedPlayers, unlockedBoosts, earnedAchievements, sta
       {/* Header */}
       <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-gray-800 bg-gray-900/90">
         <div>
-          <h1 className="text-yellow-400 font-black"
-            style={{ fontFamily: "'Press Start 2P',monospace", fontSize: 16 }}>
-            MEU ALBUM
-          </h1>
-          <div className="flex items-center gap-3 mt-1">
-            <span className="text-gray-400 text-xs" style={{ fontFamily: "'VT323',monospace", fontSize: 16 }}>
+          <span className="val shadow-hard" style={{ fontSize: 36, color: 'var(--gold)' }}>MEU ALBUM</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 6 }}>
+            <span className="val" style={{ fontSize: 22, color: 'var(--ink-dim)' }}>
               {totalUnlocked}/{totalCards} figurinhas
             </span>
-            <div className="w-32 h-2 bg-gray-800 rounded-full overflow-hidden">
-              <div className="h-full bg-yellow-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
+            <div style={{ width: 120, height: 8, background: '#0c1510', borderRadius: 4, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${pct}%`, background: 'var(--gold)', borderRadius: 4 }} />
             </div>
-            <span className="text-yellow-400 text-xs font-bold">{pct}%</span>
+            <span className="val" style={{ fontSize: 24, color: 'var(--gold)' }}>{pct}%</span>
           </div>
         </div>
-        <button onClick={onClose} className="btn-arcade btn-cancel" style={{ fontSize: 9, padding: '8px 14px' }}>
+        <button onClick={onClose} className="btn-arcade btn-cancel" style={{ fontSize: 22, padding: '10px 20px 12px' }}>
           Fechar
         </button>
       </div>
@@ -82,19 +79,47 @@ export function Album({ unlockedPlayers, unlockedBoosts, earnedAchievements, sta
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
         {tab === 'jogadores' && (
-          <div className="flex flex-wrap gap-2 justify-center">
-            {allPlayers.map(p => {
+          (() => {
+            const regulares = [...allPlayers]
+              .filter(p => p.clube !== 'APOSENTADO')
+              .sort((a, b) => (a.apelido || a.nome).localeCompare(b.apelido || b.nome))
+            const lendas = [...allPlayers]
+              .filter(p => p.clube === 'APOSENTADO')
+              .sort((a, b) => (a.apelido || a.nome).localeCompare(b.apelido || b.nome))
+
+            const renderCard = (p: typeof allPlayers[0]) => {
               const unlocked = unlockedP.has(p.id)
               return (
-                <div key={p.id} className={`transition-all ${unlocked ? '' : 'grayscale brightness-[0.15]'}`}>
+                <div key={p.id} style={{
+                  filter: unlocked ? 'none' : 'grayscale(1) brightness(0.15)',
+                  transition: 'filter 0.2s',
+                }}>
                   <PlayerCardComponent
                     player={unlocked ? p : { ...p, apelido: '???', nome: '???', clube: '???', nacionalidade: '???' }}
-                    scale={0.55}
+                    scale={0.75}
                   />
                 </div>
               )
-            })}
-          </div>
+            }
+
+            return (
+              <>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+                  {regulares.map(renderCard)}
+                </div>
+                {lendas.length > 0 && (
+                  <>
+                    <div style={{ margin: '24px 0 12px', textAlign: 'center' }}>
+                      <span className="val shadow-hard" style={{ fontSize: 28, color: 'var(--gold)' }}>LENDAS</span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+                      {lendas.map(renderCard)}
+                    </div>
+                  </>
+                )}
+              </>
+            )
+          })()
         )}
 
         {tab === 'boosts' && (

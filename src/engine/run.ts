@@ -42,7 +42,7 @@ export function iniciarRun(seed?: number): RunState {
     era,
     fase: 0,
     partidaAtual: 0,
-    orcamento: economia.orcamentoInicial,
+    orcamento: Number(economia.orcamentoInicial) || 4,
     baralho: baralhoRestante,
     mao,
     boosts: [],
