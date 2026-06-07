@@ -23,10 +23,11 @@ interface Props {
   maxSlots: number
   onRemove: (id: string) => void
   onSlotClick?: (slotIndex: number) => void
+  placeMode?: boolean // true when a card is selected and waiting to be placed
   mobile?: boolean
 }
 
-export function PlayArea({ escalacao, maxSlots, onRemove, onSlotClick }: Props) {
+export function PlayArea({ escalacao, maxSlots, onRemove, onSlotClick, placeMode }: Props) {
   // Build slots: filled with players from escalacao, rest empty
   const slots: (PlayerCard | null)[] = []
   for (let i = 0; i < maxSlots; i++) {
@@ -184,11 +185,14 @@ export function PlayArea({ escalacao, maxSlots, onRemove, onSlotClick }: Props) 
                 )
               })()
             ) : (
-              /* Empty slot: dashed circle */
+              /* Empty slot: dashed circle — highlighted when placeMode */
               <div style={{
                 width: 72, height: 72,
                 borderRadius: '50%',
-                border: '3px dashed var(--line)',
+                border: placeMode ? '3px dashed var(--accent-l)' : '3px dashed var(--line)',
+                background: placeMode ? 'rgba(232,118,43,.14)' : 'rgba(8,16,11,.18)',
+                boxShadow: placeMode ? '0 0 0 4px rgba(232,118,43,.12), 0 6px 14px rgba(0,0,0,.3)' : 'none',
+                animation: placeMode ? 'breathe 1.4s ease-in-out infinite' : 'none',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

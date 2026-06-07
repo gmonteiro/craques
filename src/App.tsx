@@ -3,6 +3,7 @@ import { useGameStore } from './state/store'
 import { useCollection } from './state/collection'
 import { checkAchievements, type Achievement } from './lib/achievements'
 import { sounds } from './lib/sounds'
+import { initBgm, toggleMute, isMuted } from './lib/bgm'
 import { TitleScreen } from './ui/TitleScreen'
 import { GameScreen } from './ui/GameScreen'
 import { RunEndScreen } from './ui/RunEndScreen'
@@ -21,9 +22,12 @@ function App() {
 
   const collection = useCollection()
 
-  // Initialize auth + collection on mount
+  const [bgmMuted, setBgmMuted] = useState(isMuted())
+
+  // Initialize auth + collection + bgm on mount
   useEffect(() => {
     collection.init()
+    initBgm()
   }, [])
 
   // Nova Run → show coach selection first
@@ -101,6 +105,26 @@ function App() {
     voltarTitulo()
   }
 
+  // Mute button (fixed, all screens)
+  const muteBtn = (
+    <button
+      onClick={() => setBgmMuted(toggleMute())}
+      style={{
+        position: 'fixed', bottom: 16, right: 16, zIndex: 90,
+        width: 44, height: 44, borderRadius: '50%',
+        background: '#141d17', border: '2px solid #0c1510',
+        cursor: 'pointer', display: 'grid', placeItems: 'center',
+        boxShadow: '0 4px 0 rgba(0,0,0,.3)',
+        transition: 'transform .1s',
+      }}
+      title={bgmMuted ? 'Ligar música' : 'Desligar música'}
+    >
+      <span className="val" style={{ fontSize: 22, color: bgmMuted ? 'var(--pos-ata)' : 'var(--green)' }}>
+        {bgmMuted ? '🔇' : '🔊'}
+      </span>
+    </button>
+  )
+
   // Achievement toast overlay
   const toast = achievementToast ? (
     <div style={{
@@ -135,6 +159,7 @@ function App() {
     return (
       <>
         {toast}
+        {muteBtn}
         <TitleScreen onNovaRun={handleNovaRun} onDailyRun={handleDailyRun} />
       </>
     )
@@ -144,6 +169,7 @@ function App() {
     return (
       <>
         {toast}
+        {muteBtn}
         <RunEndScreen run={run} onVoltarTitulo={handleVoltarTitulo} />
       </>
     )
@@ -152,6 +178,7 @@ function App() {
   return (
     <>
       {toast}
+      {muteBtn}
       <GameScreen
         run={run}
         onEscalar={escalarJogador}

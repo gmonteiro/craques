@@ -494,6 +494,7 @@ export function GameScreen({
           maxSlots={config.partida.maxEscalacao}
           onRemove={onDesescalar}
           onSlotClick={handleSlotClick}
+          placeMode={!!selectedCardId && !escaladoIds.has(selectedCardId)}
           mobile={mobile}
         />
       </div>
