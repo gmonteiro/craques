@@ -25,7 +25,7 @@ const FLAGS: Record<string, FlagDef> = {
 // Detect Windows (flag emojis render as 2-letter text)
 const isWindows = typeof navigator !== 'undefined' && /Win/.test(navigator.platform)
 
-function Flag({ country }: { country: string }) {
+export function Flag({ country }: { country: string }) {
   const f = FLAGS[country.toUpperCase()]
   if (!f) {
     return (

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { getAttributeLabel } from '../engine/attributes'
 import { useCollection } from '../state/collection'
-import { getWeeklyChallenge } from '../lib/challenges'
 import { Tutorial } from './Tutorial'
 import { Album } from './Album'
 
@@ -16,7 +15,6 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
   const [showAlbum, setShowAlbum] = useState(false)
   const collection = useCollection()
   const eraExemplo = ['gols', 'drible', 'seguidores']
-  const weekly = getWeeklyChallenge()
 
   const totalCards = 57 + 27
   const totalUnlocked = collection.unlockedPlayers.length + collection.unlockedBoosts.length
@@ -37,7 +35,7 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
 
       {/* Logo */}
       <div className="mb-6 text-center">
-        <h1 className="val shadow-hard" style={{ fontSize: 64, color: 'var(--gold)' }}>CRAQUES</h1>
+        <span className="val shadow-hard" style={{ fontSize: 64, color: 'var(--gold)' }}>CRAQUES</span>
         <p style={{ fontFamily: '"Silkscreen", monospace', fontSize: 11, color: 'var(--label)', letterSpacing: 2 }}>
           UMA COPA ROGUELIKE DE CARTAS
         </p>
@@ -75,20 +73,11 @@ export function TitleScreen({ onNovaRun, onDailyRun }: Props) {
         <button onClick={onDailyRun} className="btn-arcade btn-advance btn-md" style={{ width: '100%' }}>
           Desafio Diario
         </button>
-
-        {/* Weekly challenge */}
-        <button
-          onClick={() => onNovaRun(weekly.seed)}
-          className="btn-arcade btn-md"
-          style={{
-            width: '100%',
-            background: 'linear-gradient(180deg, #9a6cf0, #6a3fbf)',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.35), 0 6px 0 #4a2a8f, 0 12px 18px rgba(0,0,0,.4)',
-          }}
-        >
-          <div>{weekly.nome}</div>
-          <div style={{ fontSize: 12, opacity: 0.7, marginTop: -2 }}>{weekly.descricao}</div>
-        </button>
+        <div style={{ textAlign: 'center', marginTop: -4, marginBottom: 2 }}>
+          <span className="micro" style={{ fontSize: 9, lineHeight: 1.3 }}>
+            Mesma seed pra todo mundo hoje — compare seu score!
+          </span>
+        </div>
 
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => setShowAlbum(true)} className="btn-arcade btn-cancel btn-md" style={{ flex: 1, fontSize: 18 }}>

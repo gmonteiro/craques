@@ -13,6 +13,7 @@ import { getComboProgress } from '../engine/combos'
 import { calcularPontuacao } from '../engine/scoring'
 import { getAttributeLabel } from '../engine/attributes'
 import { sounds } from '../lib/sounds'
+import { Flag } from './MatchInfo'
 import config from '../../data/config.json'
 
 interface Props {
@@ -247,145 +248,108 @@ export function GameScreen({
       overflowY: 'auto',
       maxHeight: mobile ? 'none' : '100vh',
     }}>
-      {/* === DOSSIE DA PARTIDA (handoff style) === */}
-      <div className="panel" style={{ padding: 18, display: 'grid', gap: 14 }}>
-        {/* Fase */}
+      {/* === DOSSIE DA PARTIDA (compact) === */}
+      <div className="panel" style={{ padding: '14px 16px', display: 'grid', gap: 10 }}>
+        {/* Fase + Partida */}
         <div>
-          <div className="micro">Fase</div>
-          <div className="val shadow-hard" style={{ fontSize: 34, color: 'var(--ink)', marginTop: 2 }}>{info.fase}</div>
-          <div className="val" style={{ fontSize: 18, color: 'var(--ink-dim)', marginTop: 1 }}>
+          <div className="micro" style={{ fontSize: 10 }}>Fase</div>
+          <div className="val shadow-hard" style={{ fontSize: 28, color: 'var(--ink)', marginTop: 1 }}>{info.fase}</div>
+          <div className="val" style={{ fontSize: 16, color: 'var(--ink-dim)' }}>
             Partida {info.partida}/{info.totalPartidas}
-            {info.isClassico && <span style={{ color: 'var(--orange)', marginLeft: 8 }}>CLÁSSICO</span>}
+            {info.isClassico && <span style={{ color: 'var(--orange)', marginLeft: 6 }}>CLÁSSICO</span>}
           </div>
         </div>
 
         <div className="hr" />
 
-        {/* Adversário */}
+        {/* Adversário com bandeira */}
         <div>
-          <div className="micro">Adversário</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 6 }}>
-            <span className="val" style={{ fontSize: 28, color: 'var(--ink)' }}>{info.adversario}</span>
+          <div className="micro" style={{ fontSize: 10 }}>Adversário</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+            <Flag country={info.adversario} />
+            <span className="val shadow-hard" style={{ fontSize: 24, color: 'var(--ink)' }}>{info.adversario}</span>
           </div>
         </div>
 
-        {/* Meta + Orçamento boxes */}
-        <div style={{ display: 'flex', gap: 12 }}>
-          <div style={{
-            flex: 1, borderRadius: 12, padding: '9px 12px 11px',
-            background: 'linear-gradient(180deg,#1a241e,#141d17)',
-            border: '2px solid #0c1510',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.04), inset 0 -3px 0 rgba(0,0,0,.3)',
-          }}>
-            <div className="micro" style={{ fontSize: 10 }}>Meta</div>
-            <div className="val shadow-hard" style={{ fontSize: 40, color: 'var(--gold)', marginTop: 2 }}>
-              {run.meta.toLocaleString()}
+        {/* Meta + Orçamento (compact boxes) */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[
+            { label: 'Meta', value: run.meta.toLocaleString(), color: 'var(--gold)' },
+            { label: 'Orçamento', value: `$${run.orcamento ?? 0}`, color: 'var(--green)' },
+          ].map(b => (
+            <div key={b.label} style={{
+              flex: 1, borderRadius: 10, padding: '6px 10px 8px',
+              background: 'linear-gradient(180deg,#1a241e,#141d17)',
+              border: '2px solid #0c1510',
+            }}>
+              <div className="micro" style={{ fontSize: 9 }}>{b.label}</div>
+              <div className="val shadow-hard" style={{ fontSize: 30, color: b.color, marginTop: 1 }}>{b.value}</div>
             </div>
-          </div>
-          <div style={{
-            flex: 1, borderRadius: 12, padding: '9px 12px 11px',
-            background: 'linear-gradient(180deg,#1a241e,#141d17)',
-            border: '2px solid #0c1510',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.04), inset 0 -3px 0 rgba(0,0,0,.3)',
-          }}>
-            <div className="micro" style={{ fontSize: 10 }}>Orçamento</div>
-            <div className="val shadow-hard" style={{ fontSize: 40, color: 'var(--green)', marginTop: 2 }}>
-              ${run.orcamento ?? 0}
+          ))}
+        </div>
+
+        {/* Escalações + Trocas (compact boxes) */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[
+            { label: 'Escalações', value: run.tentativasRestantes },
+            { label: 'Trocas', value: run.trocasRestantes },
+          ].map(b => (
+            <div key={b.label} style={{
+              flex: 1, borderRadius: 10, padding: '6px 10px 8px',
+              background: 'linear-gradient(180deg,#1a241e,#141d17)',
+              border: '2px solid #0c1510',
+            }}>
+              <div className="micro" style={{ fontSize: 9 }}>{b.label}</div>
+              <div className="val shadow-hard" style={{ fontSize: 30, color: 'var(--ink)', marginTop: 1 }}>{b.value}</div>
             </div>
-          </div>
+          ))}
         </div>
 
         <div className="hr" />
 
-        {/* Era — atributos em jogo */}
+        {/* Era (compact — inline tags) */}
         <div>
-          <div className="micro" style={{ marginBottom: 7 }}>Era — atributos em jogo</div>
-          <div style={{ display: 'grid', gap: 6 }}>
+          <div className="micro" style={{ fontSize: 9, marginBottom: 5 }}>Era</div>
+          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
             {run.era.map((attr, i) => {
               const colors = ['var(--green)', 'var(--gold)', 'var(--pos-mei)']
               return (
-                <div key={attr} style={{
-                  display: 'flex', alignItems: 'center', gap: 9,
-                  background: '#141d17', border: '2px solid #0c1510', borderRadius: 9,
-                  padding: '6px 10px',
-                  boxShadow: 'inset 0 2px 0 rgba(255,255,255,.04)',
+                <span key={attr} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  background: '#141d17', border: '1px solid #0c1510', borderRadius: 7,
+                  padding: '3px 8px',
                 }}>
-                  <span className="val" style={{ fontSize: 16, color: '#5d7466', width: 14 }}>{i + 1}</span>
-                  <span style={{
-                    width: 9, height: 9, borderRadius: 3,
-                    background: colors[i % colors.length],
-                    boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.3)',
-                  }} />
-                  <span className="val" style={{ fontSize: 20, color: 'var(--ink)', flex: 1 }}>
-                    {getAttributeLabel(attr)}
-                  </span>
-                </div>
+                  <span style={{ width: 7, height: 7, borderRadius: 2, background: colors[i % colors.length] }} />
+                  <span className="val" style={{ fontSize: 16, color: 'var(--ink)' }}>{getAttributeLabel(attr)}</span>
+                </span>
               )
             })}
           </div>
         </div>
 
-        {/* Escalações + Trocas */}
-        <div style={{ display: 'flex', gap: 12 }}>
-          <div style={{
-            flex: 1, borderRadius: 12, padding: '9px 12px 11px',
-            background: 'linear-gradient(180deg,#1a241e,#141d17)',
-            border: '2px solid #0c1510',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.04), inset 0 -3px 0 rgba(0,0,0,.3)',
-          }}>
-            <div className="micro" style={{ fontSize: 10 }}>Escalações</div>
-            <div className="val shadow-hard" style={{ fontSize: 40, color: 'var(--ink)', marginTop: 2 }}>
-              {run.tentativasRestantes}
-            </div>
-          </div>
-          <div style={{
-            flex: 1, borderRadius: 12, padding: '9px 12px 11px',
-            background: 'linear-gradient(180deg,#1a241e,#141d17)',
-            border: '2px solid #0c1510',
-            boxShadow: 'inset 0 2px 0 rgba(255,255,255,.04), inset 0 -3px 0 rgba(0,0,0,.3)',
-          }}>
-            <div className="micro" style={{ fontSize: 10 }}>Trocas</div>
-            <div className="val shadow-hard" style={{ fontSize: 40, color: 'var(--ink)', marginTop: 2 }}>
-              {run.trocasRestantes}
-            </div>
-          </div>
-        </div>
-
         {/* Twist */}
         {run.twist && (
-          <>
-            <div className="hr" />
-            <div style={{
-              background: 'rgba(232,118,43,0.08)',
-              border: '1px solid rgba(232,118,43,0.25)',
-              borderRadius: 'var(--r-sm)',
-              padding: '8px 10px',
-            }}>
-              <span className="micro" style={{ color: 'var(--orange)' }}>Clássico: </span>
-              <span className="val" style={{ fontSize: 18, color: 'var(--orange-l)' }}>
-                {run.twist.descricao}
-              </span>
-            </div>
-          </>
+          <div style={{
+            background: 'rgba(232,118,43,0.08)',
+            border: '1px solid rgba(232,118,43,0.25)',
+            borderRadius: 'var(--r-sm)',
+            padding: '5px 8px',
+          }}>
+            <span className="micro" style={{ fontSize: 9, color: 'var(--orange)' }}>Clássico: </span>
+            <span className="val" style={{ fontSize: 15, color: 'var(--orange-l)' }}>{run.twist.descricao}</span>
+          </div>
         )}
 
         {/* Preview BASE × MULT */}
         {previewScore && (
-          <>
-            <div className="hr" />
-            <div style={{ textAlign: 'center' }}>
-              <div className="micro" style={{ marginBottom: 4 }}>Preview</div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                <span className="val shadow-hard" style={{ fontSize: 32, color: 'var(--pos-mei)' }}>
-                  {previewScore.base}
-                </span>
-                <span className="val" style={{ fontSize: 20, color: 'var(--ink-dim)' }}>×</span>
-                <span className="val shadow-hard" style={{ fontSize: 32, color: 'var(--pos-ata)' }}>
-                  {previewScore.mult.toFixed(1)}
-                </span>
-              </div>
+          <div style={{ textAlign: 'center' }}>
+            <div className="micro" style={{ fontSize: 9, marginBottom: 2 }}>Preview</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <span className="val shadow-hard" style={{ fontSize: 26, color: 'var(--pos-mei)' }}>{previewScore.base}</span>
+              <span className="val" style={{ fontSize: 16, color: 'var(--ink-dim)' }}>×</span>
+              <span className="val shadow-hard" style={{ fontSize: 26, color: 'var(--pos-ata)' }}>{previewScore.mult.toFixed(1)}</span>
             </div>
-          </>
+          </div>
         )}
 
         {/* Boosts */}
