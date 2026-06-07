@@ -235,6 +235,33 @@ export function GameScreen({
     )
   }
 
+  // === DERROTA ===
+  if (run.status === 'derrota') {
+    return (
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: 16,
+        padding: 16,
+      }}>
+        <ScoreDisplay
+          result={run.ultimaPontuacao}
+          meta={run.meta}
+          tentativas={run.tentativasRestantes}
+          trocas={run.trocasRestantes}
+          escalacao={run.escalacao}
+          adversario={info.adversario}
+        />
+        <button onClick={onDesistir} className="btn-arcade btn-cancel btn-lg">
+          Fim da Run
+        </button>
+      </div>
+    )
+  }
+
   // === ESCALANDO ===
 
   /* ---- Left column: Dossie + Combos ---- */
