@@ -3,6 +3,22 @@ import type { PlayerCard as PlayerCardType } from '../engine/types'
 import { getAttributeLabel } from '../engine/attributes'
 import { PixelFace } from './PixelFace'
 
+function abbreviate(label: string): string {
+  const map: Record<string, string> = {
+    'Velocidade': 'Vel', 'Finalização': 'Fin', 'Assistências': 'Ast',
+    'Gols pela Seleção': 'G.Sel', 'Valor de Mercado': 'V.Merc',
+    'Seguidores': 'Seg', 'Títulos': 'Tít',
+  }
+  return map[label] ?? label
+}
+
+function formatRaw(v: number): string {
+  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(0) + 'B'
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(0) + 'M'
+  if (v >= 1_000) return (v / 1_000).toFixed(0) + 'K'
+  return String(v)
+}
+
 const POS_COLORS: Record<string, string> = {
   GOL: 'var(--pos-gol)',
   ZAG: 'var(--pos-zag)',
@@ -38,13 +54,14 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
   const displayName = player.apelido || player.nome
   const lightBand = band === '#dfe3ea' || band === '#FFFFFF'
 
-  const stats: { label: string; value: number; color: string }[] = []
+  const stats: { label: string; value: number; rawValue: number; color: string }[] = []
   if (activeAttributes && player.pontosNormalizados) {
     for (let i = 0; i < activeAttributes.length; i++) {
       const attr = activeAttributes[i]
       stats.push({
-        label: getAttributeLabel(attr),
+        label: abbreviate(getAttributeLabel(attr)),
         value: player.pontosNormalizados[attr] ?? 0,
+        rawValue: player.atributos[attr] ?? 0,
         color: STAT_COLORS[i % STAT_COLORS.length],
       })
     }
@@ -170,8 +187,9 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
                 boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.3)',
               }} />
               <span style={{
-                fontFamily: '"Jersey 10", monospace', fontSize: 17, color: '#3a4a40',
-                flexShrink: 0, width: 52,
+                fontFamily: '"Jersey 10", monospace', fontSize: 16, color: '#3a4a40',
+                flexShrink: 0, width: 46,
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
               }}>
                 {s.label}
               </span>
@@ -188,10 +206,11 @@ export const PlayerCardComponent = memo(function PlayerCardComponent({
                 }} />
               </span>
               <span style={{
-                fontFamily: '"Jersey 10", monospace', fontSize: 18, color: '#1f2a24',
-                width: 26, textAlign: 'right', flexShrink: 0,
+                fontFamily: '"Jersey 10", monospace', fontSize: 17, color: '#1f2a24',
+                textAlign: 'right', flexShrink: 0, whiteSpace: 'nowrap',
               }}>
                 {s.value}
+                <span style={{ fontSize: 11, color: '#8a9e90', marginLeft: 1 }}>({formatRaw(s.rawValue)})</span>
               </span>
             </div>
           ))}
