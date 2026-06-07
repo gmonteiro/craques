@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { RunState } from '../engine/types'
 import {
   iniciarRun,
+  iniciarRunComCoach,
   escalar,
   desescalar,
   jogar,
@@ -23,6 +24,7 @@ interface GameStore {
 
   // Actions
   novaRun: (seed?: number) => void
+  novaRunCoach: (coachId: string, seed?: number) => void
   dailyRun: () => void
   escalarJogador: (id: string) => void
   desescalarJogador: (id: string) => void
@@ -47,6 +49,11 @@ export const useGameStore = create<GameStore>()(
 
       novaRun: (seed) => set({
         run: iniciarRun(seed),
+        screen: 'game',
+      }),
+
+      novaRunCoach: (coachId, seed) => set({
+        run: iniciarRunComCoach(coachId, seed),
         screen: 'game',
       }),
 

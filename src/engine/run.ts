@@ -1,4 +1,5 @@
 import type { RunState, PlayerCard, BoostCard, RngFn } from './types'
+import { COACHES, applyCoachBuffs } from './coaches'
 import { createRng, randomSeed, shuffle, pickN } from './rng'
 import { selectActiveAttributes } from './attributes'
 import { normalizePlayers } from './normalize'
@@ -60,6 +61,32 @@ export function iniciarRun(seed?: number): RunState {
     streak: 0,
     prestigeLevel: 0,
     pathChoices: [],
+    coachId: null,
+  }
+}
+
+/** Criar run com técnico */
+export function iniciarRunComCoach(coachId: string, seed?: number): RunState {
+  const coach = COACHES.find(c => c.id === coachId)
+  if (!coach) return iniciarRun(seed)
+
+  const params = applyCoachBuffs(coach, {
+    orcamento: Number(economia.orcamentoInicial) || 4,
+    tentativas: partidaCfg.tentativas,
+    trocas: partidaCfg.trocas,
+    tamanhoMao: partidaCfg.tamanhoMao,
+    tamanhoBaralho: baralhoCfg.tamanhoInicial,
+    metaMultiplier: 1,
+  })
+
+  const run = iniciarRun(seed)
+  return {
+    ...run,
+    coachId,
+    orcamento: params.orcamento,
+    tentativasRestantes: params.tentativas,
+    trocasRestantes: params.trocas,
+    meta: Math.round(run.meta * params.metaMultiplier),
   }
 }
 

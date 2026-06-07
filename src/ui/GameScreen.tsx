@@ -14,6 +14,7 @@ import { calcularPontuacao } from '../engine/scoring'
 import { getAttributeLabel } from '../engine/attributes'
 import { sounds } from '../lib/sounds'
 import { Flag } from './MatchInfo'
+import { COACHES } from '../engine/coaches'
 import config from '../../data/config.json'
 
 interface Props {
@@ -258,6 +259,14 @@ export function GameScreen({
             Partida {info.partida}/{info.totalPartidas}
             {info.isClassico && <span style={{ color: 'var(--orange)', marginLeft: 6 }}>CLÁSSICO</span>}
           </div>
+          {run.coachId && (() => {
+            const coach = COACHES.find(c => c.id === run.coachId)
+            return coach ? (
+              <div className="micro" style={{ fontSize: 9, marginTop: 4, color: 'var(--gold)' }}>
+                Técnico: {coach.nome}
+              </div>
+            ) : null
+          })()}
         </div>
 
         <div className="hr" />

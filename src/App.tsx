@@ -6,11 +6,13 @@ import { sounds } from './lib/sounds'
 import { TitleScreen } from './ui/TitleScreen'
 import { GameScreen } from './ui/GameScreen'
 import { RunEndScreen } from './ui/RunEndScreen'
+import { CoachSelect } from './ui/CoachSelect'
+import type { Coach } from './engine/coaches'
 
 function App() {
   const {
     run, screen,
-    novaRun, dailyRun, voltarTitulo,
+    novaRun, novaRunCoach, dailyRun, voltarTitulo,
     escalarJogador, desescalarJogador, jogarEscalacao,
     trocarJogadores, avancarPartida,
     comprarJogadorLoja, comprarBoostLoja, venderJogadorBaralho,
@@ -24,10 +26,17 @@ function App() {
     collection.init()
   }, [])
 
-  // Wrap novaRun to pass collection and unlock initial deck
+  // Nova Run → show coach selection first
   const handleNovaRun = (seed?: number) => {
-    novaRun(seed)
-    // After run starts, unlock all initial deck players
+    setPendingSeed(seed)
+    setShowCoachSelect(true)
+  }
+
+  const handleCoachSelected = (coach: Coach) => {
+    setShowCoachSelect(false)
+    novaRunCoach(coach.id, pendingSeed)
+    setPendingSeed(undefined)
+    // Unlock initial deck
     const currentRun = useGameStore.getState().run
     if (currentRun) {
       const allIds = [...currentRun.mao, ...currentRun.baralho].map(p => p.id)
@@ -56,6 +65,8 @@ function App() {
   }
 
   const [achievementToast, setAchievementToast] = useState<Achievement | null>(null)
+  const [showCoachSelect, setShowCoachSelect] = useState(false)
+  const [pendingSeed, setPendingSeed] = useState<number | undefined>(undefined)
 
   // Check achievements after each play
   useEffect(() => {
@@ -110,6 +121,15 @@ function App() {
       </div>
     </div>
   ) : null
+
+  if (showCoachSelect) {
+    return (
+      <>
+        {toast}
+        <CoachSelect onSelect={handleCoachSelected} />
+      </>
+    )
+  }
 
   if (screen === 'title' || !run) {
     return (

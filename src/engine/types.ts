@@ -117,6 +117,7 @@ export interface RunState {
   streak: number // vitórias consecutivas na run
   prestigeLevel: number // NG+ level (0 = normal)
   pathChoices: PathChoice[] // opções de caminho entre fases
+  coachId: string | null // técnico escolhido
 }
 
 export type RngFn = () => number
